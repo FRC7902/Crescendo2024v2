@@ -4,13 +4,19 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -30,9 +36,13 @@ public class DriveSubsystem extends SubsystemBase {
  private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
  private final AnalogGyro m_gyro = new AnalogGyro(DriveConstants.GyroCAN);
+ 
+private DifferentialDriveOdometry m_odometry;
 
   //Simulation Stuff
-  private DifferentialDriveOdometry m_odometry;
+  // private final Encoder m_leftEncoderObj = new Encoder(0, 1);
+  // private final Encoder m_rightEncoderObj = new Encoder(2, 3);
+
   private EncoderSim m_leftEncoderSim;
   private EncoderSim m_rightEncoderSim;
   private AnalogGyroSim m_gyroSim;
@@ -46,7 +56,6 @@ public class DriveSubsystem extends SubsystemBase {
     // m_leftFollowerMotor.restoreFactoryDefaults();
     // m_rightLeaderMotor.restoreFactoryDefaults();
     // m_rightFollowerMotor.restoreFactoryDefaults();
-
 
       m_leftLeaderMotor.follow(m_leftFollowerMotor);
       m_rightLeaderMotor.follow(m_rightFollowerMotor);
@@ -65,16 +74,63 @@ public class DriveSubsystem extends SubsystemBase {
       m_rightLeaderMotor.setSmartCurrentLimit(45);
       m_rightFollowerMotor.setSmartCurrentLimit(45);
 
+
+      //sim 
+      m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( //CHANGE AS NEEDED!!
+        KitbotMotor.kDualCIMPerSide, 
+        KitbotGearing.k10p71, 
+        KitbotWheelSize.kSixInch, 
+        null
+        );
+
+      m_fieldSim = new Field2d();
+      SmartDashboard.putData("Field", m_fieldSim);
+
+    //    m_leftEncoderSim = new EncoderSim(m_leftEncoderObj);
+    // m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
+       m_gyroSim = new AnalogGyroSim(m_gyro);
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //sim
+    m_fieldSim.setRobotPose(getPose());
   }
+
+  @Override 
+  public void simulationPeriodic() {
+
+    // This method will be called once per scheduler run during simulation
+    //connect the motors to update the drivetrain
+    
+    m_driveTrainSim.setInputs(
+      m_leftLeaderMotor.get() * RobotController.getBatteryVoltage(),
+      m_rightLeaderMotor.get() * RobotController.getBatteryVoltage()
+    );
+    
+    m_driveTrainSim.update(0.02);
+
+    m_leftEncoderSim.setDistance(m_driveTrainSim.getLeftPositionMeters());
+    m_rightEncoderSim.setDistance(m_driveTrainSim.getRightPositionMeters());
+
+    m_leftEncoderSim.setRate(m_driveTrainSim.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setRate(m_driveTrainSim.getRightVelocityMetersPerSecond());
+
+    m_gyroSim.setAngle(-m_driveTrainSim.getHeading().getDegrees());
+
+    // SmartDashboard.putNumber("angle", getHeading());
+    // SmartDashboard.putNumber("angle2", getHeadingCase2());
+    // SmartDashboard.putNumber("DisplacementX", getDisplacementX());
+
+  } 
 
   public void driveArcade(double xForward, double zRotation){
     m_drive.arcadeDrive(xForward, zRotation);
   }
+
 
   public void driveRaw(double power){
     m_leftLeaderMotor.set(power);
@@ -98,5 +154,26 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.stopMotor();
     m_rightLeaderMotor.stopMotor();
   }
+
+  public Pose2d getPose(){
+    return m_odometry.getPoseMeters();
+  }
+
+  public double getDisplacementX(){
+    return m_odometry.getPoseMeters().getX();
+  }
+
+  public double getDisplacementY(){
+    return m_odometry.getPoseMeters().getY();
+  }
+
+  public double getHeading(){//-180 to 180
+    return Math.IEEEremainder(m_gyro.getAngle(), 360);
+  }
+
+  public double modAngle(double angle){
+    return Math.IEEEremainder(angle, 360);
+  }
+
 
 }
