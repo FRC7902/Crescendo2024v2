@@ -21,6 +21,8 @@ public final class Constants {
     public static final int rightBackCANID = 33;
 
     public static final int GyroCAN = 2;
+
+    public static final int PigeonCAN = 3;
 }
 
   public static class OperatorConstants {
