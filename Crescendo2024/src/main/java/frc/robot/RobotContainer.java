@@ -5,12 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
@@ -22,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveSubsystem  m_driveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
  private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
@@ -50,8 +52,10 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
         new RunCommand(
           () -> m_driveSubsystem.driveArcade(
              m_driverStick.getRawAxis(Constants.IOConstants.kLY),
-             m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
+             m_driverStick.getRawAxis(Constants.IOConstants.kLX)),
              m_driveSubsystem));
+
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngle(m_driveSubsystem, 90, true));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
