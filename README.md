@@ -36,4 +36,6 @@ How to create a pull request:
 3. Push your branch to the repository.
 4. Go to the repository on GitHub and click "New pull request".
 5. Select your branch and `main` as the base branch.
+6. Assign yourself as the assignee
+7. Link the pull request to any issues that it is related to by typing `#` and the issue number in the description (i.e., `#123`).
 6. Fill out the pull request template and click "Create pull request".
