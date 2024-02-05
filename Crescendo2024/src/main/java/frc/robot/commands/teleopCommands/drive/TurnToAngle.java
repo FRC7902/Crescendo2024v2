@@ -5,6 +5,7 @@
 package frc.robot.commands.teleopCommands.drive;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -16,7 +17,7 @@ public class TurnToAngle extends Command {
   private double trueTarget;
   private boolean isAdditive;
   private double initialAngle;
-  private final PIDController turnPID = new PIDController(1, 0.25, 0);
+  private final PIDController turnPID = new PIDController(0.1, 0, 0);
 
   /** Creates a new TurnToAngle. */
   public TurnToAngle(DriveSubsystem drive, double angle, boolean IsAdditive) {
@@ -45,7 +46,10 @@ public class TurnToAngle extends Command {
   public void execute() {
     double speed;
     speed = turnPID.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
-    m_driveSubsystem.turn(speed);
+
+    SmartDashboard.putNumber("target angle", trueTarget);
+    SmartDashboard.putNumber("Current angle", convertRange(m_driveSubsystem.getHeading()));
+    //m_driveSubsystem.turn(speed * 0.1);
   }
 
 

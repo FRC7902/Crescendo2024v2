@@ -4,9 +4,17 @@
 
 package frc.robot.subsystems;
 
+import javax.xml.validation.SchemaFactory;
+
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
@@ -20,9 +28,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -32,18 +37,21 @@ public class DriveSubsystem extends SubsystemBase {
  private final CANSparkMax m_rightLeaderMotor = new CANSparkMax(DriveConstants.rightFrontCANID, CANSparkMax.MotorType.kBrushless);
  private final CANSparkMax m_rightFollowerMotor = new CANSparkMax(DriveConstants.rightBackCANID, CANSparkMax.MotorType.kBrushless);
 
- private final DifferentialDrive m_drive = new DifferentialDrive(m_leftLeaderMotor::set, m_rightLeaderMotor::set);
+ private final DifferentialDrive m_drive;
 
  private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
  private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
- private final AnalogGyro m_gyro = new AnalogGyro(DriveConstants.GyroCAN);
+ private static PigeonIMU m_pigeon = new PigeonIMU(30);
+
+
+ private final AnalogGyro m_gyro = new AnalogGyro(0);
  
 private DifferentialDriveOdometry m_odometry;
 
-  //Simulation Stuff
-  // private final Encoder m_leftEncoderObj = new Encoder(0, 1);
-  // private final Encoder m_rightEncoderObj = new Encoder(2, 3);
+  // Simulation Stuff
+  private final Encoder m_leftEncoderObj = new Encoder(0, 1);
+  private final Encoder m_rightEncoderObj = new Encoder(2, 3);
 
   private EncoderSim m_leftEncoderSim;
   private EncoderSim m_rightEncoderSim;
@@ -54,19 +62,28 @@ private DifferentialDriveOdometry m_odometry;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+
     // m_leftLeaderMotor.restoreFactoryDefaults(); //Safety precautions, but reccomended
     // m_leftFollowerMotor.restoreFactoryDefaults();
     // m_rightLeaderMotor.restoreFactoryDefaults();
     // m_rightFollowerMotor.restoreFactoryDefaults();
-
-      m_leftLeaderMotor.follow(m_leftFollowerMotor);
-      m_rightLeaderMotor.follow(m_rightFollowerMotor);
-
+    
+    m_leftFollowerMotor.follow(m_leftLeaderMotor);
+    m_rightFollowerMotor.follow(m_rightLeaderMotor);
+    
+    m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
+    
      m_leftEncoder.setPositionConversionFactor(0.1524 * Math.PI / 1024);
      m_rightEncoder.setPositionConversionFactor(0.1524 * Math.PI / 1024);
 
       m_leftEncoder.setPosition(0);
       m_leftEncoder.setPosition(0);
+
+    m_rightLeaderMotor.setIdleMode(IdleMode.kBrake);
+    m_rightFollowerMotor.setIdleMode(IdleMode.kBrake);
+    m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
+    m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
+
 
       m_rightLeaderMotor.setInverted(true);
       m_leftLeaderMotor.setInverted(false);
@@ -96,10 +113,12 @@ private DifferentialDriveOdometry m_odometry;
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Yaw", m_pigeon.getYaw());
     // This method will be called once per scheduler run
 
     //sim
-    m_fieldSim.setRobotPose(getPose());
+    // m_fieldSim.setRobotPose(getPose());
   }
 
   @Override 
@@ -123,9 +142,9 @@ private DifferentialDriveOdometry m_odometry;
 
     m_gyroSim.setAngle(-m_driveTrainSim.getHeading().getDegrees());
 
-    // SmartDashboard.putNumber("angle", getHeading());
+    SmartDashboard.putNumber("angle", getHeading());
     // SmartDashboard.putNumber("angle2", getHeadingCase2());
-    // SmartDashboard.putNumber("DisplacementX", getDisplacementX());
+    SmartDashboard.putNumber("DisplacementX", getDisplacementX());
 
   } 
 
@@ -170,7 +189,7 @@ private DifferentialDriveOdometry m_odometry;
   }
 
   public double getHeading(){//-180 to 180
-    return Math.IEEEremainder(m_gyro.getAngle(), 360);
+    return Math.IEEEremainder(m_pigeon.getYaw(), 360);
   }
 
   public double modAngle(double angle){

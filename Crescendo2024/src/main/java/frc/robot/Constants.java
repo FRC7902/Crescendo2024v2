@@ -15,10 +15,10 @@ package frc.robot;
 public final class Constants {
 
   public static final class DriveConstants{
-    public static final int leftFrontCANID = 30;
-    public static final int leftBackCANID = 31;
-    public static final int rightFrontCANID = 32;
-    public static final int rightBackCANID = 33;
+    public static final int leftFrontCANID = 31;
+    public static final int leftBackCANID = 32;
+    public static final int rightFrontCANID = 33;
+    public static final int rightBackCANID = 34;
 
     public static final int GyroCAN = 2;
 
@@ -30,6 +30,7 @@ public final class Constants {
   }
 
   public static class IOConstants {
-    public static final int kLB = 5, kRB = 6, kA = 1, kB = 2, kRX = 3, kLY = 4, kDriverStick =0;
+    public static final int kLB = 5, kRB = 6, kA = 1, kB = 2, kDriverStick =0;
+    public static final int kLX = 0, kLY = 1, kRX = 2, kRY = 3;
   }
 }
