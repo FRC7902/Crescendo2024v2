@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMax;
+// import com.ctre.phoenix.motorcontrol.InvertType;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.BangBangController;
 
@@ -73,7 +73,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void brake(){
     master.setNeutralMode(NeutralMode.Brake);
     follower.setNeutralMode(NeutralMode.Brake);
-
   }
 
 
