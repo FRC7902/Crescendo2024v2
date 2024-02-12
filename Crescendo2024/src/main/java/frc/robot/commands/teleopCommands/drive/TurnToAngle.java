@@ -49,7 +49,7 @@ public class TurnToAngle extends Command {
 
     SmartDashboard.putNumber("target angle", trueTarget);
     SmartDashboard.putNumber("Current angle", convertRange(m_driveSubsystem.getHeading()));
-    //m_driveSubsystem.turn(speed * 0.1);
+    m_driveSubsystem.turn(speed);
   }
 
 
