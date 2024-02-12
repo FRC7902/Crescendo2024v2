@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -57,6 +58,7 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
 
     new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngle(m_driveSubsystem, 90, true));
     new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngle(m_driveSubsystem, 45, false));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
