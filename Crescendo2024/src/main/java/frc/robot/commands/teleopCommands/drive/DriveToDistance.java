@@ -22,7 +22,7 @@ public class DriveToDistance extends Command {
 
     m_driveSubsystem = driveSubsystem;
     targetDistance = target;
-    drivePID.setTolerance(0.01, 1);
+    drivePID.setTolerance(0.00001, 1);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -39,6 +39,7 @@ public class DriveToDistance extends Command {
       double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistance);
       m_driveSubsystem.driveRaw(speed);
 
+      SmartDashboard.putNumber("speed", speed);
       SmartDashboard.putNumber("target distance", initialPosition + targetDistance);
       SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
