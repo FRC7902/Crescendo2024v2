@@ -173,7 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getPosition() {
-    return m_rightEncoder.getPosition();
+    return m_rightEncoderObj.getDistance();
   }
 
   public void resetEncoders() {
