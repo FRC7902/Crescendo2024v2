@@ -4,10 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -43,8 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
-  private static PigeonIMU m_pigeon = new PigeonIMU(30);
-  private Rotation2d pigeonYaw = new Rotation2d(m_pigeon.getYaw());
+  private static AHRS ahrs = new AHRS(SerialPort.Port.kUSB);
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
@@ -72,15 +72,17 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftFollowerMotor.follow(m_leftLeaderMotor);
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
 
-    m_leftEncoder.setPositionConversionFactor(0.1524 * Math.PI / 1024);
-    m_rightEncoder.setPositionConversionFactor(0.1524 * Math.PI / 1024);
+    m_leftEncoder.setPositionConversionFactor(
+       DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+    m_rightEncoder.setPositionConversionFactor(
+      DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
 
     m_leftEncoder.setPosition(0);
     m_leftEncoder.setPosition(0);
-    m_pigeon.setYaw(0);
+    ahrs.reset();
 
     m_rightLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_rightFollowerMotor.setIdleMode(IdleMode.kBrake);
@@ -94,8 +96,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftFollowerMotor.setSmartCurrentLimit(45);
     m_rightLeaderMotor.setSmartCurrentLimit(45);
     m_rightFollowerMotor.setSmartCurrentLimit(45);
-
-
     // sim
     
     m_odometry = new DifferentialDriveOdometry(
@@ -130,7 +130,9 @@ public class DriveSubsystem extends SubsystemBase {
     //sim
     m_fieldSim.setRobotPose(getPose());
 
-    SmartDashboard.putNumber("Yaw", m_gyro.getAngle());
+    SmartDashboard.putNumber("Yaw", ahrs.getAngle());    
+    SmartDashboard.putNumber("disp", m_rightEncoder.getPosition());
+
     // This method will be called once per scheduler run
   }
 
@@ -154,8 +156,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_gyroSim.setAngle(-m_driveTrainSim.getHeading().getDegrees());
 
-    SmartDashboard.putNumber("disp", m_leftEncoder.getPosition());
-
   }
 
   public void driveArcade(double xForward, double zRotation) {
@@ -172,8 +172,13 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightLeaderMotor.set(-amount);
   }
 
-  public double getPosition() {
+
+  public double getPositionSim(){
     return m_rightEncoderObj.getDistance();
+  }
+  
+  public double getPosition() {
+    return m_rightEncoder.getPosition();
   }
 
   public void resetEncoders() {
@@ -199,11 +204,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeading() {// -180 to 180
+    return Math.IEEEremainder(ahrs.getAngle(), 360);
+  }
+
+  public double getHeadingSim(){
     return Math.IEEEremainder(m_gyro.getAngle(), 360);
   }
 
   public double modAngle(double angle) {
     return Math.IEEEremainder(angle, 360);
   }
-
 }
