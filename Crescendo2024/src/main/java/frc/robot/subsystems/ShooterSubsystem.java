@@ -4,32 +4,26 @@
 
 package frc.robot.subsystems;
 
-// import com.ctre.phoenix.motorcontrol.InvertType;
-// import com.ctre.phoenix.motorcontrol.NeutralMode;
-// import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.BangBangController;
 
-// import com.ctre.phoenix.motorcontrol.InvertType;
-//import com.ctre.phoenix.motorcontrol.NeutralMode;
-// import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-// import com.revrobotics.CANSparkMax; 
-//import com.revrobotics.CANSparkMax;
-
-//import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  public final CANSparkMax master = new CANSparkMax(Constants.ShooterConstants.kMasterCAN, CANSparkMax.MotorType.kBrushless);// left
-  public final CANSparkMax follower = new CANSparkMax(Constants.ShooterConstants.kFollowerCAN, CANSparkMax.MotorType.kBrushless); //right
+  public final CANSparkMax master = new CANSparkMax(Constants.ShooterConstants.kMasterCAN,
+      CANSparkMax.MotorType.kBrushless);// left
+  public final CANSparkMax follower = new CANSparkMax(Constants.ShooterConstants.kFollowerCAN,
+      CANSparkMax.MotorType.kBrushless); // right
 
-  //Encoder
+  // Encoder
   public final Encoder encoder = new Encoder(5, 4);
   public final BangBangController controller = new BangBangController(Constants.ShooterConstants.kTolerance);
 
@@ -52,9 +46,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setSpeed(double speed) {
     master.set(speed);
-    if(speed > 0){
+    if (speed > 0) {
       status = "Shooting...";
-    }else if(speed < 0){
+    } else if (speed < 0) {
       status = "Reversing...";
     }
   }
@@ -70,12 +64,10 @@ public class ShooterSubsystem extends SubsystemBase {
     follower.setNeutralMode(NeutralMode.Coast);
   }
 
-  public void brake(){
+  public void brake() {
     master.setNeutralMode(NeutralMode.Brake);
     follower.setNeutralMode(NeutralMode.Brake);
   }
-
-
 
   public boolean atTargetSpeed() {
     return controller.atSetpoint();
