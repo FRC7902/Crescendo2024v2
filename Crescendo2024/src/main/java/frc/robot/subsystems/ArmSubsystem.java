@@ -102,26 +102,20 @@ public class ArmSubsystem extends SubsystemBase {
 
     armPivotLeader.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, 
       LimitSwitchNormal.NormallyOpen);
-
-    // If the robot arm is already at the target position, it will set the target position to current position
-    if(getPosition()==targetPositionForAmp){
-      targetPositionForAmp = getPosition();
-    }
-    if(getPosition()==targetPositionForSpeaker){
-      targetPositionForSpeaker = getPosition();
-    }
   }
 
   // Getter methods
 
   // Getting the position of the motor
-  public double getPosition() {
+  public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
     return armPivotLeader.getSelectedSensorPosition();
   }
+  public double getLeaderPower() {
+    return armPivotLeader.get();
+  }
 
   // Setter methods
-  
   // Gives power
   public void setPower(double power){
     armPivotLeader.set(power);
@@ -140,28 +134,12 @@ public class ArmSubsystem extends SubsystemBase {
     targetPositionForAmp = newSpeakerTargetPosition;
   }  
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  public boolean atZeroPos() {
+    return armPivotLeader.isRevLimitSwitchClosed() == 0; // switch is open
   }
 
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public void stopMotor() {
+    armPivotLeader.stopMotor();
   }
 
   @Override
@@ -173,10 +151,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     double currentPosition = getPosition(); //in raw sensor units
 
-    // Where does this equation come from? HOW IS THIS EQUATION FORMED????
     double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
     * Math.cos(util.CTRESensorUnitsToRads(targetPositionForAmp, ArmSubsystemConstants.EncoderCPR)-
-            ArmSubsystemConstants.angleAdjustmentRadians);
+        ArmSubsystemConstants.angleAdjustmentRadians));
 
     SmartDashboard.putNumber("Current Arm Position: ", currentPosition);
     SmartDashboard.putNumber("Target Position", targetPositionForAmp);
@@ -184,8 +161,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Shoulder Current (A)", armPivotLeader.getSupplyCurrent());
     SmartDashboard.putNumber("Shoulder Error", armPivotLeader.getClosedLoopError(0));
-    SmartDashboard.putNumber("Shoulder Position: ",  getPosition());
-    SmartDashboard.putBoolean("Is arm above level 1", isArmAboveLevel1());
+    SmartDashboard.putNumber("Shoulder Position: ",  getAngle());
+    //SmartDashboard.putBoolean("The arm is at amp shoot angle", ArmCommand.ampAngle());
+    //SmartDashboard.putBoolean("The arm is at speaker shoot angle", ArmCommand.speakerAngle());
 
     if (RobotBase.isSimulation()) {
       armPivotLeader.set(ControlMode.MotionMagic, targetPositionForAmp, DemandType.ArbitraryFeedForward,
@@ -194,6 +172,7 @@ public class ArmSubsystem extends SubsystemBase {
     else {
       armPivotLeader.set(ControlMode.MotionMagic, targetPositionForAmp*2, DemandType.ArbitraryFeedForward,
           adjusted_feedForward);
+
     }
   }
 
