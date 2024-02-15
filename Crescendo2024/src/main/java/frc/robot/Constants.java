@@ -42,4 +42,30 @@ public final class Constants {
     public final static int EncoderCPR = 4096;
     public final static double ticksPerDegree = EncoderCPR / 360;
   }
+  public static final class IOConstants {
+    public static final int kDriverStick = 0;
+    public static final int kOperatorStick = 1;
+
+    // Joystick Buttons
+    public static final int kA = 1,
+        kB = 2,
+        kX = 3,
+        kY = 4,
+        kLB = 5,
+        kRB = 6,
+        kBACK = 7,
+        kSTART = 8,
+        kLA = 9,
+        kRA = 10;
+
+    // Joystick Axis
+    public static final int kLX = 0,
+        kLY = 1,
+        kLT = 2,
+        kRT = 3,
+        kRX = 4,
+        kRY = 5,
+        kDX = 6,
+        kDY = 7;
+  }
 }

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class AmpSetpoint extends Command {
 
   private ArmSubsystem m_armSubsystem = new ArmSubsystem();
-  private double targetAngle = 140;
+  private double targetAngle = 140.00;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 

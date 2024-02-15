@@ -149,7 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
-    double currentPosition = getPosition(); //in raw sensor units
+    double currentPosition = getAngle(); //in raw sensor units
 
     double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
     * Math.cos(util.CTRESensorUnitsToRads(targetPositionForAmp, ArmSubsystemConstants.EncoderCPR)-
