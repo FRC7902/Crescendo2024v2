@@ -4,16 +4,22 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+// import com.ctre.phoenix.motorcontrol.InvertType;
+// import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkBase.IdleMode;
+//import com.revrobotics.CANSparkBase.IdleMode;
+//import com.revrobotics.CANSparkBase.IdleMode;
+//import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
+//import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.BangBangController;
-
+import edu.wpi.first.math.controller.PIDController; 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+//import frc.robot.Constants.ShooterConstants;
+
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -25,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Encoder
   public final Encoder encoder = new Encoder(5, 4);
-  public final BangBangController controller = new BangBangController(Constants.ShooterConstants.kTolerance);
+  public final PIDController controller = new PIDController(Constants.ShooterConstants.kTolerance, 0, 0);
 
   public String status = "Off";
 
@@ -34,13 +40,13 @@ public class ShooterSubsystem extends SubsystemBase {
     follower.follow(master);
 
     master.setInverted(false);
-    follower.setInverted(InvertType.FollowMaster);
+    follower.setInverted(true);
 
-    master.configOpenloopRamp(Constants.ShooterConstants.kRampTime);
-    follower.configOpenloopRamp(Constants.ShooterConstants.kRampTime);
+    master.setOpenLoopRampRate(Constants.ShooterConstants.kRampTime);
+    follower.setOpenLoopRampRate(Constants.ShooterConstants.kRampTime);
 
-    master.setNeutralMode(NeutralMode.Brake);
-    follower.setNeutralMode(NeutralMode.Brake);
+    master.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);;
 
   }
 
@@ -55,37 +61,48 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void stop() {
     master.stopMotor();
-    master.set(-0.04);
+    master.set(-0.00); // numbers need to be changed
     status = "Off";
   }
 
   public void coast() {
-    master.setNeutralMode(NeutralMode.Coast);
-    follower.setNeutralMode(NeutralMode.Coast);
+    master.setIdleMode(IdleMode.kCoast);
+    follower.setIdleMode(IdleMode.kCoast);
   }
 
   public void brake() {
-    master.setNeutralMode(NeutralMode.Brake);
-    follower.setNeutralMode(NeutralMode.Brake);
+    master.setIdleMode(IdleMode.kBrake);;
+    follower.setIdleMode(IdleMode.kBrake);
   }
 
   public boolean atTargetSpeed() {
     return controller.atSetpoint();
   }
 
-  public void bangSpeed(int setpoint) {
+  public void PIDSpeed(int setpoint) {
     master.set(controller.calculate(encoder.getRate(), setpoint));
   }
+
+  public void amp() {
+    master.set(Constants.ShooterConstants.kAmpSpeed);
+    follower.set(Constants.ShooterConstants.kAmpSpeed);
+  }
+
+  public void speaker() {
+    master.set(Constants.ShooterConstants.kSpeakerSpeed); 
+    follower.set(Constants.ShooterConstants.kSpeakerSpeed); 
+  }
+
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getMotorOutputPercent());
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getMotorOutputPercent());
+    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
+    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
     SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
-    SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getMotorOutputPercent());
+    SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
     SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
     SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", encoder.getRate());

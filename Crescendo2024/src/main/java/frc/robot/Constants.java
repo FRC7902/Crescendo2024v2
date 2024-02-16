@@ -32,6 +32,11 @@ public final class Constants {
 
       public final static int kHighUnitsPerSec = 0;
       public final static int kTolerance = 0;
+      // under this idk if will work, break and coast speed?? pretty sure speed difference for amp and speaker? 
+      //public final static int Brake = 0; 
+      //public final static int Coast = 0; 
+      public final static int kAmpSpeed = 0; 
+      public final static int kSpeakerSpeed = 0; 
   }
 }
 
