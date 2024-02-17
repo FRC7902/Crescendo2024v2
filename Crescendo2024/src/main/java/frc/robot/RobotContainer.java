@@ -10,6 +10,8 @@ import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -59,9 +61,10 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
              m_driverStick.getRawAxis(Constants.IOConstants.kLX)),
              m_driveSubsystem));
 
-    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngle(m_driveSubsystem, 30, true));
-    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
+    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngle(m_driveSubsystem, 30, true));
+    // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("ScoreAmp"));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
