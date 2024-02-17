@@ -37,8 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPositionForAmp;
-  private static double targetPositionForSpeaker;
+  private static double targetPosition = 0;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(DCMotor.getCIM(2), 
@@ -71,9 +70,12 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.setInverted(false);
     armPivotFollower.setInverted(InvertType.FollowMaster);
     armPivotLeader.configVoltageCompSaturation(12,0);
+    armPivotLeader.configPeakCurrentLimit(45);
 
     // Setting the value of P in PID control
     armPivotLeader.config_kP(0, 1.5);
+    //armPivotLeader.config_kI(0, KI);
+    //armPivotLeader.config_kD(0, KD);
 
     // Setting the velocity and acceleration of the motors
     armPivotLeader.configMotionCruiseVelocity(0);
@@ -121,18 +123,9 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.set(power);
   }
 
-  // Input two values that will be used for feedforward
-  public void setPosition(double demand0, double demand1) {
-    armPivotLeader.set(ControlMode.Position, demand0, DemandType.ArbitraryFeedForward, 0);
+  public void setNewTargetPosition(double newTargetPosition) {
+    targetPosition= newTargetPosition;
   }
-
-  public void setNewAmpTargetPosition(double newAmpTargetPosition) {
-    targetPositionForAmp = newAmpTargetPosition;
-  }
-
-  public void setNewSpeakerTargetPosition(double newSpeakerTargetPosition) {
-    targetPositionForAmp = newSpeakerTargetPosition;
-  }  
 
   public boolean atZeroPos() {
     return armPivotLeader.isRevLimitSwitchClosed() == 0; // switch is open
@@ -144,7 +137,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (armPivotLeader.isRevLimitSwitchClosed() == 1) {
+    if (armPivotLeader.isRevLimitSwitchClosed() == 1) {//double check this value
       armPivotLeader.setSelectedSensorPosition(0);
 
     }
@@ -152,11 +145,11 @@ public class ArmSubsystem extends SubsystemBase {
     double currentPosition = getAngle(); //in raw sensor units
 
     double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
-    * Math.cos(util.CTRESensorUnitsToRads(targetPositionForAmp, ArmSubsystemConstants.EncoderCPR)-
+    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)-
         ArmSubsystemConstants.angleAdjustmentRadians));
 
     SmartDashboard.putNumber("Current Arm Position: ", currentPosition);
-    SmartDashboard.putNumber("Target Position", targetPositionForAmp);
+    SmartDashboard.putNumber("Target Position", targetPosition);
     SmartDashboard.putNumber("Leader Voltage", armPivotLeader.getMotorOutputVoltage());
     SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Shoulder Current (A)", armPivotLeader.getSupplyCurrent());
@@ -166,11 +159,11 @@ public class ArmSubsystem extends SubsystemBase {
     //SmartDashboard.putBoolean("The arm is at speaker shoot angle", ArmCommand.speakerAngle());
 
     if (RobotBase.isSimulation()) {
-      armPivotLeader.set(ControlMode.MotionMagic, targetPositionForAmp, DemandType.ArbitraryFeedForward,
+      armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward,
           adjusted_feedForward);
     } 
     else {
-      armPivotLeader.set(ControlMode.MotionMagic, targetPositionForAmp*2, DemandType.ArbitraryFeedForward,
+      armPivotLeader.set(ControlMode.MotionMagic, targetPosition * ArmSubsystemConstants.EncoderToOutputRatio, DemandType.ArbitraryFeedForward,
           adjusted_feedForward);
 
     }
@@ -192,7 +185,7 @@ public class ArmSubsystem extends SubsystemBase {
     // Zero the limit switch in simulation
     if (armSim.getAngleRads() == Units.degreesToRadians(-ArmSubsystemConstants.restDegreesFromHorizontal)) {
 
-      armPivotLeaderSim.getSensorCollection().setQuadraturePosition(0, 0);
+      armPivotLeader.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
     armPivotLeaderSim.setAnalogPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), 4096));

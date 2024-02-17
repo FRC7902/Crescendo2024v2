@@ -7,10 +7,8 @@ package frc.robot;
 import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AmpSetpoint;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SpeakerSetpoint;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 
 import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Basic;
 
@@ -34,7 +32,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
         private static final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
-        private static final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -59,16 +56,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     // Button that when pressed down it brings arm to shooting angle
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new AmpSetpoint(m_ArmSubsystem,140.00));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new AmpSetpoint(m_ArmSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kLA).whileTrue(new SpeakerSetpoint(m_ArmSubsystem));
 
   }
 
@@ -77,8 +68,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
+  // public Command getAutonomousCommand() {
+  //   // An example command will be run in autonomous
+  // }
 }

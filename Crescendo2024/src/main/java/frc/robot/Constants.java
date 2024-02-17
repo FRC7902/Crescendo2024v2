@@ -38,7 +38,7 @@ public final class Constants {
      // REAL WORLD CONSTANTS
     public final static double angleAdjustmentDegrees = 71.57;
     public final static double angleAdjustmentRadians = Units.degreesToRadians(angleAdjustmentDegrees);
-    public final static double EncoderToOutputRatio = 0.5;
+    public final static double EncoderToOutputRatio = 74/18;
     public final static int EncoderCPR = 4096;
     public final static double ticksPerDegree = EncoderCPR / 360;
   }
