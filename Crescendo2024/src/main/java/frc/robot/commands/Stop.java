@@ -5,11 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class Stop extends Command {
-      private IntakeSubsystem m_intake;
+  private IntakeSubsystem m_intake;
+  public double restingSpeed = 0;
   /** Creates a new Stop. */
   public Stop(IntakeSubsystem intake) {
     m_intake = intake;
@@ -21,13 +21,11 @@ public class Stop extends Command {
   @Override
   public void initialize() {
     m_intake.stopMotor();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPower(Constants.IntakeConstants.kIntakeSuckingSpeed);
   }
 
   // Called once the command ends or is interrupted.
@@ -38,5 +36,9 @@ public class Stop extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public void setRestingSpeed(int speed){
+    restingSpeed = speed;
   }
 }

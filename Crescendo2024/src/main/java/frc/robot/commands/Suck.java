@@ -14,6 +14,9 @@ public class Suck extends Command {
   public Suck(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
+
+    //intake a note, when the beam brake is hit, stop spinning and apply a small feedforward to hold onto the note
+    //seperate command: feed the note into the shooter (ignore the beam brake)
   }
 
   // Called when the command is initially scheduled.

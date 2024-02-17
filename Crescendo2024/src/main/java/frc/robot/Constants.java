@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -24,8 +23,8 @@ public final class Constants {
 
     public static final int kIntakeCANID1 = 30;
     public static final int kIntakeCANID2 = 31;
-    public static final double kIntakeSuckingSpeed = 10.0;
-    public static final double kintakeSpittingSpeed = -10.0;
+    public static final double kIntakeSuckingSpeed = 1;
+    public static final double kintakeSpittingSpeed = -1;
 
   }
 
