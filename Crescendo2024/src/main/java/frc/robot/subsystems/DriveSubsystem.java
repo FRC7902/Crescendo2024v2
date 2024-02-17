@@ -104,11 +104,11 @@ public class DriveSubsystem extends SubsystemBase {
       m_rightEncoderObj.getDistance(),
       new Pose2d(1, 1, new Rotation2d()));
       
-      m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
-          KitbotMotor.kDualCIMPerSide,
-          KitbotGearing.k10p71,
-          KitbotWheelSize.kSixInch,
-          null);
+    m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
+        KitbotMotor.kDualCIMPerSide,
+        KitbotGearing.k10p71,
+        KitbotWheelSize.kSixInch,
+        null);
 
     m_fieldSim = new Field2d();
     SmartDashboard.putData("Field", m_fieldSim);
