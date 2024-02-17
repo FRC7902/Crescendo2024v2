@@ -23,6 +23,7 @@ public final class Constants {
     public static final double wheelDiameterMetres = 0.1524;
     public static final double gearRatio = 10.71;
     public static final double encoderTicksPerRevolution = 42;
+    public static final double trackWidthInches = 24;
 
     public static final int GyroCAN = 2;
 

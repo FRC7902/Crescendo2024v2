@@ -8,6 +8,9 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,6 +75,7 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
    */
   public Command getAutonomousCommand() {
     
-    return m_chooser.getSelected();
+    return new PathPlannerAuto("New Auto");
+    //return m_chooser.getSelected();
   }
 }
