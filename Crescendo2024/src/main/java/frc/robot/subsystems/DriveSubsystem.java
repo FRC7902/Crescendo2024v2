@@ -14,9 +14,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -57,8 +55,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
   private DifferentialDriveOdometry m_odometry;
-  private DifferentialDriveKinematics m_kinematics;
-  private ChassisSpeeds m_chassisSpeeds;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -106,17 +102,21 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftFollowerMotor.setSmartCurrentLimit(45);
     m_rightLeaderMotor.setSmartCurrentLimit(45);
     m_rightFollowerMotor.setSmartCurrentLimit(45);
-    // sim
 
-    m_odometry = new DifferentialDriveOdometry(
+    if(Robot.isSimulation()){
+      m_odometry = new DifferentialDriveOdometry(
+          m_gyro.getRotation2d(),
+          m_leftEncoderObj.getDistance(),
+          m_rightEncoderObj.getDistance(),
+          new Pose2d(1, 1, new Rotation2d()));
+    }else{
+      m_odometry = new DifferentialDriveOdometry(
         m_gyro.getRotation2d(),
-        m_leftEncoderObj.getDistance(),
-        m_rightEncoderObj.getDistance(),
+        m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition(),
         new Pose2d(1, 1, new Rotation2d()));
+    }
 
-    m_kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(DriveConstants.trackWidthInches));
-
-    m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
 
     m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
         KitbotMotor.kDualCIMPerSide,
@@ -155,10 +155,19 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    m_odometry.update(
+
+    if(Robot.isSimulation()){
+      m_odometry.update(
         m_gyro.getRotation2d(),
         m_leftEncoderObj.getDistance(),
         m_rightEncoderObj.getDistance());
+    }else{
+      m_odometry.update(
+        m_gyro.getRotation2d(),
+        m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition()
+      );
+    }
 
     // sim
     m_fieldSim.setRobotPose(getPose());
@@ -250,11 +259,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
-  }
-
-  public ChassisSpeeds getChassisSpeeds() {
-    return m_kinematics
-        .toChassisSpeeds(new DifferentialDriveWheelSpeeds(m_leftEncoderObj.getRate(), m_rightEncoderObj.getRate()));
   }
 
   public double getDisplacementX() {
