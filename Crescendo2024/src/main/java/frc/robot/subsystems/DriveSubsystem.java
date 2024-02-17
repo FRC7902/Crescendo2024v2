@@ -8,11 +8,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -27,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -49,11 +57,13 @@ public class DriveSubsystem extends SubsystemBase {
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
   private DifferentialDriveOdometry m_odometry;
-  
+  private DifferentialDriveKinematics m_kinematics;
+  private ChassisSpeeds m_chassisSpeeds;
+
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
   private final Encoder m_rightEncoderObj = new Encoder(2, 3);
-  
+
   private EncoderSim m_leftEncoderSim;
   private EncoderSim m_rightEncoderSim;
   private AnalogGyroSim m_gyroSim;
@@ -73,9 +83,9 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
-       DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
     m_rightEncoder.setPositionConversionFactor(
-      DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
@@ -97,18 +107,22 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightLeaderMotor.setSmartCurrentLimit(45);
     m_rightFollowerMotor.setSmartCurrentLimit(45);
     // sim
-    
+
     m_odometry = new DifferentialDriveOdometry(
-      m_gyro.getRotation2d(), 
-      m_leftEncoderObj.getDistance(), 
-      m_rightEncoderObj.getDistance(),
-      new Pose2d(1, 1, new Rotation2d()));
-      
-      m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
-          KitbotMotor.kDualCIMPerSide,
-          KitbotGearing.k10p71,
-          KitbotWheelSize.kSixInch,
-          null);
+        m_gyro.getRotation2d(),
+        m_leftEncoderObj.getDistance(),
+        m_rightEncoderObj.getDistance(),
+        new Pose2d(1, 1, new Rotation2d()));
+
+    m_kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(DriveConstants.trackWidthInches));
+
+    m_chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+
+    m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
+        KitbotMotor.kDualCIMPerSide,
+        KitbotGearing.k10p71,
+        KitbotWheelSize.kSixInch,
+        null);
 
     m_fieldSim = new Field2d();
     SmartDashboard.putData("Field", m_fieldSim);
@@ -117,20 +131,39 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
     m_gyroSim = new AnalogGyroSim(m_gyro);
 
+    AutoBuilder.configureRamsete(
+        this::getPose,
+        this::resetPose,
+        this::getWheelSpeeds,
+        this::driveSpeeds, new ReplanningConfig(), // Default path replanning config. See the API for the options here
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
   }
 
   @Override
   public void periodic() {
 
     m_odometry.update(
-      m_gyro.getRotation2d(), 
-      m_leftEncoderObj.getDistance(), 
-      m_rightEncoderObj.getDistance());
+        m_gyro.getRotation2d(),
+        m_leftEncoderObj.getDistance(),
+        m_rightEncoderObj.getDistance());
 
-    //sim
+    // sim
     m_fieldSim.setRobotPose(getPose());
 
-    SmartDashboard.putNumber("Yaw", ahrs.getAngle());    
+    SmartDashboard.putNumber("Yaw", ahrs.getAngle());
     SmartDashboard.putNumber("disp", m_rightEncoder.getPosition());
 
     // This method will be called once per scheduler run
@@ -167,16 +200,33 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightLeaderMotor.set(power);
   }
 
+  public void driveSpeeds(ChassisSpeeds speeds) {
+
+    this.driveArcade(speeds.vxMetersPerSecond / 4.379976, speeds.omegaRadiansPerSecond / 4.379976);
+
+  }
+
+  public ChassisSpeeds getWheelSpeeds() {
+
+    if (Robot.isSimulation()) {
+      return new ChassisSpeeds(m_leftEncoderObj.getRate(), m_rightEncoderObj.getRate(),
+          m_gyro.getRate());
+    } else {
+      return new ChassisSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity(),
+          Units.degreesToRadians(m_gyro.getRate()));
+    }
+
+  }
+
   public void turn(double amount) {
     m_leftLeaderMotor.set(amount);
     m_rightLeaderMotor.set(-amount);
   }
 
-
-  public double getPositionSim(){
+  public double getPositionSim() {
     return m_rightEncoderObj.getDistance();
   }
-  
+
   public double getPosition() {
     return m_rightEncoder.getPosition();
   }
@@ -186,6 +236,13 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftEncoder.setPosition(0);
   }
 
+  public void resetPose(Pose2d pose) {
+    m_rightEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+    m_odometry.resetPosition(
+        m_gyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+  }
+
   public void stopMotors() {
     m_leftLeaderMotor.stopMotor();
     m_rightLeaderMotor.stopMotor();
@@ -193,6 +250,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return m_kinematics
+        .toChassisSpeeds(new DifferentialDriveWheelSpeeds(m_leftEncoderObj.getRate(), m_rightEncoderObj.getRate()));
   }
 
   public double getDisplacementX() {
@@ -207,7 +269,7 @@ public class DriveSubsystem extends SubsystemBase {
     return Math.IEEEremainder(ahrs.getAngle(), 360);
   }
 
-  public double getHeadingSim(){
+  public double getHeadingSim() {
     return Math.IEEEremainder(m_gyro.getAngle(), 360);
   }
 
