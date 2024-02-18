@@ -11,11 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class SetArmPosition extends Command {
-
+public class SpeakerSetpoint extends Command {
   private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = 0;
+  private double targetAngle = 40;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 
@@ -25,31 +24,27 @@ public class SetArmPosition extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SetArmPosition(ArmSubsystem arm) {
-    initialAngle = arm.getAngle();
+  public SpeakerSetpoint(ArmSubsystem arm) {
     m_armSubsystem = arm;
+    initialAngle = m_armSubsystem.getAngle();
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_armSubsystem.setTargetPositionDegrees(util.degToCTRESensorUnits(targetAngle, ArmConstants.EncoderCPR));
-    SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
+    m_armSubsystem.setNewTargetPosition(util.degToCTRESensorUnits(targetAngle, ArmConstants.EncoderCPR));
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_armSubsystem.stopMotor();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

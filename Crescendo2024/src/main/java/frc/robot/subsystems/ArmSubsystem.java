@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -39,11 +38,12 @@ public class ArmSubsystem extends SubsystemBase {
   private static double targetPosition = 0;
 
   /** Object of a simulated arm **/
-  private final SingleJointedArmSim armSim = new SingleJointedArmSim(DCMotor.getCIM(2), 
+  private final SingleJointedArmSim armSim = new SingleJointedArmSim(
+  DCMotor.getCIM(2), 
   139.78, 
   6.05, 
   1, 
-  Math.PI/2,
+  Units.degreesToRadians(-ArmConstants.restDegreesFromHorizontal),
   Math.PI * 2,
   true, 
   0);
@@ -75,12 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.configVoltageCompSaturation(12,0);
     armPivotLeader.configPeakCurrentLimit(45);
 
-    // Setting the value of P in PID control
-    /*
-     *ku= 45
-     tu = 1 
-     */
-    armPivotLeader.config_kP(0, 22.5);
+    int ku = 45;
+    double tu = 0.1;
+
+    armPivotLeader.config_kP(0, 0.5 * ku);
     armPivotLeader.config_kI(0, 0);//54
     armPivotLeader.config_kD(0, 0);//3.374
     // Setting the velocity and acceleration of the motors
@@ -112,8 +110,6 @@ public class ArmSubsystem extends SubsystemBase {
       LimitSwitchNormal.NormallyOpen);
   }
 
-  // Getter methods
-
   // Getting the position of the motor
   public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
@@ -129,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.set(power);
   }
 
-  public void setTargetPositionDegrees(double newTargetPosition) {
+  public void setNewTargetPosition(double newTargetPosition) {
     targetPosition= newTargetPosition;
   }
 
@@ -177,9 +173,8 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
 
-    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
-    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
-
+    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward 
+    * Math.abs(Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR))));
     armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, adjusted_feedForward);
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
@@ -193,7 +188,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_arm.setAngle(Math.toDegrees(armSim.getAngleRads()));
 
     // Zero the limit switch in simulation
-    if (armSim.getAngleRads() == Units.degreesToRadians(Math.PI/2)) {
+    if (armSim.getAngleRads() == Units.degreesToRadians(-ArmConstants.restDegreesFromHorizontal)) {
 
       armPivotLeader.getSensorCollection().setQuadraturePosition(0, 0);
     }
