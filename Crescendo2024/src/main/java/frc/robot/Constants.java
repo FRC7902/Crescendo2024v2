@@ -30,6 +30,14 @@ public final class Constants {
     public static final int PigeonCAN = 3;
 }
 
+  public static final class ArmConstants{
+    public static final int ArmLeaderMotorCAN = 10;//random
+    public static final int ArmFollowerMotorCAN = 11;
+    public static final int EncoderCPR = 4096;
+    public static final double ArmShoulderFeedForward = 0.25;
+    public static final double EncoderToOutputRatio = 2;
+  }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

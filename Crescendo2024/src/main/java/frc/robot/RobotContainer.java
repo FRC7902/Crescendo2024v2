@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.SetArmPosition;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -31,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final PhotonCamera camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
  private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
@@ -66,6 +69,7 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
     // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
     new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("ScoreAmp"));
     new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("LoadPiece"));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new SetArmPosition(m_armSubsystem));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
