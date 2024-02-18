@@ -10,15 +10,25 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class Suck extends Command {
   private IntakeSubsystem m_intake;
+  private boolean m_beamBrakeHit;
   /** Creates a new Suck. */
   public Suck(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
+    m_beamBrakeHit = false;
+    addRequirements(intake);
+
 
     //intake a note, when the beam brake is hit, stop spinning and apply a small feedforward to hold onto the note
+
     //seperate command: feed the note into the shooter (ignore the beam brake)
   }
+  
+  public void setBeamBrakeHit(boolean beamBrakeHit) {
+    m_beamBrakeHit = beamBrakeHit;
 
+  }
+    
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -28,14 +38,19 @@ public class Suck extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    m_intake.setPower(Constants.IntakeConstants.kIntakeSuckingSpeed);
+    if (m_beamBrakeHit) {
+      m_intake.setPower(Constants.IntakeConstants.kIntakeHoldPower);
+      } else {
+      m_intake.setPower(Constants.IntakeConstants.kIntakeSuckingSpeed);
+      }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
-
+  public void end(boolean interrupted) {
+      m_intake.stopMotor();
+    
+    }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {

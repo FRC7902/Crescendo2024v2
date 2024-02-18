@@ -26,7 +26,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    boolean beamBrakeHit = true;
     //if beam brake is hit, apply feedforward
+    if (beamBrakeHit) {
+            // Apply feedforward
+            intakeMotor.set(IntakeConstants.kFeedforwardPower);
+        } else {
+            // Do other periodic tasks if needed
+     }
 
     // This method will be called once per scheduler run
   }
