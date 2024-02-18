@@ -10,6 +10,9 @@ import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,7 +65,7 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
     // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
     new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("ScoreAmp"));
-
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("LoadPiece"));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
