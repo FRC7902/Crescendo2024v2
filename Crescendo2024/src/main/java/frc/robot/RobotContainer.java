@@ -5,14 +5,17 @@
 package frc.robot;
 
 import frc.robot.Constants.IOConstants;
-import frc.robot.commands.AmpSetpoint;
-import frc.robot.commands.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.AmpSetpoint;
+import frc.robot.commands.teleopCommands.Level0Setpoint;
+import frc.robot.commands.teleopCommands.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,11 +67,13 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
              m_driveSubsystem));
 
     new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new DriveToDistance(m_driveSubsystem, 1));
-    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("ScoreAmp"));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("Amp"));
     new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("LoadPiece"));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("Speaker"));
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.teleopCommands;
 
 import frc.robot.FireBirdsUtils;
 import frc.robot.Constants.ArmConstants;
@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class AmpSetpoint extends Command {
+public class Level0Setpoint extends Command {
   private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = 70;
+  private double targetAngle = 0;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 
@@ -24,7 +24,7 @@ public class AmpSetpoint extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AmpSetpoint(ArmSubsystem arm) {
+  public Level0Setpoint(ArmSubsystem arm) {
     initialAngle = arm.getAngle();
     m_armSubsystem = arm;
     // Use addRequirements() here to declare subsystem dependencies.
