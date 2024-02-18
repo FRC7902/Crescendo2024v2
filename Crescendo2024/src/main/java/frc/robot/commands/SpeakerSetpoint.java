@@ -4,15 +4,17 @@
 
 package frc.robot.commands;
 
+import frc.robot.FireBirdsUtils;
+import frc.robot.Constants.ArmSubsystemConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class SpeakerSetpoint extends Command {
-
+  private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = 70;
+  private double targetAngle = 40;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 
@@ -37,7 +39,7 @@ public class SpeakerSetpoint extends Command {
   @Override
   public void execute() {
     SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
-    m_armSubsystem.setNewTargetPosition(targetAngle);
+    m_armSubsystem.setNewTargetPosition(util.degToCTRESensorUnits(targetAngle, ArmSubsystemConstants.EncoderCPR));
   }
 
   // Called once the command ends or is interrupted.

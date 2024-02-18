@@ -25,14 +25,12 @@ public final class Constants {
     public final static int ArmPivotFollowerCAN = 1;
 
     // Simulation Constants
-    public final static double restDegreesFromHorizontal = 75;
+    public final static double restDegreesFromHorizontal = 90;
 
      // OPERATIONAL
      public final static double ArmShoulderRotatePower = 0.5; // testing, not final
      public final static double ArmShoulderStop = 0.0; // testing, not final
-     public final static double ArmShoulderFeedForwardMin = 0.26; // final and tested
-     public final static double ArmShoulderFeedForwardMax = 0.5; // final and tested
-     public final static double ArmShoulderFeedForwardDifference = ArmShoulderFeedForwardMax - ArmShoulderFeedForwardMin;
+     public final static double ArmShoulderFeedForwardMin = 3; // final and tested
      public static final double ShoulderBufferTimeInSeconds = 0.75;
 
      // REAL WORLD CONSTANTS

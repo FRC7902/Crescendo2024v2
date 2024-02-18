@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import frc.robot.FireBirdsUtils;
+import frc.robot.Constants.ArmSubsystemConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,8 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class AmpSetpoint extends Command {
 
+  private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = 140;
+  private double targetAngle = 0;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 
@@ -23,25 +26,30 @@ public class AmpSetpoint extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public AmpSetpoint(ArmSubsystem arm) {
-    initialAngle = m_armSubsystem.getAngle();
+    initialAngle = arm.getAngle();
+    m_armSubsystem = arm;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_armSubsystem.setNewTargetPosition(util.degToCTRESensorUnits(targetAngle, ArmSubsystemConstants.EncoderCPR));
+    SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
-    m_armSubsystem.setNewTargetPosition(targetAngle);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_armSubsystem.stopMotor();
+  }
 
   // Returns true when the command should end.
   @Override

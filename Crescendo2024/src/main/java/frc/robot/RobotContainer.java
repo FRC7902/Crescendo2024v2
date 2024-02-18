@@ -58,8 +58,8 @@ public class RobotContainer {
   private void configureBindings() {
 
     // Button that when pressed down it brings arm to shooting angle
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new AmpSetpoint(m_ArmSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kLA).whileTrue(new SpeakerSetpoint(m_ArmSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AmpSetpoint(m_ArmSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new SpeakerSetpoint(m_ArmSubsystem));
 
   }
 

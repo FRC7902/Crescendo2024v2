@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.Util;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -72,10 +73,9 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.configPeakCurrentLimit(45);
 
     // Setting the value of P in PID control
-    armPivotLeader.config_kP(0, 1.5);
-    //armPivotLeader.config_kI(0, KI);
-    //armPivotLeader.config_kD(0, KD);
-
+    armPivotLeader.config_kP(0, 50);
+    armPivotLeader.config_kI(0, 0);
+    armPivotLeader.config_kD(0, 0);
     // Setting the velocity and acceleration of the motors
     armPivotLeader.configMotionCruiseVelocity(0);
     armPivotLeader.configMotionAcceleration(2);
@@ -170,6 +170,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+
+    double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
+    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)-
+        ArmSubsystemConstants.angleAdjustmentRadians));
+    armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, adjusted_feedForward);
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
     armSim.setInput(armPivotLeaderSim.getMotorOutputLeadVoltage());
