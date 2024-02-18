@@ -28,10 +28,7 @@ public final class Constants {
     public final static double restDegreesFromHorizontal = 90;
 
      // OPERATIONAL
-     public final static double ArmShoulderRotatePower = 0.5; // testing, not final
-     public final static double ArmShoulderStop = 0.0; // testing, not final
-     public final static double ArmShoulderFeedForwardMin = 3; // final and tested
-     public static final double ShoulderBufferTimeInSeconds = 0.75;
+     public final static double ArmShoulderFeedForwardMin = 0; // final and tested
 
      // REAL WORLD CONSTANTS
     public final static double angleAdjustmentDegrees = 71.57;

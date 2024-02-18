@@ -15,7 +15,7 @@ public class AmpSetpoint extends Command {
 
   private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = 0;
+  private double targetAngle = 70;
 
   //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
 

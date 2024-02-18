@@ -39,10 +39,15 @@ public class ArmSubsystem extends SubsystemBase {
   private static double targetPosition = 0;
 
   /** Object of a simulated arm **/
-  private final SingleJointedArmSim armSim = new SingleJointedArmSim(DCMotor.getCIM(2), 
-  139.78, 6.05, 1, 
+  private final SingleJointedArmSim armSim = new SingleJointedArmSim(
+  DCMotor.getCIM(2), 
+  139.78, 
+  6.05, 
+  1, 
   Units.degreesToRadians(-ArmSubsystemConstants.restDegreesFromHorizontal),
-  6,true, 0);
+  Math.PI * 2,
+  true, 
+  0);
 
   // Initializing the simulation of TalonSRX
   private final TalonSRXSimCollection armPivotLeaderSim = armPivotLeader.getSimCollection();
@@ -71,17 +76,15 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.configVoltageCompSaturation(12,0);
     armPivotLeader.configPeakCurrentLimit(45);
 
-    // Setting the value of P in PID control
-    /*
-     *ku= 45
-     tu = 1 
-     */
-    armPivotLeader.config_kP(0, 22.5);
+    int ku = 45;
+    double tu = 0.1;
+
+    armPivotLeader.config_kP(0, 0.5 * ku);
     armPivotLeader.config_kI(0, 0);//54
     armPivotLeader.config_kD(0, 0);//3.374
     // Setting the velocity and acceleration of the motors
-    armPivotLeader.configMotionCruiseVelocity(0);
-    armPivotLeader.configMotionAcceleration(2);
+    armPivotLeader.configMotionCruiseVelocity(8000);
+    armPivotLeader.configMotionAcceleration(2000);
 
     // Put Mechanism 2d to SmartDashboard
     SmartDashboard.putData("Arm Sim", m_mech2d);
@@ -174,8 +177,8 @@ public class ArmSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
 
     double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
-    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)-
-        ArmSubsystemConstants.angleAdjustmentRadians));
+    * Math.abs(Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)-
+        ArmSubsystemConstants.angleAdjustmentRadians)));
     armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, adjusted_feedForward);
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
