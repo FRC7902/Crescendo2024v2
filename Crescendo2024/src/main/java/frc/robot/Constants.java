@@ -36,6 +36,7 @@ public final class Constants {
     public static final int EncoderCPR = 4096;
     public static final double ArmShoulderFeedForward = 0.25;
     public static final double EncoderToOutputRatio = 2;
+    public static final double restDegreesFromHorizontal = 90;
   }
 
   public static class OperatorConstants {
@@ -44,6 +45,7 @@ public final class Constants {
 
   public static class IOConstants {
     public static final int kDriverStick = 0;
+    public static final int kOperatorStick = 1;
     public static final int kLB = 5, kRB = 6;
     public static final int kA = 1, kB = 2, kX = 3, kY = 4;
     public static final int kLX = 0, kLY = 1, kRX = 2, kRY = 3;
