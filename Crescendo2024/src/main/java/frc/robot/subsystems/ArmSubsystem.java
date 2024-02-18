@@ -73,9 +73,13 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.configPeakCurrentLimit(45);
 
     // Setting the value of P in PID control
-    armPivotLeader.config_kP(0, 50);
-    armPivotLeader.config_kI(0, 0);
-    armPivotLeader.config_kD(0, 0);
+    /*
+     *ku= 45
+     tu = 1 
+     */
+    armPivotLeader.config_kP(0, 22.5);
+    armPivotLeader.config_kI(0, 0);//54
+    armPivotLeader.config_kD(0, 0);//3.374
     // Setting the velocity and acceleration of the motors
     armPivotLeader.configMotionCruiseVelocity(0);
     armPivotLeader.configMotionAcceleration(2);
@@ -144,8 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
     double currentPosition = getAngle(); //in raw sensor units
 
     double adjusted_feedForward = (ArmSubsystemConstants.ArmShoulderFeedForwardMin 
-    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)-
-        ArmSubsystemConstants.angleAdjustmentRadians));
+    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmSubsystemConstants.EncoderCPR)));
 
     SmartDashboard.putNumber("Current Arm Position: ", currentPosition);
     SmartDashboard.putNumber("Target Position", targetPosition);
