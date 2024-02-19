@@ -5,9 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.IOConstants;
-import frc.robot.commands.teleopCommands.AmpSetpoint;
-import frc.robot.commands.teleopCommands.Level0Setpoint;
-import frc.robot.commands.teleopCommands.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
+import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
+import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.ArmSubsystem;
