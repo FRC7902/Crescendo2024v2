@@ -12,9 +12,9 @@ package frc.robot.subsystems;
 //import com.revrobotics.CANSparkBase.IdleMode;
 
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANPIDController;
+// import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
+//import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController; 
