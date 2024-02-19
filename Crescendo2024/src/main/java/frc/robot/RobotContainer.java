@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 //import frc.robot.Constants.OperatorConstants;
 //import frc.robot.commands.Autos;
 //import edu.wpi.first.wpilibj2.command.Command;
@@ -42,8 +44,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 10));
+    new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
+    new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new setSpeed(m_shooterSubsystem, 500));
+    new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new setSpeed(m_shooterSubsystem, 1000));
+    new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
   }
 
-
+  public Command getAutonomousCommand() {
+    
+    return null;
+  }
 }

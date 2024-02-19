@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 //import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController; 
@@ -31,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public final CANSparkMax follower = new CANSparkMax(Constants.ShooterConstants.kFollowerCAN,
       CANSparkMax.MotorType.kBrushless); // right
 
-  public double targetSpeed = 0;
+  public double targetSpeed = 5;
 
   // Encoder
   public final Encoder encoder = new Encoder(5, 4);
@@ -69,10 +70,11 @@ public class ShooterSubsystem extends SubsystemBase {
     follower.setSmartCurrentLimit(45);
 
     //sparkEncoder.setVelocityConversionFactor();
+    setPID(1, 0, 0);
   }
 
   public void setSpeed(double speed) {
-    master.set(speed);
+    masterspeedPID.setReference(speed, ControlType.kVelocity);
     if (speed > 0) {
       status = "Shooting...";
     } else if (speed < 0) {
@@ -118,19 +120,38 @@ public class ShooterSubsystem extends SubsystemBase {
     follower.set(Constants.ShooterConstants.kSpeakerSpeed); 
   }
 
+  public void setPID(double kP, double kI, double kD){
+    masterspeedPID.setP(kP);
+    masterspeedPID.setI(kI);
+    masterspeedPID.setD(kD);
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    master.set(speed_PID.calculate(sparkEncoder.getVelocity(), targetSpeed));
+    setSpeed(targetSpeed);
     SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
     SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
     SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
-    SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
-    SmartDashboard.putString("CompetitionView/Shooter Status", status);
+    // SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
+    // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
     SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
+    SmartDashboard.putNumber("Target Speed", targetSpeed);
 
   }
+
+  // @Override
+  // public void simulationPeriodic(){
+  //   setTargetSpeed(targetSpeed);
+  //   SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
+  //   SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
+  //   SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
+
+  //   SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
+  //   SmartDashboard.putString("CompetitionView/Shooter Status", status);
+
+  //   SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
+
+  // }
 }
