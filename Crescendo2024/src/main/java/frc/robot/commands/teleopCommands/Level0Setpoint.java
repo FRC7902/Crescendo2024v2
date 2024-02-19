@@ -16,9 +16,11 @@ public class Level0Setpoint extends Command {
   private ArmSubsystem m_armSubsystem;
   private double targetAngle = 0;
 
-  //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
+  // private final PIDController turnPID = new PIDController(0.102, 2.04,
+  // 0.001275);
 
   private double initialAngle;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -28,7 +30,7 @@ public class Level0Setpoint extends Command {
     initialAngle = arm.getAngle();
     m_armSubsystem = arm;
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(subsystem);
+    // addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.

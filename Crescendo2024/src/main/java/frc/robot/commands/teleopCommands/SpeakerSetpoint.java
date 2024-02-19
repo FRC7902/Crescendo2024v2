@@ -16,9 +16,11 @@ public class SpeakerSetpoint extends Command {
   private ArmSubsystem m_armSubsystem;
   private double targetAngle = 40;
 
-  //private final PIDController turnPID = new PIDController(0.102, 2.04, 0.001275);
+  // private final PIDController turnPID = new PIDController(0.102, 2.04,
+  // 0.001275);
 
   private double initialAngle;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -28,12 +30,13 @@ public class SpeakerSetpoint extends Command {
     m_armSubsystem = arm;
     initialAngle = m_armSubsystem.getAngle();
     // Use addRequirements() here to declare subsystem dependencies.
-    //addRequirements(subsystem);
+    // addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -44,7 +47,8 @@ public class SpeakerSetpoint extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
