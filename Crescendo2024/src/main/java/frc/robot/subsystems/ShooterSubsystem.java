@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase;
 // import com.ctre.phoenix.motorcontrol.InvertType;
 // import com.ctre.phoenix.motorcontrol.NeutralMode;
 //import com.revrobotics.CANSparkBase.IdleMode;
@@ -13,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 //import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController; 
 import edu.wpi.first.wpilibj.Encoder;
@@ -35,7 +37,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public final Encoder encoder = new Encoder(5, 4);
   public final PIDController controller = new PIDController(Constants.ShooterConstants.kTolerance, 0, 0);
 
-  public final SparkPIDController speedPID;
+  public SparkPIDController masterspeedPID;
+  public SparkPIDController followerspeedPID;
   public final RelativeEncoder sparkEncoder = master.getEncoder();
   public final PIDController speed_PID = new PIDController(Constants.ShooterConstants.kTolerance, 0, 0);
 
@@ -55,7 +58,10 @@ public class ShooterSubsystem extends SubsystemBase {
     master.setIdleMode(IdleMode.kBrake);
     follower.setIdleMode(IdleMode.kBrake);
 
-    speedPID = master.getPIDController();
+    masterspeedPID = master.getPIDController();
+    followerspeedPID = follower.getPIDController(); 
+    masterspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
+
 
     follower.setIdleMode(IdleMode.kBrake);
     
