@@ -35,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = 0;
+  private static double targetPosition = -20;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -78,27 +78,28 @@ public class ArmSubsystem extends SubsystemBase {
     int ku = 45;
     double tu = 0.1;
 
-    armPivotLeader.config_kP(0, 0.5 * ku);
+    armPivotLeader.config_kP(0, 1.5);
     armPivotLeader.config_kI(0, 0);// 54
     armPivotLeader.config_kD(0, 0);// 3.374
     // Setting the velocity and acceleration of the motors
     armPivotLeader.configMotionCruiseVelocity(8000);
     armPivotLeader.configMotionAcceleration(2000);
 
+    armPivotLeader.configNeutralDeadband(0.04);
+
     // Put Mechanism 2d to SmartDashboard
     SmartDashboard.putData("Arm Sim", m_mech2d);
     m_armTower.setColor(new Color8Bit(Color.kBlue));
 
     // Configure the encoder
-    armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
-        0);
+    armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
     if (RobotBase.isSimulation()) {
       armPivotLeader.setInverted(false);
       armPivotLeader.setSensorPhase(false);
     } else {
       armPivotLeader.setInverted(false);
-      armPivotLeader.setSensorPhase(true);
+      armPivotLeader.setSensorPhase(false);
     }
 
     // Configuring the limit switch
@@ -112,7 +113,7 @@ public class ArmSubsystem extends SubsystemBase {
   // Getting the position of the motor
   public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
-    return armPivotLeader.getSelectedSensorPosition();
+    return armPivotLeader.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio;
   }
 
   public double getLeaderPower() {
@@ -156,10 +157,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shoulder Current (A)", armPivotLeader.getSupplyCurrent());
     SmartDashboard.putNumber("Shoulder Error", armPivotLeader.getClosedLoopError(0));
     SmartDashboard.putNumber("Shoulder Position: ", getAngle());
-    // SmartDashboard.putBoolean("The arm is at amp shoot angle",
-    // ArmCommand.ampAngle());
-    // SmartDashboard.putBoolean("The arm is at speaker shoot angle",
-    // ArmCommand.speakerAngle());
+    SmartDashboard.putNumber("Encoder value", armPivotLeader.getSensorCollection().getQuadraturePosition());
 
     if (RobotBase.isSimulation()) {
       armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward,

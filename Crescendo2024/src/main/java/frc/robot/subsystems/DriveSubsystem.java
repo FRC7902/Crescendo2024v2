@@ -194,11 +194,13 @@ public class DriveSubsystem extends SubsystemBase {
             m_leftEncoder.getPosition(),
             m_rightEncoder.getPosition());
       }
-    }
 
+    }
+    
     // sim
     m_fieldSim.setRobotPose(getPose());
-
+    
+    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
     SmartDashboard.putNumber("disp", m_rightEncoder.getPosition());
 
