@@ -4,12 +4,24 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.Constants.IOConstants;
+import frc.robot.commands.teleopCommands.AmpSetpoint;
+import frc.robot.commands.teleopCommands.Level0Setpoint;
+import frc.robot.commands.teleopCommands.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import org.photonvision.PhotonCamera;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -20,11 +32,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final PhotonCamera camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+ private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
+ private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
+
+SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,12 +59,24 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+      m_driveSubsystem.setDefaultCommand(
+        new RunCommand(
+          () -> m_driveSubsystem.driveArcade(
+             m_driverStick.getRawAxis(Constants.IOConstants.kLY),
+             m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
+             m_driveSubsystem));
+
+    new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("Amp"));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("LoadPiece"));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("Speaker"));
+    new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -57,7 +85,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    
+    return new PathPlannerAuto("New Auto");
+    //return m_chooser.getSelected();
   }
 }
