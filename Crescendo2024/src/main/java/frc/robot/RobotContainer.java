@@ -63,7 +63,7 @@ SendableChooser<Command> m_chooser = new SendableChooser<>();
         new RunCommand(
           () -> m_driveSubsystem.driveArcade(
              m_driverStick.getRawAxis(Constants.IOConstants.kLY),
-             m_driverStick.getRawAxis(Constants.IOConstants.kLX)),
+             m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
              m_driveSubsystem));
 
     new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
