@@ -1,0 +1,99 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.9971079591281993,
+        "y": 3.940050787369745
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.748083696668647,
+        "y": 3.4153965049784727
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3961860455049235,
+        "y": 4.402981036538514
+      },
+      "prevControl": {
+        "x": 3.1985984773974567,
+        "y": 4.207521598000589
+      },
+      "nextControl": {
+        "x": 1.8796285285574976,
+        "y": 4.528809149641092
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7275090189278128,
+        "y": 5.195106129560631
+      },
+      "prevControl": {
+        "x": 2.859116294673689,
+        "y": 5.153956774078963
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "ShootNote",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "IntakeNote",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "ShootNote",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 115.01689347809999,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

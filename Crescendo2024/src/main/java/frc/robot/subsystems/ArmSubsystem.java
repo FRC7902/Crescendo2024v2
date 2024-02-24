@@ -172,10 +172,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-
-    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward 
-    * Math.abs(Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR))));
-    armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, adjusted_feedForward);
     // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
     armSim.setInput(armPivotLeaderSim.getMotorOutputLeadVoltage());
