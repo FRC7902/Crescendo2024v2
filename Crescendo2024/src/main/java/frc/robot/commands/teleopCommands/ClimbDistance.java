@@ -26,13 +26,14 @@ public class ClimbDistance extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climbSubsystem.setNewTargetPosition(util.degToCTRESensorUnits(fullyExtendedDistance, ArmConstants.EncoderCPR));
+    m_climbSubsystem.setTargetPosition(util.degToCTRESensorUnits(fullyExtendedDistance, ArmConstants.EncoderCPR));
     SmartDashboard.putNumber("targetAngle", (initialDistance + fullyExtendedDistance));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_climbSubsystem.setPower();
 
   }
 

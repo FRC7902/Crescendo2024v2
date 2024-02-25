@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
@@ -31,15 +32,16 @@ import frc.robot.commands.teleopCommands.ClimbDistance;
 
 public class ClimbSubsystem extends SubsystemBase {
     // Declaring motor controllers
-    private final WPI_TalonSRX armPivotLeader = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
+    private final WPI_TalonSRX m_climbMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
     // Initializing the simulation of TalonSRX
-    private final TalonSRXSimCollection armPivotLeaderSim = armPivotLeader.getSimCollection();
-    // Initialize the motor that powers the climbing system
-    private final CANSparkMax m_climbMotor = new CANSparkMax(DriveConstants.leftFrontCANID,
-      CANSparkMax.MotorType.kBrushless);
+    private final TalonSRXSimCollection m_climbSim = m_climbMotor.getSimCollection();
+    // // Initialize the motor that powers the climbing system
+    // private final CANSparkMax m_climbMotor = new CANSparkMax(DriveConstants.leftFrontCANID,
+    //   CANSparkMax.MotorType.kBrushless);
     // Initialize the encoder attached to the motor
     Encoder encoder = new Encoder(0, 1);
-   
+    private double target;
+    private final PIDController climbPID = new PIDController(0.5, 0, 0);
     /** Object of a simulated evalator system**/
     // idk how to make two line objects appear where one just moves up and one stays in place
 
@@ -47,30 +49,30 @@ public class ClimbSubsystem extends SubsystemBase {
     // IDK HOW TO PROGRAM IT THO
 
     public ClimbSubsystem() {
-        armPivotLeader.configFactoryDefault();
-        armPivotLeader.setInverted(false);
-        armPivotLeader.configVoltageCompSaturation(12,0);
-        armPivotLeader.configPeakCurrentLimit(45);
+        m_climbMotor.configFactoryDefault();
+       m_climbMotor.setInverted(false);
+       m_climbMotor.configVoltageCompSaturation(12,0);
+        m_climbMotor.configPeakCurrentLimit(45);
 
         // Setting the velocity and acceleration of the motors
-        armPivotLeader.configMotionCruiseVelocity(8000);
-        armPivotLeader.configMotionAcceleration(2000);
+      m_climbMotor.configMotionCruiseVelocity(8000);
+      m_climbMotor.configMotionAcceleration(2000);
 
         // Put simulated object to SmartDashboard
 
 
         // Configure the encoder
-        armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
+        m_climbMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
         0);
 
 
         if (RobotBase.isSimulation()) {
-            armPivotLeader.setInverted(false);
-            armPivotLeader.setSensorPhase(false);
+            m_climbMotor.setInverted(false);
+           m_climbMotor.setSensorPhase(false);
         }
         else {
-            armPivotLeader.setInverted(false);
-            armPivotLeader.setSensorPhase(true);
+          m_climbMotor.setInverted(false);
+           m_climbMotor.setSensorPhase(true);
         }
     }
     
@@ -81,19 +83,33 @@ public class ClimbSubsystem extends SubsystemBase {
  
     // Stops motor
     public void stopMotor() {
-        armPivotLeader.stopMotor();
+        m_climbMotor.stopMotor();
     }
 
+    // set motor power
+    public void setPower() {
+        m_climbMotor.set(1);
+    }
+
+    public void setTargetPosition(double targetInInches){
+        target = targetInInches;
+    }
+
+    public boolean atZeroPos() {
+        return m_climbMotor.isRevLimitSwitchClosed() == 0; // switch is open
+      }
+
     @Override
-    public void periodic() { // This method will be called once per scheduler run
+    public void periodic() { 
+        if (m_climbMotor.isRevLimitSwitchClosed() == 1) {// double check this value
+            m_climbMotor.setSelectedSensorPosition(0);
+      
+          }
+        
+        // This method will be called once per scheduler run
         SmartDashboard.putNumber("Encoder value", encoder.getDistance());
-        if(encoder.getDistance() == 0){
-            m_climbMotor.set(ClimbConstants.speed);
-            // power the motor to get to ClimbConstants.distance
-        }        
-        else{
-            stopMotor();
-        }
+        SmartDashboard.putBoolean("Limit Switch at ZERO", atZeroPos());
+        m_climbMotor.set(climbPID.calculate(encoder.getDistance(), target));
     }
 
     @Override
