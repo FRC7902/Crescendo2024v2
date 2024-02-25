@@ -19,10 +19,10 @@ package frc.robot;
 public final class Constants {
 
   public static final class DriveConstants {
-    public static final int leftFrontCANID = 33;
-    public static final int leftBackCANID = 34;
-    public static final int rightFrontCANID = 31;
-    public static final int rightBackCANID = 32;
+    public static final int leftFrontCANID = 31;
+    public static final int leftBackCANID = 32;
+    public static final int rightFrontCANID = 33;
+    public static final int rightBackCANID = 34;
 
     public static final double wheelDiameterMetres = 0.1524;
     public static final double gearRatio = 10.71;

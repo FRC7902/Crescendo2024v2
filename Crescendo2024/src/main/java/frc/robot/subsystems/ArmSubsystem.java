@@ -35,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = -20;
+  private static double targetPosition = -30;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(

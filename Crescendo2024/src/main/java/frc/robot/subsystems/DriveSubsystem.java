@@ -113,8 +113,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightLeaderMotor.setInverted(true);
-    m_leftLeaderMotor.setInverted(false);
+    m_rightLeaderMotor.setInverted(false);
+    m_leftLeaderMotor.setInverted(true);
 
     m_leftLeaderMotor.setSmartCurrentLimit(45);
     m_leftFollowerMotor.setSmartCurrentLimit(45);
@@ -245,7 +245,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveArcade(double xForward, double zRotation) {
-    m_drive.arcadeDrive(xForward, zRotation);
+    m_drive.arcadeDrive(xForward, zRotation, true);
   }
 
   public void driveRaw(double power) {
