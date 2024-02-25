@@ -97,15 +97,16 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
-        DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        -DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
     m_rightEncoder.setPositionConversionFactor(
         DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
 
     m_leftEncoder.setPosition(0);
-    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
     ahrs.reset();
 
     m_rightLeaderMotor.setIdleMode(IdleMode.kBrake);
@@ -130,8 +131,8 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       m_odometry = new DifferentialDriveOdometry(
           m_gyro.getRotation2d(),
-          m_leftEncoder.getPosition(),
-          m_rightEncoder.getPosition(),
+          -m_leftEncoder.getPosition(),
+          -m_rightEncoder.getPosition(),
           new Pose2d(1, 1, new Rotation2d()));
     }
 
@@ -191,18 +192,23 @@ public class DriveSubsystem extends SubsystemBase {
       } else {
         m_odometry.update(
             ahrs.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition());
+            -m_leftEncoder.getPosition(),
+            -m_rightEncoder.getPosition());
       }
 
     }
     
-    // sim
     m_fieldSim.setRobotPose(getPose());
+
     
-    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
-    SmartDashboard.putNumber("disp", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
+    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
+    SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
+    SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
+    SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
+
 
     // This method will be called once per scheduler run
   }
@@ -245,7 +251,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveArcade(double xForward, double zRotation) {
-    m_drive.arcadeDrive(xForward, zRotation, true);
+    int sign;
+    if(xForward > 0){
+      sign = 1;
+    }else{
+      sign = -1;
+    }
+
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3));
   }
 
   public void driveRaw(double power) {

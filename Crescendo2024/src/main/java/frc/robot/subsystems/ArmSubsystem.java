@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.FireBirdsUtils;
+import frc.robot.Robot;
 
 public class ArmSubsystem extends SubsystemBase {
   // Declaring motor controllers
@@ -85,9 +86,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     armPivotLeader.configNeutralDeadband(0.04);
 
-    // Put Mechanism 2d to SmartDashboard
-    SmartDashboard.putData("Arm Sim", m_mech2d);
-    m_armTower.setColor(new Color8Bit(Color.kBlue));
+
+    if(Robot.isSimulation()){
+      SmartDashboard.putData("Arm Sim", m_mech2d);
+      m_armTower.setColor(new Color8Bit(Color.kBlue));
+    }    
 
     // Configure the encoder
     armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
