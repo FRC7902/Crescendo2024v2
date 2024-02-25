@@ -14,6 +14,10 @@ public class FireBirdsUtils {
     return (int) (((angleInDeg) / 360) * encoderCPR);
   }
 
+  public double radsToDegrees(double angleInRads){
+    return (angleInRads/Math.PI) * 180;
+  }
+
   public double CTRESensorUnitsToDegs(double angleInSensorUnits, int encoderCPR) {
     return (double) ((angleInSensorUnits / encoderCPR) * 360);
   }

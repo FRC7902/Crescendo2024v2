@@ -11,6 +11,8 @@ import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.commands.teleopCommands.drive.TurnToCoordinate;
+import frc.robot.commands.teleopCommands.drive.TurnToTag;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
@@ -79,12 +81,17 @@ public class RobotContainer {
 
 
     new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
-    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
-    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
-    new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new TurnToTag(m_driveSubsystem, camera));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngle(m_driveSubsystem, 120, true));
+
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new TurnToCoordinate(m_driveSubsystem, 8, 4));
+
+    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("LoadPiece"));
+    // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
+    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
+    // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
+    // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    // new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,

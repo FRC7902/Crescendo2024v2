@@ -14,6 +14,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -51,6 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
+  private final SlewRateLimiter filter = new SlewRateLimiter(4);
+
   private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
@@ -87,11 +90,10 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(PhotonCamera camera) {
     m_camera = camera;
 
-    // m_leftLeaderMotor.restoreFactoryDefaults(); //Safety precautions, but
-    // reccomended
-    // m_leftFollowerMotor.restoreFactoryDefaults();
-    // m_rightLeaderMotor.restoreFactoryDefaults();
-    // m_rightFollowerMotor.restoreFactoryDefaults();
+    m_leftLeaderMotor.restoreFactoryDefaults();
+    m_leftFollowerMotor.restoreFactoryDefaults();
+    m_rightLeaderMotor.restoreFactoryDefaults();
+    m_rightFollowerMotor.restoreFactoryDefaults();
 
     m_leftFollowerMotor.follow(m_leftLeaderMotor);
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
@@ -180,11 +182,11 @@ public class DriveSubsystem extends SubsystemBase {
           m_rightEncoderObj.getDistance());
     } else {
       if (m_camera.getLatestResult().hasTargets()) {
-        updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+        updatePoseFromCamera(-m_leftEncoder.getPosition(), -m_rightEncoder.getPosition());
         m_odometry.resetPosition(
             ahrs.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition(),
+            -m_leftEncoder.getPosition(),
+            -m_rightEncoder.getPosition(),
             new Pose2d(
                 m_poseEstimator.getEstimatedPosition().getX(),
                 m_poseEstimator.getEstimatedPosition().getY(),
@@ -251,14 +253,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveArcade(double xForward, double zRotation) {
-    int sign;
-    if(xForward > 0){
-      sign = 1;
-    }else{
-      sign = -1;
-    }
+    // int sign;
+    // if(xForward > 0){
+    //   sign = 1;
+    // }else{
+    //   sign = -1;
+    // }
 
-    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3));
+    // m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3));
+
+    m_drive.arcadeDrive(filter.calculate(xForward), 0.75*zRotation, true);
   }
 
   public void driveRaw(double power) {
