@@ -36,18 +36,19 @@ public class DriveToDistance extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistance);
-      m_driveSubsystem.driveRaw(speed);
+    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistance);
+    m_driveSubsystem.driveRaw(speed);
 
-      SmartDashboard.putNumber("speed", speed);
-      SmartDashboard.putNumber("target distance", initialPosition + targetDistance);
-      SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
+    SmartDashboard.putNumber("speed", speed);
+    SmartDashboard.putNumber("target distance", initialPosition + targetDistance);
+    SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

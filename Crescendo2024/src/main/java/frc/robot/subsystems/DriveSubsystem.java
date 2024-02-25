@@ -71,15 +71,16 @@ public class DriveSubsystem extends SubsystemBase {
   private Field2d m_fieldSim;
   private PhotonCamera m_camera;
 
-  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(DriveConstants.trackWidthInches);
+  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
+      DriveConstants.trackWidthInches);
   private final DifferentialDrivePoseEstimator m_poseEstimator = new DifferentialDrivePoseEstimator(
-    m_kinematics,
-    ahrs.getRotation2d(),
-    m_leftEncoder.getPosition(),
-    m_rightEncoder.getPosition(),
-    new Pose2d(),
-    VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),//state std devs
-    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))//cam std devs
+      m_kinematics,
+      ahrs.getRotation2d(),
+      m_leftEncoder.getPosition(),
+      m_rightEncoder.getPosition(),
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), // state std devs
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))// cam std devs
   );
 
   /** Creates a new DriveSubsystem. */
@@ -96,15 +97,16 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
-        DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        -DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
     m_rightEncoder.setPositionConversionFactor(
         DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
 
     m_leftEncoder.setPosition(0);
-    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
     ahrs.reset();
 
     m_rightLeaderMotor.setIdleMode(IdleMode.kBrake);
@@ -112,26 +114,26 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightLeaderMotor.setInverted(true);
-    m_leftLeaderMotor.setInverted(false);
+    m_rightLeaderMotor.setInverted(false);
+    m_leftLeaderMotor.setInverted(true);
 
     m_leftLeaderMotor.setSmartCurrentLimit(45);
     m_leftFollowerMotor.setSmartCurrentLimit(45);
     m_rightLeaderMotor.setSmartCurrentLimit(45);
     m_rightFollowerMotor.setSmartCurrentLimit(45);
 
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       m_odometry = new DifferentialDriveOdometry(
           m_gyro.getRotation2d(),
           m_leftEncoderObj.getDistance(),
           m_rightEncoderObj.getDistance(),
           new Pose2d(1, 1, new Rotation2d()));
-    }else{
+    } else {
       m_odometry = new DifferentialDriveOdometry(
-        m_gyro.getRotation2d(),
-        m_leftEncoder.getPosition(),
-        m_rightEncoder.getPosition(),
-        new Pose2d(1, 1, new Rotation2d()));
+          m_gyro.getRotation2d(),
+          -m_leftEncoder.getPosition(),
+          -m_rightEncoder.getPosition(),
+          new Pose2d(1, 1, new Rotation2d()));
     }
 
     m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
@@ -171,39 +173,42 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       m_odometry.update(
-        m_gyro.getRotation2d(),
-        m_leftEncoderObj.getDistance(),
-        m_rightEncoderObj.getDistance()
-      );
-    }else{
-      if(m_camera.getLatestResult().hasTargets()){
+          m_gyro.getRotation2d(),
+          m_leftEncoderObj.getDistance(),
+          m_rightEncoderObj.getDistance());
+    } else {
+      if (m_camera.getLatestResult().hasTargets()) {
         updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
         m_odometry.resetPosition(
-          ahrs.getRotation2d(), 
-          m_leftEncoder.getPosition(),
-          m_rightEncoder.getPosition(),
-          new Pose2d(
-            m_poseEstimator.getEstimatedPosition().getX(),
-            m_poseEstimator.getEstimatedPosition().getY(),
-            m_poseEstimator.getEstimatedPosition().getRotation()
-          )
-        );
-      }else{
+            ahrs.getRotation2d(),
+            m_leftEncoder.getPosition(),
+            m_rightEncoder.getPosition(),
+            new Pose2d(
+                m_poseEstimator.getEstimatedPosition().getX(),
+                m_poseEstimator.getEstimatedPosition().getY(),
+                m_poseEstimator.getEstimatedPosition().getRotation()));
+      } else {
         m_odometry.update(
-          ahrs.getRotation2d(),
-          m_leftEncoder.getPosition(),
-          m_rightEncoder.getPosition()
-        );
+            ahrs.getRotation2d(),
+            -m_leftEncoder.getPosition(),
+            -m_rightEncoder.getPosition());
       }
-    }
 
-    // sim
+    }
+    
     m_fieldSim.setRobotPose(getPose());
 
+    
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
-    SmartDashboard.putNumber("disp", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
+    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
+    SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
+    SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
+    SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
+
 
     // This method will be called once per scheduler run
   }
@@ -230,22 +235,30 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
-  public void updatePoseFromCamera(double leftDist, double rightDist){
+  public void updatePoseFromCamera(double leftDist, double rightDist) {
     m_poseEstimator.update(ahrs.getRotation2d(), leftDist, rightDist);
 
     var res = m_camera.getLatestResult();
 
-    if(res.hasTargets()){
+    if (res.hasTargets()) {
       var imageCaptureTime = res.getTimestampSeconds();
       var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
-      var camPose = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField().getTagPose(res.getBestTarget().getFiducialId()).get().transformBy(camToTargetTrans.inverse());
-    
+      var camPose = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField()
+          .getTagPose(res.getBestTarget().getFiducialId()).get().transformBy(camToTargetTrans.inverse());
+
       m_poseEstimator.addVisionMeasurement(camPose.toPose2d(), imageCaptureTime);
     }
   }
 
   public void driveArcade(double xForward, double zRotation) {
-    m_drive.arcadeDrive(xForward, zRotation);
+    int sign;
+    if(xForward > 0){
+      sign = 1;
+    }else{
+      sign = -1;
+    }
+
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3));
   }
 
   public void driveRaw(double power) {
@@ -273,9 +286,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getPosition() {
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       return m_rightEncoderObj.getDistance();
-    }else{
+    } else {
       return m_rightEncoder.getPosition();
     }
   }
@@ -310,9 +323,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getHeading() {// -180 to 180
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       return Math.IEEEremainder(m_gyro.getAngle(), 360);
-    }else{
+    } else {
       return Math.IEEEremainder(ahrs.getAngle(), 360);
     }
   }

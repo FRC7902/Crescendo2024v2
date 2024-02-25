@@ -26,27 +26,28 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.FireBirdsUtils;
+import frc.robot.Robot;
 
 public class ArmSubsystem extends SubsystemBase {
-  // Declaring motor controllers 
+  // Declaring motor controllers
   private final WPI_TalonSRX armPivotLeader = new WPI_TalonSRX(ArmConstants.ArmLeaderMotorCAN);
   private final WPI_VictorSPX armPivotFollower = new WPI_VictorSPX(ArmConstants.ArmFollowerMotorCAN);
-  
+
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = 0;
+  private static double targetPosition = -30;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
-  DCMotor.getCIM(2), 
-  139.78, 
-  6.05, 
-  1, 
-  Units.degreesToRadians(-ArmConstants.restDegreesFromHorizontal),
-  Math.PI * 2,
-  true, 
-  0);
+      DCMotor.getCIM(2),
+      139.78,
+      6.05,
+      1,
+      -Math.PI * 20,
+      Math.PI * 20,
+      true,
+      0);
 
   // Initializing the simulation of TalonSRX
   private final TalonSRXSimCollection armPivotLeaderSim = armPivotLeader.getSimCollection();
@@ -70,63 +71,66 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotFollower.configFactoryDefault();
 
     armPivotFollower.follow(armPivotLeader);
-    armPivotLeader.setInverted(false);
-    armPivotFollower.setInverted(InvertType.FollowMaster);
-    armPivotLeader.configVoltageCompSaturation(12,0);
+    armPivotLeader.configVoltageCompSaturation(12, 0);
     armPivotLeader.configPeakCurrentLimit(45);
 
     int ku = 45;
     double tu = 0.1;
 
-    armPivotLeader.config_kP(0, 0.5 * ku);
-    armPivotLeader.config_kI(0, 0);//54
-    armPivotLeader.config_kD(0, 0);//3.374
+    armPivotLeader.config_kP(0, 1.5);
+    armPivotLeader.config_kI(0, 0);// 54
+    armPivotLeader.config_kD(0, 0);// 3.374
     // Setting the velocity and acceleration of the motors
     armPivotLeader.configMotionCruiseVelocity(8000);
     armPivotLeader.configMotionAcceleration(2000);
 
-    // Put Mechanism 2d to SmartDashboard
-    SmartDashboard.putData("Arm Sim", m_mech2d);
-    m_armTower.setColor(new Color8Bit(Color.kBlue));
+    armPivotLeader.configNeutralDeadband(0.04);
+
+
+    if(Robot.isSimulation()){
+      SmartDashboard.putData("Arm Sim", m_mech2d);
+      m_armTower.setColor(new Color8Bit(Color.kBlue));
+    }    
 
     // Configure the encoder
-    armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
-        0);
+    armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
     if (RobotBase.isSimulation()) {
-      armPivotLeader.setInverted(false);
       armPivotLeader.setSensorPhase(false);
-    } 
-    else {
-      armPivotLeader.setInverted(false);
+      armPivotLeader.setInverted(true);
+    } else {
       armPivotLeader.setSensorPhase(true);
+      armPivotLeader.setInverted(true);
     }
+
+    armPivotFollower.setInverted(InvertType.FollowMaster);
 
     // Configuring the limit switch
     armPivotLeader.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
-      LimitSwitchNormal.NormallyOpen);
+        LimitSwitchNormal.NormallyOpen);
 
-    armPivotLeader.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, 
-      LimitSwitchNormal.NormallyOpen);
+    armPivotLeader.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated,
+        LimitSwitchNormal.NormallyOpen);
   }
 
   // Getting the position of the motor
   public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
-    return armPivotLeader.getSelectedSensorPosition();
+    return modAngleTicks(armPivotLeader.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
   }
+
   public double getLeaderPower() {
     return armPivotLeader.get();
   }
 
   // Setter methods
   // Gives power
-  public void setPower(double power){
+  public void setPower(double power) {
     armPivotLeader.set(power);
   }
 
   public void setNewTargetPosition(double newTargetPosition) {
-    targetPosition= newTargetPosition;
+    targetPosition = -newTargetPosition;
   }
 
   public boolean atZeroPos() {
@@ -137,45 +141,44 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.stopMotor();
   }
 
+  public double modAngleTicks(double angleInTicks){
+    return Math.IEEEremainder(angleInTicks, ArmConstants.EncoderCPR);
+  }
+
   @Override
   public void periodic() {
-    if (armPivotLeader.isRevLimitSwitchClosed() == 1) {//double check this value
+    if (armPivotLeader.isRevLimitSwitchClosed() == 1) {// double check this value
       armPivotLeader.setSelectedSensorPosition(0);
 
     }
 
-    double currentPosition = getAngle(); //in raw sensor units
+    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
+        * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
 
-    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward 
-    * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
-
-    SmartDashboard.putNumber("Current Arm Position: ", currentPosition);
     SmartDashboard.putNumber("Target Position", targetPosition);
-    SmartDashboard.putNumber("Leader Voltage", armPivotLeader.getMotorOutputVoltage());
     SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
-    SmartDashboard.putNumber("Shoulder Current (A)", armPivotLeader.getSupplyCurrent());
-    SmartDashboard.putNumber("Shoulder Error", armPivotLeader.getClosedLoopError(0));
-    SmartDashboard.putNumber("Shoulder Position: ",  getAngle());
-    //SmartDashboard.putBoolean("The arm is at amp shoot angle", ArmCommand.ampAngle());
-    //SmartDashboard.putBoolean("The arm is at speaker shoot angle", ArmCommand.speakerAngle());
+    SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
+    SmartDashboard.putNumber("Encoder value", armPivotLeader.getSensorCollection().getQuadraturePosition());
 
     if (RobotBase.isSimulation()) {
-      armPivotLeader.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward,
-          adjusted_feedForward);
-    } 
-    else {
-      armPivotLeader.set(ControlMode.MotionMagic, targetPosition * ArmConstants.EncoderToOutputRatio, DemandType.ArbitraryFeedForward,
-          adjusted_feedForward);
+      armPivotLeader.set(
+        ControlMode.MotionMagic, 
+        targetPosition, 
+        DemandType.ArbitraryFeedForward,
+        adjusted_feedForward);
+    } else {
+      armPivotLeader.set(
+        ControlMode.MotionMagic, 
+        targetPosition * ArmConstants.EncoderToOutputRatio,
+        DemandType.ArbitraryFeedForward,
+        adjusted_feedForward);
 
     }
   }
 
   @Override
   public void simulationPeriodic() {
-    // In this method, we update our simulation of what our arm is doing
-    // First, we set our "inputs" (voltages)
     armSim.setInput(armPivotLeaderSim.getMotorOutputLeadVoltage());
-    // Next, we update it. The standard loop time is 20ms.
     armSim.update(0.020);
 
     armPivotLeaderSim
@@ -183,8 +186,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_arm.setAngle(Math.toDegrees(armSim.getAngleRads()));
 
-    // Zero the limit switch in simulation
-    if (armSim.getAngleRads() == Units.degreesToRadians(-ArmConstants.restDegreesFromHorizontal)) {
+    if (armSim.getAngleRads() == Units.degreesToRadians(ArmConstants.restDegreesFromHorizontal)) {
 
       armPivotLeader.getSensorCollection().setQuadraturePosition(0, 0);
     }

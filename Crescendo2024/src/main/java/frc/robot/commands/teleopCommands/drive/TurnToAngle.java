@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
-
 public class TurnToAngle extends Command {
 
   private final DriveSubsystem m_driveSubsystem;
@@ -34,9 +33,9 @@ public class TurnToAngle extends Command {
   @Override
   public void initialize() {
     initialAngle = m_driveSubsystem.getHeading();
-    if(isAdditive){
+    if (isAdditive) {
       trueTarget = Math.round(m_driveSubsystem.modAngle(targetAngle + initialAngle));
-    }else{
+    } else {
       trueTarget = targetAngle;
     }
   }
@@ -52,21 +51,20 @@ public class TurnToAngle extends Command {
     m_driveSubsystem.turn(speed * 0.1);
   }
 
-
-  public double convertRange(double angle){//range from targetAngle +- 180
-    if(angle > trueTarget + 180){
+  public double convertRange(double angle) {// range from targetAngle +- 180
+    if (angle > trueTarget + 180) {
       return angle - 360;
-    }else if (angle < trueTarget - 180){
-      return angle +360;
-    }else{
+    } else if (angle < trueTarget - 180) {
+      return angle + 360;
+    } else {
       return angle;
     }
   }
 
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
