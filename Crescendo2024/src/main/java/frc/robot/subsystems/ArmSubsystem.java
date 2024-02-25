@@ -35,7 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = 20;
+  private static double targetPosition = -20;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -96,8 +96,8 @@ public class ArmSubsystem extends SubsystemBase {
       armPivotLeader.setSensorPhase(false);
       armPivotLeader.setInverted(true);
     } else {
-      armPivotLeader.setSensorPhase(false);
-      armPivotLeader.setInverted(false);
+      armPivotLeader.setSensorPhase(true);
+      armPivotLeader.setInverted(true);
     }
 
     armPivotFollower.setInverted(InvertType.FollowMaster);
@@ -127,7 +127,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setNewTargetPosition(double newTargetPosition) {
-    targetPosition = newTargetPosition;
+    targetPosition = -newTargetPosition;
   }
 
   public boolean atZeroPos() {
