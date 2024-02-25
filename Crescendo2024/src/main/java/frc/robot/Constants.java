@@ -55,4 +55,9 @@ public final class Constants {
     public static final int kLB = 2, kRB = 3;
 
   }
+
+  public static class ClimbConstants{
+    public static final double distance = 200;
+    public static final double speed = 5;
+  }
 }
