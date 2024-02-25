@@ -77,11 +77,11 @@ public class RobotContainer {
                 m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
             m_driveSubsystem));
 
-    // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new DriveRaw(m_driveSubsystem));
-    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("Amp"));
-    // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("LoadPiece"));
-    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("Speaker"));
+
+    new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));

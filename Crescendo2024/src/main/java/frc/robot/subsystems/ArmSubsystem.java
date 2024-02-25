@@ -178,7 +178,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-
     armSim.setInput(armPivotLeaderSim.getMotorOutputLeadVoltage());
     armSim.update(0.020);
 
