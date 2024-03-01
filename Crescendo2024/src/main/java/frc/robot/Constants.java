@@ -21,12 +21,11 @@ public final class Constants {
 
   public static class IntakeConstants{
 
-    public static final int kIntakeCANID1 = 30;
-    public static final int kIntakeCANID2 = 31;
-    public static final double kIntakeSuckingSpeed = 1;
-    public static final double kintakeSpittingSpeed = -1;
-    public static final double kFeedforwardPower = 0;
-    public static double kIntakeHoldPower;
+    public static final int intakeCANID1 = 30;
+    public static final double suckingSpeed = 1;
+    public static final double spittingSpeed = -1;
+    public static final double holdPower = 0;
+    public static final int beamBrake = 1;
 
   }
 

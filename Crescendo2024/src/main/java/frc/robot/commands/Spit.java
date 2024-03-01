@@ -11,10 +11,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class Spit extends Command {
   /** Creates a new Spit. */
     private IntakeSubsystem m_intake;
+    private ShooterSubsytem m_shooter;
 
   public Spit(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
+    m_shooter = shooter;
 
   }
 
@@ -22,19 +24,24 @@ public class Spit extends Command {
   @Override
   public void initialize() {
     m_intake.stopMotor();
-
+    m_shooter.stopMotor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setPower(Constants.IntakeConstants.kIntakeSuckingSpeed);
-
+    m_shooter.shoot();
+    if (m_shooter.shootingPower()){
+    m_intake.setPower(Constants.IntakeConstants.spittingSpeed);
   }
+}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_shooter.stopMotor();
+    m_intake.stopMotor();
+  }
 
   // Returns true when the command should end.
   @Override

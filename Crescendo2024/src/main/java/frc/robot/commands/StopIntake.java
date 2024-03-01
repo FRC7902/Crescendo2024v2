@@ -7,11 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class Stop extends Command {
+public class StopIntake extends Command {
   private IntakeSubsystem m_intake;
-  public double restingSpeed = 0;
+
   /** Creates a new Stop. */
-  public Stop(IntakeSubsystem intake) {
+  public StopIntake(IntakeSubsystem intake) {
     m_intake = intake;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,7 +38,5 @@ public class Stop extends Command {
     return false;
   }
 
-  public void setRestingSpeed(int speed){
-    restingSpeed = speed;
-  }
+
 }
