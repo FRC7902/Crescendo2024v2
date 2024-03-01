@@ -17,19 +17,23 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(IntakeConstants.intakeCANID1);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward, IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); //find estimates 
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
+      IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
 
-  //simulation??? 
+  public double targetPower = 0;
 
   public IntakeSubsystem() {
-      stopMotor();
+    stopMotor();
+
+    intakeMotor.configPeakCurrentLimit(IntakeConstants.intakeCurrentLimit);
+
   }
 
-  public void stopMotor(){
+  public void stopMotor() {
     intakeMotor.stopMotor();
   }
 
-  public void setPower(double power){
+  public void setPower(double power) {
     intakeMotor.set(power);
   }
 
@@ -37,15 +41,19 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeSensor.get();
   }
 
+  public void setTargetPower(double target) {
+    targetPower = target;
+  }
+
   @Override
   public void periodic() {
- 
+
     if (intakeSensor.get()) {
-            // Apply feedforward
-            intakeMotor.set(feedforward.calculate(10, 0));
-        } else {
-            // Do other periodic tasks if needed
-     }
+      // Apply feedforward
+      intakeMotor.set(feedforward.calculate(10, 0));
+    } else {
+      intakeMotor.set(targetPower);
+    }
 
     // This method will be called once per scheduler run
   }
