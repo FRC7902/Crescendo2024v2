@@ -10,6 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class setSpeed extends Command {
   private ShooterSubsystem m_shooter;
   private double targetSpeed;
+
   /** Creates a new setSpeed. */
   public setSpeed(ShooterSubsystem shooter, double speed) {
     m_shooter = shooter;
@@ -24,7 +25,8 @@ public class setSpeed extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

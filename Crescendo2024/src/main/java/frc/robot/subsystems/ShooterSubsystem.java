@@ -17,33 +17,25 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController; 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
+import frc.robot.Constants.ShooterConstants;;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  public final CANSparkMax master = new CANSparkMax(Constants.ShooterConstants.kMasterCAN,
+  public final CANSparkMax master = new CANSparkMax(ShooterConstants.kMasterCAN,
       CANSparkMax.MotorType.kBrushless);// left
-  public final CANSparkMax follower = new CANSparkMax(Constants.ShooterConstants.kFollowerCAN,
+  public final CANSparkMax follower = new CANSparkMax(ShooterConstants.kFollowerCAN,
       CANSparkMax.MotorType.kBrushless); // right
 
-  public double targetSpeed = 5;
-
-  // Encoder
-  public final Encoder encoder = new Encoder(5, 4);
-  public final PIDController controller = new PIDController(Constants.ShooterConstants.kTolerance, 0, 0);
+  public double targetSpeed = 0;
 
   public SparkPIDController masterspeedPID;
-  public SparkPIDController followerspeedPID;
   public final RelativeEncoder sparkEncoder = master.getEncoder();
-  public final PIDController speed_PID = new PIDController(Constants.ShooterConstants.kTolerance, 0, 0);
 
-  public final SparkPIDController spark_PID = master.getPIDController();
   public String status = "Off";
 
   public ShooterSubsystem() {
@@ -53,24 +45,20 @@ public class ShooterSubsystem extends SubsystemBase {
     master.setInverted(false);
     follower.setInverted(true);
 
-    master.setOpenLoopRampRate(Constants.ShooterConstants.kRampTime);
-    follower.setOpenLoopRampRate(Constants.ShooterConstants.kRampTime);
+    master.setOpenLoopRampRate(ShooterConstants.kRampTime);
+    follower.setOpenLoopRampRate(ShooterConstants.kRampTime);
 
     master.setIdleMode(IdleMode.kBrake);
     follower.setIdleMode(IdleMode.kBrake);
 
     masterspeedPID = master.getPIDController();
-    followerspeedPID = follower.getPIDController(); 
     masterspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
 
-
-    follower.setIdleMode(IdleMode.kBrake);
-    
     master.setSmartCurrentLimit(45);
     follower.setSmartCurrentLimit(45);
 
-    //sparkEncoder.setVelocityConversionFactor();
-    setPID(1, 0, 0);
+    // sparkEncoder.setVelocityConversionFactor();
+    setPID(ShooterConstants.shooterkP, ShooterConstants.shooterkI, ShooterConstants.shooterkD);
   }
 
   public void setSpeed(double speed) {
@@ -94,33 +82,38 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void brake() {
-    master.setIdleMode(IdleMode.kBrake);;
+    master.setIdleMode(IdleMode.kBrake);
+
     follower.setIdleMode(IdleMode.kBrake);
   }
 
   public boolean atTargetSpeed() {
-    return speed_PID.atSetpoint();
+    if (1 > Math.abs(targetSpeed - sparkEncoder.getVelocity())) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  public void setTargetSpeed(double target){
+  public void setTargetSpeed(double target) {
     targetSpeed = target;
   }
 
-  public double getTargetSpeed(){
+  public double getTargetSpeed() {
     return targetSpeed;
   }
 
   public void amp() {
-    master.set(Constants.ShooterConstants.kAmpSpeed);
-    follower.set(Constants.ShooterConstants.kAmpSpeed);
+    setTargetSpeed(ShooterConstants.kAmpSpeed);
+
   }
 
   public void speaker() {
-    master.set(Constants.ShooterConstants.kSpeakerSpeed); 
-    follower.set(Constants.ShooterConstants.kSpeakerSpeed); 
+    setTargetSpeed(ShooterConstants.kSpeakerSpeed);
+
   }
 
-  public void setPID(double kP, double kI, double kD){
+  public void setPID(double kP, double kI, double kD) {
     masterspeedPID.setP(kP);
     masterspeedPID.setI(kI);
     masterspeedPID.setD(kD);
@@ -133,7 +126,8 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
     SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
-    // SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
+    // SmartDashboard.putNumber("CompetitionView/Shooter Power",
+    // master.getAppliedOutput());
     // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
     SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
@@ -143,15 +137,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // @Override
   // public void simulationPeriodic(){
-  //   setTargetSpeed(targetSpeed);
-  //   SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
-  //   SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
-  //   SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
+  // setTargetSpeed(targetSpeed);
+  // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power",
+  // master.getAppliedOutput());
+  // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2",
+  // follower.getAppliedOutput());
+  // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
-  //   SmartDashboard.putNumber("CompetitionView/Shooter Power", master.getAppliedOutput());
-  //   SmartDashboard.putString("CompetitionView/Shooter Status", status);
+  // SmartDashboard.putNumber("CompetitionView/Shooter Power",
+  // master.getAppliedOutput());
+  // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
-  //   SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
+  // SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed",
+  // sparkEncoder.getVelocity());
 
   // }
 }
