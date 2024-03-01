@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(IntakeConstants.intakeCANID1);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA); //find estimates 
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward, IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); //find estimates 
 
   //simulation??? 
 
