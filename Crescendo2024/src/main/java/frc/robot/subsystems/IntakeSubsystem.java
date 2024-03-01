@@ -4,16 +4,24 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakeCANID1);
+  private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(IntakeConstants.intakeCANID1);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA); //find estimates 
+
+  //simulation??? 
 
   public IntakeSubsystem() {
       stopMotor();
@@ -36,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
  
     if (intakeSensor.get()) {
             // Apply feedforward
-            intakeMotor.set(IntakeConstants.holdPower);
+            intakeMotor.set(feedforward.calculate(10, 0));
         } else {
             // Do other periodic tasks if needed
      }
