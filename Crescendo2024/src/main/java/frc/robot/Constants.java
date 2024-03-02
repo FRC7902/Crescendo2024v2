@@ -24,8 +24,8 @@ public final class Constants {
   }
 
   public final static class ShooterConstants {
-    public static final int kMasterCAN = 31;
-    public static final int kFollowerCAN = 32;
+    public static final int kMasterCAN = 30;
+    public static final int kFollowerCAN = 35;
 
     public static final int[] kEncoderIDs = { 0, 0 };
 
