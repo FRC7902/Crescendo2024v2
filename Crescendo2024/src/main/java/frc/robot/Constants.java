@@ -43,8 +43,29 @@ public final class Constants {
     public static final double restDegreesFromHorizontal = 90;
   }
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+  public final static class ShooterConstants {
+    public static final int kMasterCAN = 30;
+    public static final int kFollowerCAN = 35;
+
+    public static final int[] kEncoderIDs = { 0, 0 };
+
+    public final static double kHighSpeed = 0;
+    public final static double kLowSpeed = 0;
+
+    public final static double kRampTime = 0;
+
+    public final static int kHighUnitsPerSec = 0;
+    public final static int kTolerance = 0;
+    // under this idk if will work, brake and coast speed?? pretty sure speed
+    // difference for amp and speaker?
+    // public final static int Brake = 0;
+    // public final static int Coast = 0;
+    public final static int kAmpSpeed = 0;
+    public final static int kSpeakerSpeed = 0;
+
+    public final static double shooterkD = 0;
+    public final static double shooterkP = 1;
+    public final static double shooterkI = 0;
   }
 
   public static class IntakeConstants {
@@ -62,6 +83,11 @@ public final class Constants {
 
   }
 
+    public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+
+  }
+  
   public static final class IOConstants {
     public static final int kDriverStick = 0;
     public static final int kOperatorStick = 1;
@@ -90,3 +116,5 @@ public final class Constants {
 
   }
 }
+
+// all 0 need to be changed later, theyre place holders rn

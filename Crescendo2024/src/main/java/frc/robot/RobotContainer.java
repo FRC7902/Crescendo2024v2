@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopIntake;
 import frc.robot.commands.IntakeNote;
@@ -29,6 +32,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.IOConstants;
+import frc.robot.commands.setSpeed;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -40,20 +46,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-  private final XboxController m_operatorStick = new XboxController(Constants.IOConstants.kOperatorStick);// should be
-                                                                                                          // kOperatorStick
 
   private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
@@ -99,9 +98,13 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
-    // INTAKE BINDINGS
     //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
     //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
+//     new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
+//     new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new setSpeed(m_shooterSubsystem, 3000));
+//     new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new setSpeed(m_shooterSubsystem, -3000));
+//     new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
+
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
@@ -109,13 +112,7 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
-
     return new PathPlannerAuto("New Auto");
     // return m_chooser.getSelected();
   }
