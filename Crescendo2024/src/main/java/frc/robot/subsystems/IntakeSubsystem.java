@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,7 +18,7 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakeCANID1);
+  private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
       IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
@@ -25,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     stopMotor();
-
+    intakeMotor.setInverted(true);
     // intakeMotor.(IntakeConstants.intakeCurrentLimit); CURRENT LIMIT
 
   }
@@ -48,8 +50,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("target power", targetPower);
+    SmartDashboard.putNumber("motor power", intakeMotor.get());
 
-    if (intakeSensor.get()) {
+    if (false) {//intakeSensor.get()
       // Apply feedforward
       intakeMotor.set(feedforward.calculate(10, 0));
     } else {

@@ -23,7 +23,7 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static final int intakeCANID1 = 30;
+    public static final int intakePWMid = 8;
     public static final double suckingSpeed = 1;
     public static final double spittingSpeed = -1;
     public static final double holdPower = 0;

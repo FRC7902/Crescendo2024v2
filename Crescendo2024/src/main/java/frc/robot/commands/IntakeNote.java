@@ -32,7 +32,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_intake.getSensor()) {
+    if (true) {
       m_intake.setTargetPower(Constants.IntakeConstants.suckingSpeed);
     } else {
       m_intake.setTargetPower(Constants.IntakeConstants.holdPower);

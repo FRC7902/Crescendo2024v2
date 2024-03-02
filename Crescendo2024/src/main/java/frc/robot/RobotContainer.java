@@ -58,8 +58,8 @@ public class RobotContainer {
   private void configureBindings() {
 
     // INTAKE BINDINGS
-    new JoystickButton(m_operatorStick, Constants.IOConstants.kRB).onFalse(new StopIntake(m_intake));// kA
-    new JoystickButton(m_operatorStick, Constants.IOConstants.kLB).whileTrue(new IntakeNote(m_intake));// kLB
+    new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
+    new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
   }
 
   /**
