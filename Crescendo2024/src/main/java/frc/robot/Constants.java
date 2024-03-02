@@ -18,9 +18,29 @@ package frc.robot;
  */
 public final class Constants {
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+  public static final class DriveConstants {
+    public static final int leftFrontCANID = 31;
+    public static final int leftBackCANID = 32;
+    public static final int rightFrontCANID = 33;
+    public static final int rightBackCANID = 34;
 
+    public static final double wheelDiameterMetres = 0.1524;
+    public static final double gearRatio = 10.71;
+    public static final double encoderTicksPerRevolution = 42;
+    public static final double trackWidthInches = 24;
+
+    public static final int GyroCAN = 2;
+
+    public static final int PigeonCAN = 3;
+  }
+
+  public static final class ArmConstants {
+    public static final int ArmLeaderMotorCAN = 21;// random
+    public static final int ArmFollowerMotorCAN = 16;
+    public static final int EncoderCPR = 4096;
+    public static final double ArmShoulderFeedForward = 0.25;
+    public static final double EncoderToOutputRatio = 2.05;
+    public static final double restDegreesFromHorizontal = 90;
   }
 
   public final static class ShooterConstants {
@@ -48,7 +68,27 @@ public final class Constants {
     public final static double shooterkI = 0;
   }
 
-  public final static class IOConstants {
+  public static class IntakeConstants {
+
+    public static final int intakePWMid = 8;
+    public static final double suckingSpeed = 1;
+    public static final double spittingSpeed = -1;
+    public static final double holdPower = 0;
+    public static final int beamBrake = 1;
+    public static final double kSFeedForward = 0;
+    public static final double kVFeedForward = 0;
+    public static final double kAFeedForward = 0;
+    public static final int intakeCurrentLimit = 15;
+    public static final double intakeTargetSpeed = 1;
+
+  }
+
+    public static class OperatorConstants {
+    public static final int kDriverControllerPort = 0;
+
+  }
+  
+  public static final class IOConstants {
     public static final int kDriverStick = 0;
     public static final int kOperatorStick = 1;
 
@@ -59,7 +99,7 @@ public final class Constants {
         kY = 4,
         kLB = 5,
         kRB = 6,
-        kBACK = 7,
+        kMENU = 7,
         kSTART = 8,
         kLA = 9,
         kRA = 10;
