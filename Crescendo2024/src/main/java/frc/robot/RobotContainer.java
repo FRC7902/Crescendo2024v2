@@ -9,7 +9,23 @@ import frc.robot.commands.StopIntake;
 import frc.robot.commands.IntakeNote;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.IOConstants;
+import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
+import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
+import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import org.photonvision.PhotonCamera;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -25,13 +41,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final IntakeSubsystem m_intake = new IntakeSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
   private final XboxController m_operatorStick = new XboxController(Constants.IOConstants.kOperatorStick);// should be
                                                                                                           // kOperatorStick
+
+  private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
+  private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
+
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -57,9 +83,30 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    m_driveSubsystem.setDefaultCommand(
+        new RunCommand(
+            () -> m_driveSubsystem.driveArcade(
+                m_driverStick.getRawAxis(Constants.IOConstants.kLY),
+                m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
+            m_driveSubsystem));
+
+
+    new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
+    new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
     // INTAKE BINDINGS
-    new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
-    new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
+    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
+    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
+
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
+    // cancelling on release.
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -68,7 +115,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+
+    return new PathPlannerAuto("New Auto");
+    // return m_chooser.getSelected();
   }
 }
