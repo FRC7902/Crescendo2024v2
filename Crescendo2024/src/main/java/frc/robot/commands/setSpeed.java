@@ -12,9 +12,9 @@ public class setSpeed extends Command {
   private double targetSpeed;
 
   /** Creates a new setSpeed. */
-  public setSpeed(ShooterSubsystem shooter, double speed) {
+  public setSpeed(ShooterSubsystem shooter, double speedRPM) {
     m_shooter = shooter;
-    targetSpeed = speed;
+    targetSpeed = speedRPM;
   }
 
   // Called when the command is initially scheduled.

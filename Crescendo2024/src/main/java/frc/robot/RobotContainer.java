@@ -45,8 +45,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
-    new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new setSpeed(m_shooterSubsystem, 500));
-    new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new setSpeed(m_shooterSubsystem, 1000));
+    new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new setSpeed(m_shooterSubsystem, 3000));
+    new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new setSpeed(m_shooterSubsystem, -3000));
     new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
   }
 

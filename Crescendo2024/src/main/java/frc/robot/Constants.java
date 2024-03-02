@@ -44,7 +44,7 @@ public final class Constants {
     public final static int kSpeakerSpeed = 0;
 
     public final static double shooterkD = 0;
-    public final static double shooterkP = 0;
+    public final static double shooterkP = 1;
     public final static double shooterkI = 0;
   }
 
