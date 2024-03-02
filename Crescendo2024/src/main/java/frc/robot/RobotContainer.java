@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.StopIntake;
+import frc.robot.commands.IntakeNote;
+import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
@@ -36,9 +41,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController m_driverController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
+  private final XboxController m_operatorStick = new XboxController(Constants.IOConstants.kOperatorStick);// should be
+                                                                                                          // kOperatorStick
+
   private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
@@ -69,6 +82,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driveSubsystem.setDefaultCommand(
         new RunCommand(
@@ -85,6 +99,9 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
+    // INTAKE BINDINGS
+    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
+    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
