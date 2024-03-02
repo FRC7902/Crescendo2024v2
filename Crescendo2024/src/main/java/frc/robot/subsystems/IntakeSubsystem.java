@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -15,7 +16,7 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(IntakeConstants.intakeCANID1);
+  private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakeCANID1);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
       IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
@@ -25,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     stopMotor();
 
-    intakeMotor.configPeakCurrentLimit(IntakeConstants.intakeCurrentLimit);
+    // intakeMotor.(IntakeConstants.intakeCurrentLimit); CURRENT LIMIT
 
   }
 
