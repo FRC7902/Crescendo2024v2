@@ -25,4 +25,12 @@ public class FireBirdsUtils {
     constants[2] = 0.075 * ku * tu;
     return constants;
   }
+
+    public double[] setZeiglerNicholsConstantsNoOvershoot(double ku, double tu){
+    double constants[] = new double[3];
+    constants[0] = 0.2 * ku;
+    constants[1] = 0.4 * ku / tu;
+    constants[2] = 0.0667 * ku * tu;
+    return constants;
+  }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -49,7 +50,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final CANSparkMax m_rightFollowerMotor = new CANSparkMax(DriveConstants.rightBackCANID,
       CANSparkMax.MotorType.kBrushless);
 
-  private final DifferentialDrive m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
+  private final DifferentialDrive m_drive;
 
   private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
@@ -87,14 +88,18 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(PhotonCamera camera) {
     m_camera = camera;
 
-    // m_leftLeaderMotor.restoreFactoryDefaults(); //Safety precautions, but
-    // reccomended
-    // m_leftFollowerMotor.restoreFactoryDefaults();
-    // m_rightLeaderMotor.restoreFactoryDefaults();
-    // m_rightFollowerMotor.restoreFactoryDefaults();
+    m_leftLeaderMotor.restoreFactoryDefaults();
+    m_leftFollowerMotor.restoreFactoryDefaults();
+    m_rightLeaderMotor.restoreFactoryDefaults();
+    m_rightFollowerMotor.restoreFactoryDefaults();
+
+    m_rightLeaderMotor.setInverted(false);
+    m_leftLeaderMotor.setInverted(true);
 
     m_leftFollowerMotor.follow(m_leftLeaderMotor);
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
+
+    m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
         -DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
@@ -114,8 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightLeaderMotor.setInverted(false);
-    m_leftLeaderMotor.setInverted(true);
 
     m_leftLeaderMotor.setSmartCurrentLimit(45);
     m_leftFollowerMotor.setSmartCurrentLimit(45);
@@ -173,32 +176,37 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if (Robot.isSimulation()) {
-      m_odometry.update(
-          m_gyro.getRotation2d(),
-          m_leftEncoderObj.getDistance(),
-          m_rightEncoderObj.getDistance());
-    } else {
-      if (m_camera.getLatestResult().hasTargets()) {
-        updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
-        m_odometry.resetPosition(
-            ahrs.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition(),
-            new Pose2d(
-                m_poseEstimator.getEstimatedPosition().getX(),
-                m_poseEstimator.getEstimatedPosition().getY(),
-                m_poseEstimator.getEstimatedPosition().getRotation()));
-      } else {
-        m_odometry.update(
-            ahrs.getRotation2d(),
-            -m_leftEncoder.getPosition(),
-            -m_rightEncoder.getPosition());
-      }
+    SmartDashboard.putNumber("Current Left leader", m_leftLeaderMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
 
-    }
+    // if (Robot.isSimulation()) {
+    //   m_odometry.update(
+    //       m_gyro.getRotation2d(),
+    //       m_leftEncoderObj.getDistance(),
+    //       m_rightEncoderObj.getDistance());
+    // } else {
+    //   if (m_camera.getLatestResult().hasTargets()) {
+    //     updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+    //     m_odometry.resetPosition(
+    //         ahrs.getRotation2d(),
+    //         m_leftEncoder.getPosition(),
+    //         m_rightEncoder.getPosition(),
+    //         new Pose2d(
+    //             m_poseEstimator.getEstimatedPosition().getX(),
+    //             m_poseEstimator.getEstimatedPosition().getY(),
+    //             m_poseEstimator.getEstimatedPosition().getRotation()));
+    //   } else {
+    //     m_odometry.update(
+    //         ahrs.getRotation2d(),
+    //         -m_leftEncoder.getPosition(),
+    //         -m_rightEncoder.getPosition());
+    //   }
+
+    // }
     
-    m_fieldSim.setRobotPose(getPose());
+    // m_fieldSim.setRobotPose(getPose());
 
     
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
@@ -258,7 +266,9 @@ public class DriveSubsystem extends SubsystemBase {
       sign = -1;
     }
 
-    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3));
+
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3)
+    );
   }
 
   public void driveRaw(double power) {

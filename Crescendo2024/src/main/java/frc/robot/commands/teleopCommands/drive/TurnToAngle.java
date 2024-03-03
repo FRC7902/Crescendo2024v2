@@ -7,6 +7,7 @@ package frc.robot.commands.teleopCommands.drive;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.FireBirdsUtils;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class TurnToAngle extends Command {
@@ -16,7 +17,11 @@ public class TurnToAngle extends Command {
   private double trueTarget;
   private boolean isAdditive;
   private double initialAngle;
-  private final PIDController turnPID = new PIDController(0.1, 0, 0);
+  private final FireBirdsUtils util = new FireBirdsUtils();
+  private final double[] PIDConstants = util.setZeiglerNicholsConstantsNoOvershoot(0.025, 0.47619);
+  // private final PIDController turnPID = new PIDController(PIDConstants[0], PIDConstants[1], 0);
+  private final PIDController turnPID = new PIDController(0.00625, 0.0025, 0);
+
 
   /** Creates a new TurnToAngle. */
   public TurnToAngle(DriveSubsystem drive, double angle, boolean IsAdditive) {
@@ -24,7 +29,7 @@ public class TurnToAngle extends Command {
     m_driveSubsystem = drive;
     targetAngle = angle;
     isAdditive = IsAdditive;
-    turnPID.setTolerance(1, 1);
+    turnPID.setTolerance(1, 10000);
     initialAngle = m_driveSubsystem.getHeading();
 
   }
@@ -45,10 +50,18 @@ public class TurnToAngle extends Command {
   public void execute() {
     double speed;
     speed = turnPID.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
-
+    
     SmartDashboard.putNumber("target angle", trueTarget);
     SmartDashboard.putNumber("Current angle", convertRange(m_driveSubsystem.getHeading()));
-    m_driveSubsystem.turn(speed * 0.1);
+    int sign;
+
+    if(speed > 0){
+      sign = 1;
+    }else{
+      sign = -1;
+    }
+
+    m_driveSubsystem.turn(-speed - sign * 0.1);
   }
 
   public double convertRange(double angle) {// range from targetAngle +- 180

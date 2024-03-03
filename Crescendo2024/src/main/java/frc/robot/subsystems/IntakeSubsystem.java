@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
   private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
-  private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
+  //private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
       IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
 
@@ -40,9 +40,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(power);
   }
 
-  public boolean getSensor() {
-    return intakeSensor.get();
-  }
+  // public boolean getSensor() {
+  //   return intakeSensor.get();
+  // }
 
   public void setTargetPower(double target) {
     targetPower = target;

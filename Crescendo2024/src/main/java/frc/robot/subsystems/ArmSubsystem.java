@@ -36,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = -30;
+  private static double targetPosition = -200;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -81,8 +81,8 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.config_kI(0, 0);// 54
     armPivotLeader.config_kD(0, 0);// 3.374
     // Setting the velocity and acceleration of the motors
-    armPivotLeader.configMotionCruiseVelocity(8000);
-    armPivotLeader.configMotionAcceleration(2000);
+    armPivotLeader.configMotionCruiseVelocity(4000);
+    armPivotLeader.configMotionAcceleration(500);
 
     armPivotLeader.configNeutralDeadband(0.04);
 

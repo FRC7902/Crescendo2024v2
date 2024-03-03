@@ -121,7 +121,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setSpeed(targetSpeed);
+    if(targetSpeed == 0){
+      stop();
+    }else{
+      setSpeed(targetSpeed);
+    }
     SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
     SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
     SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
