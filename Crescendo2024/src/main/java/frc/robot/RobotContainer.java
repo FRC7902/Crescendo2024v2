@@ -21,9 +21,15 @@ import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.AmpSetpoint;
+import frc.robot.commands.teleopCommands.Level0Setpoint;
+import frc.robot.commands.teleopCommands.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.climb.ClimbDown;
+import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -56,6 +62,7 @@ public class RobotContainer {
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
@@ -103,6 +110,8 @@ public class RobotContainer {
     new JoystickButton(m_driverStick, IOConstants.kRB).onFalse(new StopIntake(m_intake));
     new JoystickButton(m_driverStick, IOConstants.kLB).onFalse(new StopIntake(m_intake));
 
+    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ClimbUp(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new ClimbDown(m_climbSubsystem));
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
