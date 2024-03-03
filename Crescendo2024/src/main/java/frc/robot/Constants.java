@@ -60,11 +60,11 @@ public final class Constants {
     // difference for amp and speaker?
     // public final static int Brake = 0;
     // public final static int Coast = 0;
-    public final static int kAmpSpeed = 0;
-    public final static int kSpeakerSpeed = 0;
+    public final static int kAmpSpeed = 3000;
+    public final static int kSpeakerSpeed = 5000;
 
     public final static double shooterkD = 0;
-    public final static double shooterkP = 0.0001;
+    public final static double shooterkP = 0.1;
     public final static double shooterkI = 0;
   }
 
