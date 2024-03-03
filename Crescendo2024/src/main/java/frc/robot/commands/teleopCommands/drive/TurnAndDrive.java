@@ -27,6 +27,6 @@ public class TurnAndDrive extends SequentialCommandGroup {
     double target = util.TurnToPoint(Y, X);
     addCommands(
         new TurnToAngle(m_drive, target, true));
-    new DriveToDistance(m_drive, util.FindDistance(targetY, targetX));
+        new DriveToDistance(m_drive, util.FindDistance(targetY, targetX));
   }
 }
