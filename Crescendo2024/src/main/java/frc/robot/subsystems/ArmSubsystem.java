@@ -81,7 +81,7 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotLeader.config_kI(0, 0);// 54
     armPivotLeader.config_kD(0, 0);// 3.374
     // Setting the velocity and acceleration of the motors
-    armPivotLeader.configMotionCruiseVelocity(4000);
+    armPivotLeader.configMotionCruiseVelocity(2500);
     armPivotLeader.configMotionAcceleration(500);
 
     armPivotLeader.configNeutralDeadband(0.04);

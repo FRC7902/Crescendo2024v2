@@ -7,15 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeNote extends Command {
   private IntakeSubsystem m_intake;
+  private ShooterSubsystem m_shooter;
 
   /** Creates a new Suck. */
-  public IntakeNote(IntakeSubsystem intake) {
+  public IntakeNote(IntakeSubsystem intake, ShooterSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-    addRequirements(intake);
+    m_shooter = shooter;
 
     // intake a note, when the beam brake is hit, stop spinning and apply a small
     // feedforward to hold onto the note
@@ -34,6 +36,7 @@ public class IntakeNote extends Command {
   public void execute() {
     if (true) {
       m_intake.setTargetPower(Constants.IntakeConstants.suckingSpeed);
+      m_shooter.setTargetSpeed(-100);
     } else {
       m_intake.setTargetPower(Constants.IntakeConstants.holdPower);
     }

@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopIntake;
+import frc.robot.commands.FeedNote;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.ShootAmp;
+import frc.robot.commands.ShootNoteAmp;
 import frc.robot.commands.ShootSpeaker;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
@@ -92,6 +94,14 @@ public class RobotContainer {
                 m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
             m_driveSubsystem));
 
+    new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+
+    new JoystickButton(m_driverStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kLB).whileTrue(new ShootNoteAmp(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_driverStick, IOConstants.kRB).onFalse(new StopIntake(m_intake));
+    new JoystickButton(m_driverStick, IOConstants.kLB).onFalse(new StopIntake(m_intake));
 
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
@@ -102,10 +112,10 @@ public class RobotContainer {
     // new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
     //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
     //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
- new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
-new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new ShootAmp(m_shooterSubsystem));
-new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new ShootSpeaker(m_shooterSubsystem));
- new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
+  // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
+  // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new ShootAmp(m_shooterSubsystem));
+  // new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new ShootSpeaker(m_shooterSubsystem));
+  // new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
 
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
