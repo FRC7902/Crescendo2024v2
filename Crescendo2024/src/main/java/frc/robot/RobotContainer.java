@@ -21,9 +21,9 @@ import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
-import frc.robot.commands.teleopCommands.AmpSetpoint;
-import frc.robot.commands.teleopCommands.Level0Setpoint;
-import frc.robot.commands.teleopCommands.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
+import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
+import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
@@ -67,6 +67,7 @@ public class RobotContainer {
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
+
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
@@ -101,17 +102,19 @@ public class RobotContainer {
                 m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
             m_driveSubsystem));
 
-    new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
-    new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
-    new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
 
-    new JoystickButton(m_driverStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_driverStick, IOConstants.kLB).whileTrue(new ShootNoteAmp(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_driverStick, IOConstants.kRB).onFalse(new StopIntake(m_intake));
-    new JoystickButton(m_driverStick, IOConstants.kLB).onFalse(new StopIntake(m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ShootNoteAmp(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntake(m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new setSpeed(m_shooterSubsystem, 0));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new setSpeed(m_shooterSubsystem, 0));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntake(m_intake));
 
-    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ClimbUp(m_climbSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new ClimbDown(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbUp(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbDown(m_climbSubsystem));
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));

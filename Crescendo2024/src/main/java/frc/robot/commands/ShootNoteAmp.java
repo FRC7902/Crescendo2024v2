@@ -17,7 +17,7 @@ public class ShootNoteAmp extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ShootAmp(shooter),
+      new ShootSpeaker(shooter).withTimeout(1),
       new FeedNote(intake));
   }
 }

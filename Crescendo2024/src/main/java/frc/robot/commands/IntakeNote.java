@@ -36,7 +36,7 @@ public class IntakeNote extends Command {
   public void execute() {
     if (true) {
       m_intake.setTargetPower(Constants.IntakeConstants.suckingSpeed);
-      m_shooter.setTargetSpeed(-100);
+      //m_shooter.setTargetSpeed(-100);
     } else {
       m_intake.setTargetPower(Constants.IntakeConstants.holdPower);
     }

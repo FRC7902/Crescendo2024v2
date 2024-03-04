@@ -36,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
   // Target angles for arm
-  private static double targetPosition = -200;
+  private static double targetPosition = 0;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -167,12 +167,15 @@ public class ArmSubsystem extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         adjusted_feedForward);
     } else {
-      armPivotLeader.set(
-        ControlMode.MotionMagic, 
-        targetPosition * ArmConstants.EncoderToOutputRatio,
-        DemandType.ArbitraryFeedForward,
-        adjusted_feedForward);
-
+      if(targetPosition == 0){
+        armPivotLeader.set(0);
+      }else{
+        armPivotLeader.set(
+          ControlMode.MotionMagic, 
+          targetPosition * ArmConstants.EncoderToOutputRatio,
+          DemandType.ArbitraryFeedForward,
+          adjusted_feedForward);
+      }
     }
   }
 

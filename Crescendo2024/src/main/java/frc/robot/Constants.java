@@ -64,7 +64,7 @@ public final class Constants {
     public final static int kSpeakerSpeed = 5000;
 
     public final static double shooterkD = 0;
-    public final static double shooterkP = 0.1;
+    public final static double shooterkP = 0.01;
     public final static double shooterkI = 0;
   }
 
@@ -73,7 +73,7 @@ public final class Constants {
     public static final int intakePWMid = 8;
     public static final double suckingSpeed = 1;
     public static final double spittingSpeed = -1;
-    public static final double feedingSpeed = -0.3;
+    public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
     public static final int beamBrake = 1;
     public static final double kSFeedForward = 0;
