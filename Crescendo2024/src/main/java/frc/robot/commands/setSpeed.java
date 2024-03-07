@@ -2,25 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.teleopCommands.shooter;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootAmp extends Command {
+public class setSpeed extends Command {
   private ShooterSubsystem m_shooter;
-
+  private double targetSpeed;
 
   /** Creates a new setSpeed. */
-  public ShootAmp(ShooterSubsystem shooter) {
+  public setSpeed(ShooterSubsystem shooter, double speedRPM) {
     m_shooter = shooter;
+    targetSpeed = speedRPM;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.amp();
+    m_shooter.setTargetSpeed(targetSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +37,6 @@ public class ShootAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_shooter.atTargetSpeed();
+    return false;
   }
 }

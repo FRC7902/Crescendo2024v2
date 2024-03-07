@@ -16,7 +16,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;;
@@ -31,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double targetSpeed = 0;
 
-  public SparkPIDController m_leaderMotorspeedPID;
+  public SparkPIDController speedPID;
   public final RelativeEncoder sparkEncoder = m_leaderMotor.getEncoder();
 
   public String status = "Off";
@@ -49,10 +48,12 @@ public class ShooterSubsystem extends SubsystemBase {
     m_leaderMotor.setIdleMode(IdleMode.kBrake);
     m_followerMotor.setIdleMode(IdleMode.kBrake);
 
-    m_leaderMotorspeedPID = m_leaderMotor.getPIDController();
-    m_leaderMotorspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
-    m_leaderMotorspeedPID.setOutputRange(0, 1);
-
+    speedPID = m_leaderMotor.getPIDController();
+    speedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
+    speedPID = m_leaderMotor.getPIDController();
+    speedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
+    speedPID.setOutputRange(0, 1);
+    
     m_leaderMotor.setSmartCurrentLimit(45);
     m_followerMotor.setSmartCurrentLimit(45);
 
@@ -60,7 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    m_leaderMotorspeedPID.setReference(speed, ControlType.kVelocity);
+    speedPID.setReference(speed, ControlType.kVelocity);
     if (speed > 0) {
       status = "Shooting...";
     } else if (speed < 0) {
@@ -112,9 +113,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPID(double kP, double kI, double kD) {
-    m_leaderMotorspeedPID.setP(kP);
-    m_leaderMotorspeedPID.setI(kI);
-    m_leaderMotorspeedPID.setD(kD);
+    speedPID.setP(kP);
+    speedPID.setI(kI);
+    speedPID.setD(kD);
   }
 
   @Override
@@ -124,12 +125,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }else{
       setSpeed(targetSpeed);
     }
+
     // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
-    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_m_followerMotorMotor.getAppliedOutput());
     // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
-    // SmartDashboard.putNumber("CompetitionView/Shooter Power",
-    // m_leaderMotor.getAppliedOutput());
-    // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
     SmartDashboard.putNumber("Shooter speed", sparkEncoder.getVelocity());
     SmartDashboard.putNumber("Target Speed", targetSpeed);

@@ -8,6 +8,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.CANifier.PWMChannel;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -53,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("target power", targetPower);
     SmartDashboard.putNumber("motor power", m_intakeMotor.get());
+    SmartDashboard.putBoolean("Beam brake", intakeSensor.get());
 
     if (!intakeSensor.get() && !isShooting) {//intakeSensor.get()
       m_intakeMotor.set(-0.3);
