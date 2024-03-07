@@ -29,7 +29,6 @@ public final class Constants {
     public static final double encoderTicksPerRevolution = 42;
     public static final double trackWidthInches = 24;
 
-    public static final int GyroCAN = 2;
 
     public static final int PigeonCAN = 3;
   }
@@ -46,9 +45,6 @@ public final class Constants {
   public final static class ShooterConstants {
     public static final int kMasterCAN = 30;
     public static final int kFollowerCAN = 35;
-
-    public static final int[] kEncoderIDs = { 0, 0 };
-
     public final static double kHighSpeed = 0;
     public final static double kLowSpeed = 0;
 
@@ -75,7 +71,7 @@ public final class Constants {
     public static final double spittingSpeed = -1;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
-    public static final int beamBrake = 0;
+    public static final int beamBrake = 5;
     public static final double kSFeedForward = 0;
     public static final double kVFeedForward = 0;
     public static final double kAFeedForward = 0;

@@ -176,10 +176,10 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("Current Left leader", m_leftLeaderMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Left leader", m_leftLeaderMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
 
     // if (Robot.isSimulation()) {
     //   m_odometry.update(
