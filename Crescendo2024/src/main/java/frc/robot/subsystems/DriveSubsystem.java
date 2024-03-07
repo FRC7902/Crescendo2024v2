@@ -41,13 +41,13 @@ import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
 
-  private final CANSparkMax m_leftLeaderMotor = new CANSparkMax(DriveConstants.leftFrontCANID,
+  private final CANSparkMax m_leftLeaderMotor = new CANSparkMax(DriveConstants.leftFrontCAN,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_leftFollowerMotor = new CANSparkMax(DriveConstants.leftBackCANID,
+  private final CANSparkMax m_leftFollowerMotor = new CANSparkMax(DriveConstants.leftBackCAN,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_rightLeaderMotor = new CANSparkMax(DriveConstants.rightFrontCANID,
+  private final CANSparkMax m_rightLeaderMotor = new CANSparkMax(DriveConstants.rightFrontCAN,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_rightFollowerMotor = new CANSparkMax(DriveConstants.rightBackCANID,
+  private final CANSparkMax m_rightFollowerMotor = new CANSparkMax(DriveConstants.rightBackCAN,
       CANSparkMax.MotorType.kBrushless);
 
   private final DifferentialDrive m_drive;
