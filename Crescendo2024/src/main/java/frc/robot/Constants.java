@@ -76,7 +76,7 @@ public final class Constants {
     public static final double spittingSpeed = -1;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
-    public static final int beamBrake = 1;
+    public static final int beamBrake = 0;
     public static final double kSFeedForward = 0;
     public static final double kVFeedForward = 0;
     public static final double kAFeedForward = 0;

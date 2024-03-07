@@ -48,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("target power", targetPower);
     SmartDashboard.putNumber("motor power", m_intakeMotor.get());
+    //SmartDashboard.putBoolean("Beam brake", intakeSensor.get());
 
     if (false) {//intakeSensor.get()
       // Apply feedforward
