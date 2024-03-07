@@ -23,7 +23,6 @@ public final class Constants {
     public static final int leftBackCAN = 32;
     public static final int rightFrontCAN = 33;
     public static final int rightBackCAN = 34;
-    public static final int GyroCAN = 2;
 
     public static final double wheelDiameterMetres = 0.1524;
     public static final double gearRatio = 10.71;
@@ -42,19 +41,20 @@ public final class Constants {
 
     public static final double ArmGroundSetpoint = 10;
     public static final double ArmSpeakerSetpoint = 40;
-    public static final double ArmAmpSetpoint = 95;
+    public static final double ArmAmpSetpoint = 100;
   }
 
   public final static class ShooterConstants {
     public static final int kLeaderCAN = 30;
     public static final int kFollowerCAN = 35;
 
-    public final static int kAmpSpeed = 3000;
+    public final static int kAmpSpeed = 1000;
     public final static int kSpeakerSpeed = 5000;
 
-    public final static double shooterkD = 0;
-    public final static double shooterkP = 0.01;
+    public final static double shooterkD = 0.00001;
+    public final static double shooterkP = 0.0002;
     public final static double shooterkI = 0;
+    public final static double shooterFF = 0.0001;
 
     public final static double kHighSpeed = 0;
     public final static double kLowSpeed = 0;
@@ -76,7 +76,7 @@ public final class Constants {
     public static final double spittingSpeed = -1;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
-    public static final int beamBrake = 1;
+    public static final int beamBrake = 5;
     public static final double kSFeedForward = 0;
     public static final double kVFeedForward = 0;
     public static final double kAFeedForward = 0;

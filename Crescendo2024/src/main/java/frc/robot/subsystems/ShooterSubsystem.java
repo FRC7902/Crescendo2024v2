@@ -51,11 +51,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     m_leaderMotorspeedPID = m_leaderMotor.getPIDController();
     m_leaderMotorspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
+    m_leaderMotorspeedPID.setOutputRange(0, 1);
 
     m_leaderMotor.setSmartCurrentLimit(45);
     m_followerMotor.setSmartCurrentLimit(45);
 
-    // sparkEncoder.setVelocityConversionFactor();
     setPID(ShooterConstants.shooterkP, ShooterConstants.shooterkI, ShooterConstants.shooterkD);
   }
 
@@ -86,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    if (1 > Math.abs(targetSpeed - sparkEncoder.getVelocity())) {
+    if (50 > Math.abs(0.7 * targetSpeed - sparkEncoder.getVelocity())) {
       return true;
     } else {
       return false;
@@ -124,15 +124,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }else{
       setSpeed(targetSpeed);
     }
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
-    SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
-
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
+    // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
     // SmartDashboard.putNumber("CompetitionView/Shooter Power",
     // m_leaderMotor.getAppliedOutput());
     // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
-    SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
+    SmartDashboard.putNumber("Shooter speed", sparkEncoder.getVelocity());
     SmartDashboard.putNumber("Target Speed", targetSpeed);
 
   }

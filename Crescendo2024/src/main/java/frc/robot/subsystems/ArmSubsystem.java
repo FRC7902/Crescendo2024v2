@@ -15,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -115,6 +116,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if(DriverStation.isDisabled()){
+      setNewTargetPosition(0);
+    }
+
     if (m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {// double check this value
       m_armLeaderMotor.setSelectedSensorPosition(0);
 
@@ -187,7 +193,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean isArmAtAmp(){
-    return targetPosition == ArmConstants.ArmAmpSetpoint;
+    return targetPosition - (-1 * (int) ArmConstants.ArmAmpSetpoint * ArmConstants.EncoderCPR/ 360) < 5;
   }
 
   public boolean atZeroPos() {

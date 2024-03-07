@@ -11,6 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootAmp extends Command {
   private ShooterSubsystem m_shooter;
 
+
   /** Creates a new setSpeed. */
   public ShootAmp(ShooterSubsystem shooter) {
     m_shooter = shooter;
@@ -36,6 +37,6 @@ public class ShootAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_shooter.atTargetSpeed();
   }
 }
