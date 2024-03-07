@@ -17,6 +17,8 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;;
@@ -24,43 +26,43 @@ import frc.robot.Constants.ShooterConstants;;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
 
-  public final CANSparkMax m_leaderMotor = new CANSparkMax(ShooterConstants.kLeaderCAN,
+  public final CANSparkMax master = new CANSparkMax(ShooterConstants.kMasterCAN,
       CANSparkMax.MotorType.kBrushless);// left
-  public final CANSparkMax m_followerMotor = new CANSparkMax(ShooterConstants.kFollowerCAN,
+  public final CANSparkMax follower = new CANSparkMax(ShooterConstants.kFollowerCAN,
       CANSparkMax.MotorType.kBrushless); // right
 
   public double targetSpeed = 0;
 
-  public SparkPIDController m_leaderMotorspeedPID;
-  public final RelativeEncoder sparkEncoder = m_leaderMotor.getEncoder();
+  public SparkPIDController masterspeedPID;
+  public final RelativeEncoder sparkEncoder = master.getEncoder();
 
   public String status = "Off";
 
   public ShooterSubsystem() {
 
-    m_followerMotor.follow(m_leaderMotor);
+    follower.follow(master);
 
-    m_leaderMotor.setInverted(false);
-    m_followerMotor.setInverted(true);
+    master.setInverted(false);
+    follower.setInverted(true);
 
-    m_leaderMotor.setOpenLoopRampRate(ShooterConstants.kRampTime);
-    m_followerMotor.setOpenLoopRampRate(ShooterConstants.kRampTime);
+    master.setOpenLoopRampRate(ShooterConstants.kRampTime);
+    follower.setOpenLoopRampRate(ShooterConstants.kRampTime);
 
-    m_leaderMotor.setIdleMode(IdleMode.kBrake);
-    m_followerMotor.setIdleMode(IdleMode.kBrake);
+    master.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);
 
-    m_leaderMotorspeedPID = m_leaderMotor.getPIDController();
-    m_leaderMotorspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
+    masterspeedPID = master.getPIDController();
+    masterspeedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
 
-    m_leaderMotor.setSmartCurrentLimit(45);
-    m_followerMotor.setSmartCurrentLimit(45);
+    master.setSmartCurrentLimit(45);
+    follower.setSmartCurrentLimit(45);
 
     // sparkEncoder.setVelocityConversionFactor();
     setPID(ShooterConstants.shooterkP, ShooterConstants.shooterkI, ShooterConstants.shooterkD);
   }
 
   public void setSpeed(double speed) {
-    m_leaderMotorspeedPID.setReference(speed, ControlType.kVelocity);
+    masterspeedPID.setReference(speed, ControlType.kVelocity);
     if (speed > 0) {
       status = "Shooting...";
     } else if (speed < 0) {
@@ -69,20 +71,20 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    m_leaderMotor.stopMotor();
-    m_leaderMotor.set(0.00); // numbers need to be changed
+    master.stopMotor();
+    master.set(0.00); // numbers need to be changed
     status = "Off";
   }
 
   public void coast() {
-    m_leaderMotor.setIdleMode(IdleMode.kCoast);
-    m_followerMotor.setIdleMode(IdleMode.kCoast);
+    master.setIdleMode(IdleMode.kCoast);
+    follower.setIdleMode(IdleMode.kCoast);
   }
 
   public void brake() {
-    m_leaderMotor.setIdleMode(IdleMode.kBrake);
+    master.setIdleMode(IdleMode.kBrake);
 
-    m_followerMotor.setIdleMode(IdleMode.kBrake);
+    follower.setIdleMode(IdleMode.kBrake);
   }
 
   public boolean atTargetSpeed() {
@@ -112,9 +114,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPID(double kP, double kI, double kD) {
-    m_leaderMotorspeedPID.setP(kP);
-    m_leaderMotorspeedPID.setI(kI);
-    m_leaderMotorspeedPID.setD(kD);
+    masterspeedPID.setP(kP);
+    masterspeedPID.setI(kI);
+    masterspeedPID.setD(kD);
   }
 
   @Override
@@ -124,12 +126,12 @@ public class ShooterSubsystem extends SubsystemBase {
     }else{
       setSpeed(targetSpeed);
     }
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", master.getAppliedOutput());
+    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", follower.getAppliedOutput());
     SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
     // SmartDashboard.putNumber("CompetitionView/Shooter Power",
-    // m_leaderMotor.getAppliedOutput());
+    // master.getAppliedOutput());
     // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
     SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed", sparkEncoder.getVelocity());
@@ -141,13 +143,13 @@ public class ShooterSubsystem extends SubsystemBase {
   // public void simulationPeriodic(){
   // setTargetSpeed(targetSpeed);
   // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power",
-  // m_leaderMotor.getAppliedOutput());
+  // master.getAppliedOutput());
   // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2",
-  // m_followerMotor.getAppliedOutput());
+  // follower.getAppliedOutput());
   // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
 
   // SmartDashboard.putNumber("CompetitionView/Shooter Power",
-  // m_leaderMotor.getAppliedOutput());
+  // master.getAppliedOutput());
   // SmartDashboard.putString("CompetitionView/Shooter Status", status);
 
   // SmartDashboard.putNumber("ShooterSubsystem/Encoder Speed",

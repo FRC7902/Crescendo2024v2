@@ -8,14 +8,18 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix.CANifier.PWMChannel;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
-  private final PWMSparkMax m_intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
-  //private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
+  private final PWMSparkMax intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
+  private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
       IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
 
@@ -23,17 +27,17 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     stopMotor();
-    m_intakeMotor.setInverted(true);
-    // m_intakeMotor.(IntakeConstants.intakeCurrentLimit); CURRENT LIMIT
+    intakeMotor.setInverted(true);
+    // intakeMotor.(IntakeConstants.intakeCurrentLimit); CURRENT LIMIT
 
   }
 
   public void stopMotor() {
-    m_intakeMotor.stopMotor();
+    intakeMotor.stopMotor();
   }
 
   public void setPower(double power) {
-    m_intakeMotor.set(power);
+    intakeMotor.set(power);
   }
 
   // public boolean getSensor() {
@@ -47,13 +51,14 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("target power", targetPower);
-    SmartDashboard.putNumber("motor power", m_intakeMotor.get());
+    SmartDashboard.putNumber("motor power", intakeMotor.get());
+    SmartDashboard.putBoolean("Beam brake", intakeSensor.get());
 
     if (false) {//intakeSensor.get()
       // Apply feedforward
-      m_intakeMotor.set(feedforward.calculate(10, 0));
+      intakeMotor.set(feedforward.calculate(10, 0));
     } else {
-      m_intakeMotor.set(targetPower);
+      intakeMotor.set(targetPower);
     }
 
     // This method will be called once per scheduler run
