@@ -28,8 +28,6 @@ public final class Constants {
     public static final double gearRatio = 10.71;
     public static final double encoderTicksPerRevolution = 42;
     public static final double trackWidthInches = 24;
-
-
     public static final int PigeonCAN = 3;
   }
 
@@ -47,7 +45,6 @@ public final class Constants {
     public static final int kFollowerCAN = 35;
     public final static double kHighSpeed = 0;
     public final static double kLowSpeed = 0;
-
     public final static double kRampTime = 0;
 
     public final static int kHighUnitsPerSec = 0;
