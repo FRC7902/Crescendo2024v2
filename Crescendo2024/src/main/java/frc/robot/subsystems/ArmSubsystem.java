@@ -30,8 +30,8 @@ import frc.robot.Robot;
 
 public class ArmSubsystem extends SubsystemBase {
   // Declaring motor controllers
-  private final WPI_TalonSRX m_armLeaderMotor = new WPI_TalonSRX(ArmConstants.ArmLeaderMotorCAN);
-  private final WPI_VictorSPX m_armFollowerMotor = new WPI_VictorSPX(ArmConstants.ArmFollowerMotorCAN);
+  private final WPI_TalonSRX armPivotLeader = new WPI_TalonSRX(ArmConstants.ArmLeaderMotorCAN);
+  private final WPI_VictorSPX armPivotFollower = new WPI_VictorSPX(ArmConstants.ArmFollowerMotorCAN);
 
   private final static FireBirdsUtils util = new FireBirdsUtils();
 
@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
       0);
 
   // Initializing the simulation of TalonSRX
-  private final TalonSRXSimCollection m_armLeaderMotorSim = m_armLeaderMotor.getSimCollection();
+  private final TalonSRXSimCollection armPivotLeaderSim = armPivotLeader.getSimCollection();
 
   // Create a Mechanism2d display of an Arm with a fixed ArmTower and moving Arm.
   private final Mechanism2d m_mech2d = new Mechanism2d(80, 80); // the overall arm
@@ -67,24 +67,24 @@ public class ArmSubsystem extends SubsystemBase {
   // Creates a new ArmSubsystem
   public ArmSubsystem() {
     // idk what this does IDK WHAT THIS DOESSSSS
-    m_armLeaderMotor.configFactoryDefault();
-    m_armFollowerMotor.configFactoryDefault();
+    armPivotLeader.configFactoryDefault();
+    armPivotFollower.configFactoryDefault();
 
-    m_armFollowerMotor.follow(m_armLeaderMotor);
-    m_armLeaderMotor.configVoltageCompSaturation(12, 0);
-    m_armLeaderMotor.configPeakCurrentLimit(45);
+    armPivotFollower.follow(armPivotLeader);
+    armPivotLeader.configVoltageCompSaturation(12, 0);
+    armPivotLeader.configPeakCurrentLimit(45);
 
     int ku = 45;
     double tu = 0.1;
 
-    m_armLeaderMotor.config_kP(0, 1.5);
-    m_armLeaderMotor.config_kI(0, 0);// 54
-    m_armLeaderMotor.config_kD(0, 0);// 3.374
+    armPivotLeader.config_kP(0, 1.5);
+    armPivotLeader.config_kI(0, 0);// 54
+    armPivotLeader.config_kD(0, 0);// 3.374
     // Setting the velocity and acceleration of the motors
-    m_armLeaderMotor.configMotionCruiseVelocity(2500);
-    m_armLeaderMotor.configMotionAcceleration(500);
+    armPivotLeader.configMotionCruiseVelocity(2500);
+    armPivotLeader.configMotionAcceleration(500);
 
-    m_armLeaderMotor.configNeutralDeadband(0.04);
+    armPivotLeader.configNeutralDeadband(0.04);
 
 
     if(Robot.isSimulation()){
@@ -93,30 +93,62 @@ public class ArmSubsystem extends SubsystemBase {
     }    
 
     // Configure the encoder
-    m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+    armPivotLeader.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
     if (RobotBase.isSimulation()) {
-      m_armLeaderMotor.setSensorPhase(false);
-      m_armLeaderMotor.setInverted(true);
+      armPivotLeader.setSensorPhase(false);
+      armPivotLeader.setInverted(true);
     } else {
-      m_armLeaderMotor.setSensorPhase(true);
-      m_armLeaderMotor.setInverted(true);
+      armPivotLeader.setSensorPhase(true);
+      armPivotLeader.setInverted(true);
     }
 
-    m_armFollowerMotor.setInverted(InvertType.FollowMaster);
+    armPivotFollower.setInverted(InvertType.FollowMaster);
 
     // Configuring the limit switch
-    m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+    armPivotLeader.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
         LimitSwitchNormal.NormallyOpen);
 
-    m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated,
+    armPivotLeader.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated,
         LimitSwitchNormal.NormallyOpen);
+  }
+
+  // Getting the position of the motor
+  public double getAngle() {
+    // Absolute position gets the location of the arm in ticks (4096 per revolution)
+    return modAngleTicks(armPivotLeader.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
+  }
+
+  public double getLeaderPower() {
+    return armPivotLeader.get();
+  }
+
+  // Setter methods
+  // Gives power
+  public void setPower(double power) {
+    armPivotLeader.set(power);
+  }
+
+  public void setNewTargetPosition(double newTargetPosition) {
+    targetPosition = -newTargetPosition;
+  }
+
+  public boolean atZeroPos() {
+    return armPivotLeader.isRevLimitSwitchClosed() == 0; // switch is open
+  }
+
+  public void stopMotor() {
+    armPivotLeader.stopMotor();
+  }
+
+  public double modAngleTicks(double angleInTicks){
+    return Math.IEEEremainder(angleInTicks, ArmConstants.EncoderCPR);
   }
 
   @Override
   public void periodic() {
-    if (m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {// double check this value
-      m_armLeaderMotor.setSelectedSensorPosition(0);
+    if (armPivotLeader.isRevLimitSwitchClosed() == 1) {// double check this value
+      armPivotLeader.setSelectedSensorPosition(0);
 
     }
 
@@ -126,19 +158,19 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Target Position", targetPosition);
     SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
-    SmartDashboard.putNumber("Encoder value", m_armLeaderMotor.getSensorCollection().getQuadraturePosition());
+    SmartDashboard.putNumber("Encoder value", armPivotLeader.getSensorCollection().getQuadraturePosition());
 
     if (RobotBase.isSimulation()) {
-      m_armLeaderMotor.set(
+      armPivotLeader.set(
         ControlMode.MotionMagic, 
         targetPosition, 
         DemandType.ArbitraryFeedForward,
         adjusted_feedForward);
     } else {
       if(targetPosition == 0){
-        m_armLeaderMotor.set(0);
+        armPivotLeader.set(0);
       }else{
-        m_armLeaderMotor.set(
+        armPivotLeader.set(
           ControlMode.MotionMagic, 
           targetPosition * ArmConstants.EncoderToOutputRatio,
           DemandType.ArbitraryFeedForward,
@@ -149,56 +181,20 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    armSim.setInput(m_armLeaderMotorSim.getMotorOutputLeadVoltage());
+    armSim.setInput(armPivotLeaderSim.getMotorOutputLeadVoltage());
     armSim.update(0.020);
 
-    m_armLeaderMotorSim
+    armPivotLeaderSim
         .setQuadratureRawPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), ArmConstants.EncoderCPR));
 
     m_arm.setAngle(Math.toDegrees(armSim.getAngleRads()));
 
     if (armSim.getAngleRads() == Units.degreesToRadians(ArmConstants.restDegreesFromHorizontal)) {
 
-      m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 0);
+      armPivotLeader.getSensorCollection().setQuadraturePosition(0, 0);
     }
 
-    m_armLeaderMotorSim.setAnalogPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), 4096));
+    armPivotLeaderSim.setAnalogPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), 4096));
 
-  }
-
-  // Getting the position of the motor
-  public double getAngle() {
-    // Absolute position gets the location of the arm in ticks (4096 per revolution)
-    return modAngleTicks(m_armLeaderMotor.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
-  }
-
-  public double getLeaderPower() {
-    return m_armLeaderMotor.get();
-  }
-
-  // Setter methods
-  // Gives power
-  public void setPower(double power) {
-    m_armLeaderMotor.set(power);
-  }
-
-  public void setNewTargetPosition(double newTargetPosition) {
-    targetPosition = -newTargetPosition;
-  }
-
-  public boolean isArmAtAmp(){
-    return targetPosition == ArmConstants.ArmAmpSetpoint;
-  }
-
-  public boolean atZeroPos() {
-    return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
-  }
-
-  public void stopMotor() {
-    m_armLeaderMotor.stopMotor();
-  }
-
-  public double modAngleTicks(double angleInTicks){
-    return Math.IEEEremainder(angleInTicks, ArmConstants.EncoderCPR);
   }
 }

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SpeakerSetpoint extends Command {
   private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = ArmConstants.ArmSpeakerSetpoint;
+  private double targetAngle = 40;
   private double initialAngle;
 
   /**
