@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.setSpeed;
@@ -113,8 +114,11 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new setSpeed(m_shooterSubsystem, 0));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntake(m_intake));
 
-    new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbUp(m_climbSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbDown(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbUp(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));
+    new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
+    new POVButton(m_operatorStick, 180).whileTrue(new ClimbUp(m_climbSubsystem));
+
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));

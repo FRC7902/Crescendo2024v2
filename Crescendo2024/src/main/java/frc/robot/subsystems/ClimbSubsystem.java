@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,15 +18,19 @@ import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
     // Declaring motor controllers
-    private final WPI_TalonSRX m_climbMotor = new WPI_TalonSRX(ClimbConstants.ClimbCAN);
-  
+    private final WPI_TalonSRX m_climbLeaderMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
+    private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
+
 
 
     public ClimbSubsystem() {
-        m_climbMotor.configFactoryDefault();
-       m_climbMotor.setInverted(false);
-        m_climbMotor.configContinuousCurrentLimit(ClimbConstants.constantCurrent);
-        m_climbMotor.configPeakCurrentLimit(ClimbConstants.peakCurrent);
+        m_climbLeaderMotor.configFactoryDefault();
+        m_climbFollowerMotor.configFactoryDefault();
+        m_climbLeaderMotor.setInverted(false);
+        m_climbFollowerMotor.setInverted(false);
+        m_climbLeaderMotor.configContinuousCurrentLimit(ClimbConstants.constantCurrent);
+        m_climbLeaderMotor.configPeakCurrentLimit(ClimbConstants.peakCurrent);
+        m_climbFollowerMotor.follow(m_climbLeaderMotor);
 
         // Configure the encoder 
         // m_climbMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
@@ -35,18 +40,18 @@ public class ClimbSubsystem extends SubsystemBase {
  
     // Stops motor
     public void stopMotor() {
-        m_climbMotor.stopMotor();
+        m_climbLeaderMotor.stopMotor();
     }
 
     // set motor power
     public void setPower(double power) {
-        m_climbMotor.set(power);
+        m_climbLeaderMotor.set(power);
     }
 
 
     @Override
     public void periodic() { 
-        SmartDashboard.putNumber("Climber Current Limit", m_climbMotor.getSupplyCurrent());
+        SmartDashboard.putNumber("Climber Current Limit", m_climbLeaderMotor.getSupplyCurrent());
     }
 
     @Override

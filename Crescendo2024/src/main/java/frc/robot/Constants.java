@@ -118,9 +118,10 @@ public final class Constants {
   }
 
   public static class ClimbConstants{
-    public static final int ClimbCAN = 37;
-    public static final double upSpeed = 0.2;
-    public static final double downSpeed = -0.2;
+    public static final int ClimbLeaderCAN = 20;
+    public static final int ClimbFollowerCAN = 18;
+    public static final double upSpeed = 1;
+    public static final double downSpeed = -1;
     public static final int peakCurrent = 30; 
     public static final int constantCurrent = 15; 
   }
