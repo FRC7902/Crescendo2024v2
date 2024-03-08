@@ -27,7 +27,7 @@ public class DriveOut extends SequentialCommandGroup {
       new ShootSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new Level0Setpoint(arm).withTimeout(1),
-      new DriveRaw(drive, -AutoConstants.autoDriveSpeed)
+      new DriveRaw(drive, -AutoConstants.autoDriveSpeed).withTimeout(2)
     );
   }
 }

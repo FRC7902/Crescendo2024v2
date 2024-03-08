@@ -199,7 +199,11 @@ public class ArmSubsystem extends SubsystemBase {
         m_armLeaderMotor.set(0);
       }else{
         if(isAutoAiming){
-
+          m_armLeaderMotor.set(
+            ControlMode.MotionMagic, 
+            -util.degToCTRESensorUnits(calculateAutoAim(), ArmConstants.EncoderCPR) * ArmConstants.EncoderToOutputRatio,
+            DemandType.ArbitraryFeedForward,
+            adjusted_feedForward);
         }else{
           m_armLeaderMotor.set(
             ControlMode.MotionMagic, 
