@@ -5,7 +5,9 @@
 package frc.robot.commands.teleopCommands.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.FireBirdsUtils;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
+import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -13,12 +15,13 @@ import frc.robot.subsystems.DriveSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoAimSpeaker extends ParallelCommandGroup {
-  /** Creates a new AutoAimSpeaker. */
+  private final FireBirdsUtils util = new FireBirdsUtils();
   public AutoAimSpeaker(ArmSubsystem arm, DriveSubsystem drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetAutoAimStatus(arm)
+      new SetAutoAimStatus(arm),
+      new TurnToAngle(drive, util.TurnToPoint(0, 0), true)
     );
   }
 }

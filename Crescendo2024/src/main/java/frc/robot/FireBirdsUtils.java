@@ -36,7 +36,6 @@ public class FireBirdsUtils {
 
   public double TurnToPoint(double targetY, double targetX) {
     double targetAngle = Math.atan(Math.abs((targetY / targetX)));
-    // Use addRequirements() here to declare subsystem dependencies.
     if (targetY < 0) {
       if (targetX < 0) {
         targetAngle += 180;
