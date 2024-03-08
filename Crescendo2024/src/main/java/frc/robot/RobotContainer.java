@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -110,8 +111,9 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntake(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopShooter(m_shooterSubsystem));
 
-    new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbUp(m_climbSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kSTART).onTrue(m_simpleTwoNote);
+    // new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbUp(m_climbSubsystem));
+    // new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbUp(m_climbSubsystem));
 

@@ -39,6 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   // Target angles for arm
   private static double targetPosition = 0;
+  private static int targetPositionCounter = 0;
   private static boolean isAutoAiming = false;
 
   /** Object of a simulated arm **/
@@ -135,7 +136,18 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetPosition(){
-    return (m_armLeaderMotor.getSensorCollection().getQuadraturePosition() - targetPosition * ArmConstants.EncoderToOutputRatio) < 50;
+    if(Math.abs(getAngle() - targetPosition) < 150){
+      targetPositionCounter++;
+    }else{
+      targetPositionCounter = 0;
+    }
+
+    if(targetPositionCounter > 20){
+      return true;
+    }else{
+      return false;
+    }
+
   }
 
   public boolean atZeroPos() {
@@ -184,9 +196,9 @@ public class ArmSubsystem extends SubsystemBase {
         * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
 
     SmartDashboard.putNumber("Target Position", targetPosition);
-    // SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
+    //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
-    SmartDashboard.putNumber("Encoder value", m_armLeaderMotor.getSensorCollection().getQuadraturePosition());
+    SmartDashboard.putBoolean("at target position", atTargetPosition());
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.set(
