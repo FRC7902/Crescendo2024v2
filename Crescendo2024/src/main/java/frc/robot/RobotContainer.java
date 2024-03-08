@@ -51,7 +51,7 @@ public class RobotContainer {
 
   private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
-  private final ArmSubsystem m_armSubsystem = new ArmSubsystem();
+  private final ArmSubsystem m_armSubsystem = new ArmSubsystem(m_driveSubsystem);
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
@@ -63,11 +63,6 @@ public class RobotContainer {
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
-
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
     configureBindings();
 

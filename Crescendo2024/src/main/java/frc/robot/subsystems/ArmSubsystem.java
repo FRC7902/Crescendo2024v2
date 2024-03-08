@@ -35,9 +35,11 @@ public class ArmSubsystem extends SubsystemBase {
   private final WPI_VictorSPX armPivotFollower = new WPI_VictorSPX(ArmConstants.ArmFollowerMotorCAN);
 
   private final static FireBirdsUtils util = new FireBirdsUtils();
+  private final DriveSubsystem m_driveSubsystem;
 
   // Target angles for arm
   private static double targetPosition = 0;
+  private static boolean isAutoAiming = false;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -66,8 +68,8 @@ public class ArmSubsystem extends SubsystemBase {
           new Color8Bit(Color.kAliceBlue)));
 
   // Creates a new ArmSubsystem
-  public ArmSubsystem() {
-    // idk what this does IDK WHAT THIS DOESSSSS
+  public ArmSubsystem(DriveSubsystem drive) {
+    m_driveSubsystem = drive;
     m_armLeaderMotor.configFactoryDefault();
     armPivotFollower.configFactoryDefault();
 
@@ -152,6 +154,21 @@ public class ArmSubsystem extends SubsystemBase {
     return targetPosition - (-1 * (int) ArmConstants.ArmAmpSetpoint * ArmConstants.EncoderCPR/ 360) < 5;
   }
 
+  public void setAutoAimingStatus(boolean status){
+    isAutoAiming = status;
+  }
+
+  public double calculateAutoAim(){
+    double speakerHeightMetres = 10;
+    double speakerX = 0;
+    double speakerY = 0;
+    double dx = speakerX - m_driveSubsystem.getDisplacementX();
+    double dy = speakerY - m_driveSubsystem.getDisplacementY();
+    double displacement = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    double AngleInDegrees = Math.atan(speakerHeightMetres/displacement) * 180 / Math.PI;
+    return AngleInDegrees;
+  }
+
   @Override
   public void periodic() {
 
@@ -181,11 +198,15 @@ public class ArmSubsystem extends SubsystemBase {
       if(targetPosition == 0 && atTargetPosition()){
         m_armLeaderMotor.set(0);
       }else{
-        m_armLeaderMotor.set(
-          ControlMode.MotionMagic, 
-          targetPosition * ArmConstants.EncoderToOutputRatio,
-          DemandType.ArbitraryFeedForward,
-          adjusted_feedForward);
+        if(isAutoAiming){
+
+        }else{
+          m_armLeaderMotor.set(
+            ControlMode.MotionMagic, 
+            targetPosition * ArmConstants.EncoderToOutputRatio,
+            DemandType.ArbitraryFeedForward,
+            adjusted_feedForward);
+        }
       }
     }
   }
