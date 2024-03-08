@@ -6,30 +6,36 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.StopIntake;
-import frc.robot.commands.IntakeNote;
-import frc.robot.commands.ShootNoteAmp;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.autonomousCommands.DriveOut;
+import frc.robot.commands.autonomousCommands.TwoNoteAutoSimple;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
+import frc.robot.commands.teleopCommands.commandGroups.ShootNoteAmp;
+import frc.robot.commands.teleopCommands.commandGroups.ShootNoteSpeaker;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.ScanField;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.commands.teleopCommands.intake.IntakeNote;
+import frc.robot.commands.teleopCommands.intake.StopIntake;
+import frc.robot.commands.teleopCommands.shooter.StopShooter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.setSpeed;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -50,18 +56,24 @@ public class RobotContainer {
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
+  private final TwoNoteAutoSimple m_simpleTwoNote = new TwoNoteAutoSimple(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
+  private final DriveOut m_simpleOneNote = new DriveOut(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
+
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
 
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Configure the trigger bindings
     configureBindings();
+
+    m_chooser.setDefaultOption("Simple Two Note", m_simpleTwoNote);
+    m_chooser.addOption("Simple One Note", m_simpleOneNote);
+    SmartDashboard.putData(m_chooser);
   }
 
   /**
@@ -91,13 +103,17 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
 
-    new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ShootNoteAmp(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
+      new ShootNoteAmp(m_intake, m_shooterSubsystem),
+      new ShootNoteSpeaker(m_intake, m_shooterSubsystem),
+      m_armSubsystem::isArmAtAmp));;
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntake(m_intake));
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new setSpeed(m_shooterSubsystem, 0));
-    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new setSpeed(m_shooterSubsystem, 0));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopShooter(m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntake(m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopShooter(m_shooterSubsystem));
 
     new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbUp(m_climbSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));

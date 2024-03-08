@@ -5,11 +5,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
@@ -17,11 +14,8 @@ import frc.robot.Constants.ClimbConstants;
 
 
 public class ClimbSubsystem extends SubsystemBase {
-    // Declaring motor controllers
     private final WPI_TalonSRX m_climbLeaderMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
     private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
-
-
 
     public ClimbSubsystem() {
         m_climbLeaderMotor.configFactoryDefault();
@@ -55,7 +49,5 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-    }
+    public void simulationPeriodic() {}
 }

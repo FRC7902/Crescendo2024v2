@@ -125,6 +125,10 @@ public final class Constants {
     public static final int peakCurrent = 30; 
     public static final int constantCurrent = 15; 
   }
+
+  public static class AutoConstants{
+    public static final double autoDriveSpeed = 0.5;
+  }
 }
 
 // all 0 need to be changed later, theyre place holders rn

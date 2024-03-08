@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -60,6 +59,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
   private DifferentialDriveOdometry m_odometry;
+
+  private boolean isScanningField = false;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -181,38 +182,39 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
 
-    // if (Robot.isSimulation()) {
-    //   m_odometry.update(
-    //       m_gyro.getRotation2d(),
-    //       m_leftEncoderObj.getDistance(),
-    //       m_rightEncoderObj.getDistance());
-    // } else {
-    //   if (m_camera.getLatestResult().hasTargets()) {
-    //     updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
-    //     m_odometry.resetPosition(
-    //         ahrs.getRotation2d(),
-    //         m_leftEncoder.getPosition(),
-    //         m_rightEncoder.getPosition(),
-    //         new Pose2d(
-    //             m_poseEstimator.getEstimatedPosition().getX(),
-    //             m_poseEstimator.getEstimatedPosition().getY(),
-    //             m_poseEstimator.getEstimatedPosition().getRotation()));
-    //   } else {
-    //     m_odometry.update(
-    //         ahrs.getRotation2d(),
-    //         -m_leftEncoder.getPosition(),
-    //         -m_rightEncoder.getPosition());
-    //   }
+    if (Robot.isSimulation()) {
+      m_odometry.update(
+          m_gyro.getRotation2d(),
+          m_leftEncoderObj.getDistance(),
+          m_rightEncoderObj.getDistance());
+    } else {
+      if (m_camera.getLatestResult().hasTargets() && isScanningField) {
+        updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+        m_odometry.resetPosition(
+            ahrs.getRotation2d(),
+            m_leftEncoder.getPosition(),
+            m_rightEncoder.getPosition(),
+            new Pose2d(
+                m_poseEstimator.getEstimatedPosition().getX(),
+                m_poseEstimator.getEstimatedPosition().getY(),
+                m_poseEstimator.getEstimatedPosition().getRotation()));
+      } else {
+        m_odometry.update(
+            ahrs.getRotation2d(),
+            -m_leftEncoder.getPosition(),
+            -m_rightEncoder.getPosition());
+      }
 
-    // }
+    }
     
-    // m_fieldSim.setRobotPose(getPose());
+    m_fieldSim.setRobotPose(getPose());
 
+    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
+    SmartDashboard.putBoolean("Is Scanning", isScanningField);
     
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
     SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
     SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
-    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
     SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
     SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
@@ -342,5 +344,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double modAngle(double angle) {
     return Math.IEEEremainder(angle, 360);
+  }
+
+  public void setFieldScan(boolean isScanning){
+    isScanningField = isScanning;
   }
 }

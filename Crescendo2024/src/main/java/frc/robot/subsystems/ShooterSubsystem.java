@@ -5,14 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase;
-//import com.ctre.phoenix.motorcontrol.InvertType;
-//import com.ctre.phoenix.motorcontrol.NeutralMode;
-//import com.revrobotics.CANSparkBase.IdleMode;
-//import com.revrobotics.CANSparkBase.IdleMode;
-//import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.teleopCommands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -11,13 +11,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeNote extends Command {
   private IntakeSubsystem m_intake;
-  private ShooterSubsystem m_shooter;
 
   /** Creates a new Suck. */
-  public IntakeNote(IntakeSubsystem intake, ShooterSubsystem shooter) {
+  public IntakeNote(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-    m_shooter = shooter;
 
     // intake a note, when the beam brake is hit, stop spinning and apply a small
     // feedforward to hold onto the note

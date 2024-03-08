@@ -75,12 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
     m_armLeaderMotor.configVoltageCompSaturation(12, 0);
     m_armLeaderMotor.configPeakCurrentLimit(45);
 
-    int ku = 45;
-    double tu = 0.1;
-
     m_armLeaderMotor.config_kP(0, 1.5);
     m_armLeaderMotor.config_kI(0, 0);// 54
     m_armLeaderMotor.config_kD(0, 0);// 3.374
+
     // Setting the velocity and acceleration of the motors
     m_armLeaderMotor.configMotionCruiseVelocity(2500);
     m_armLeaderMotor.configMotionAcceleration(500);
@@ -134,6 +132,10 @@ public class ArmSubsystem extends SubsystemBase {
     targetPosition = -newTargetPosition;
   }
 
+  public boolean atTargetPosition(){
+    return (m_armLeaderMotor.getSensorCollection().getQuadraturePosition() - targetPosition * ArmConstants.EncoderToOutputRatio) < 50;
+  }
+
   public boolean atZeroPos() {
     return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
   }
@@ -144,6 +146,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   public double modAngleTicks(double angleInTicks){
     return Math.IEEEremainder(angleInTicks, ArmConstants.EncoderCPR);
+  }
+  
+  public boolean isArmAtAmp(){
+    return targetPosition - (-1 * (int) ArmConstants.ArmAmpSetpoint * ArmConstants.EncoderCPR/ 360) < 5;
   }
 
   @Override
@@ -161,7 +167,7 @@ public class ArmSubsystem extends SubsystemBase {
         * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
 
     SmartDashboard.putNumber("Target Position", targetPosition);
-    SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
+    // SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putNumber("Encoder value", m_armLeaderMotor.getSensorCollection().getQuadraturePosition());
 
@@ -172,7 +178,7 @@ public class ArmSubsystem extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         adjusted_feedForward);
     } else {
-      if(targetPosition == 0){
+      if(targetPosition == 0 && atTargetPosition()){
         m_armLeaderMotor.set(0);
       }else{
         m_armLeaderMotor.set(
