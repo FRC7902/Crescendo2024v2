@@ -1,0 +1,12 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm Sim": "Mechanism2d",
+      "/SmartDashboard/Field": "Field2d"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
