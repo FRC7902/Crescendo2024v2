@@ -4,23 +4,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.StopIntake;
-import frc.robot.commands.FeedNote;
 import frc.robot.commands.IntakeNote;
-import frc.robot.commands.ShootAmp;
 import frc.robot.commands.ShootNoteAmp;
-import frc.robot.commands.ShootSpeaker;
 import frc.robot.subsystems.IntakeSubsystem;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.IOConstants;
-import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
-import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
-import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
@@ -33,17 +23,12 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.IOConstants;
 import frc.robot.commands.setSpeed;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -123,25 +108,10 @@ public class RobotContainer {
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new PathPlannerAuto("AutoSpeaker2"));
     // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
-    // new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new AmpSetpoint(m_armSubsystem));
-    // new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new SpeakerSetpoint(m_armSubsystem));
-    // new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new Level0Setpoint(m_armSubsystem));
-    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).onFalse(new StopIntake(m_intake));// kA
-    //new JoystickButton(m_operatorStick, Constants.IOConstants.kA).whileTrue(new IntakeNote(m_intake));// kLB
-  // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new setSpeed(m_shooterSubsystem, 0));
-  // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new ShootAmp(m_shooterSubsystem));
-  // new JoystickButton(m_driverStick, IOConstants.kX).whileTrue(new ShootSpeaker(m_shooterSubsystem));
-  // new JoystickButton(m_driverStick, IOConstants.kY).whileTrue(new setSpeed(m_shooterSubsystem, -1000));
 
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
-    // return m_chooser.getSelected();
+    return m_chooser.getSelected();
   }
 }
