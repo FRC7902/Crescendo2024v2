@@ -31,6 +31,20 @@ public final class Constants {
     public static final int PigeonCAN = 3;
   }
 
+  public static final class CameraConstants {
+    public static final int resX = 80;
+  public static final int resY = 80;
+
+  // 0 < x < resX
+  // 0 < y < resY
+  public static final int[] rectPoint1 = {280, 80};
+  public static final int[] rectPoint2 = {360, 120};
+
+  //Rectangle colour
+
+  public static final int[] rectBGR= {0, 0, 255};
+  }
+
   public static final class ArmConstants {
     public static final int ArmLeaderMotorCAN = 21;// random
     public static final int ArmFollowerMotorCAN = 16;
