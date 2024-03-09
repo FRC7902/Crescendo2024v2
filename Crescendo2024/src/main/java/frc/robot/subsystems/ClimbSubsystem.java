@@ -18,7 +18,7 @@ import frc.robot.Constants.ClimbConstants;
 public class ClimbSubsystem extends SubsystemBase {
     private final WPI_TalonSRX m_climbLeaderMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
     //private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
-    private final DigitalInput limitSwitch = new DigitalInput(0);
+    private final DigitalInput limitSwitch = new DigitalInput(7);
 
     public ClimbSubsystem() {
         m_climbLeaderMotor.configFactoryDefault();
