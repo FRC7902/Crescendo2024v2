@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
@@ -15,16 +17,17 @@ import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
     private final WPI_TalonSRX m_climbLeaderMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
-    private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
+    //private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
+    private final DigitalInput limitSwitch = new DigitalInput(0);
 
     public ClimbSubsystem() {
         m_climbLeaderMotor.configFactoryDefault();
-        m_climbFollowerMotor.configFactoryDefault();
         m_climbLeaderMotor.setInverted(false);
-        m_climbFollowerMotor.setInverted(false);
         m_climbLeaderMotor.configContinuousCurrentLimit(ClimbConstants.constantCurrent);
         m_climbLeaderMotor.configPeakCurrentLimit(ClimbConstants.peakCurrent);
-        m_climbFollowerMotor.follow(m_climbLeaderMotor);
+        //m_climbFollowerMotor.configFactoryDefault();
+        //m_climbFollowerMotor.setInverted(false);
+        //m_climbFollowerMotor.follow(m_climbLeaderMotor);
 
         // Configure the encoder 
         // m_climbMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
@@ -40,6 +43,10 @@ public class ClimbSubsystem extends SubsystemBase {
     // set motor power
     public void setPower(double power) {
         m_climbLeaderMotor.set(power);
+    }
+
+    public boolean getLimitSwitch(){
+        return limitSwitch.get();
     }
 
 

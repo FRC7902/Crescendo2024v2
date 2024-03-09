@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CameraServerCvJNI;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,7 +58,6 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-
   private final TwoNoteAutoSimple m_simpleTwoNote = new TwoNoteAutoSimple(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
   private final DriveOut m_simpleOneNote = new DriveOut(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -65,6 +66,7 @@ public class RobotContainer {
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
   public RobotContainer() {
+    //driverCamera.setDriverMode(true);
     configureBindings();
 
     m_chooser.setDefaultOption("Simple Two Note", m_simpleTwoNote);
@@ -115,7 +117,7 @@ public class RobotContainer {
     // new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ClimbUp(m_climbSubsystem));
     // new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
-    new POVButton(m_operatorStick, 180).whileTrue(new ClimbUp(m_climbSubsystem));
+    new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));

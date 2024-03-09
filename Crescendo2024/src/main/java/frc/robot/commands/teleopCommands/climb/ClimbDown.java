@@ -26,7 +26,9 @@ public class ClimbDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_climb.setPower(ClimbConstants.downSpeed);
+    if(!m_climb.getLimitSwitch()){
+      m_climb.setPower(ClimbConstants.downSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.

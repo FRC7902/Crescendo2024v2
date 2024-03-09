@@ -9,6 +9,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
@@ -26,18 +27,18 @@ public class TwoNoteAutoSimple extends SequentialCommandGroup {
   /** Creates a new TwoNoteAutoSimple. */
   public TwoNoteAutoSimple(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
     addCommands(
-      new SpeakerSetpoint(arm).withTimeout(1),
+      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new ShootSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
-      new StopShooter(shooter).withTimeout(0.01),
-      new StopIntake(intake).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(1)
-      // new DriveAndIntake(drive, intake).withTimeout(1),
-      // new DriveRaw(drive, AutoConstants.autoDriveSpeed).withTimeout(1),
-      // new SpeakerSetpoint(arm).withTimeout(1),
-      // new ShootSpeaker(shooter).withTimeout(1),
-      // new FeedNote(intake).withTimeout(1),
-      // new Level0Setpoint(arm)
+      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new DriveAndIntake(drive, intake).withTimeout(1),
+      new DriveRaw(drive, AutoConstants.autoDriveSpeed).withTimeout(1),
+      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new ShootSpeaker(shooter).withTimeout(1),
+      new FeedNote(intake).withTimeout(1),
+      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
       );
   }
 }

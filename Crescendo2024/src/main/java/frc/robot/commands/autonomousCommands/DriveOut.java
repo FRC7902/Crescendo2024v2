@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.commandGroups.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.shooter.ShootSpeaker;
@@ -23,9 +24,10 @@ public class DriveOut extends SequentialCommandGroup {
   /** Creates a new DriveOut. */
   public DriveOut(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter) {
     addCommands(
-            new SpeakerSetpoint(arm).withTimeout(1),
+      new SpeakerSetpoint(arm).withTimeout(1),
       new ShootSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
+      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(1),
       new DriveRaw(drive, -AutoConstants.autoDriveSpeed).withTimeout(2)
     );

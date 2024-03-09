@@ -188,9 +188,9 @@ public class ArmSubsystem extends SubsystemBase {
       setNewTargetPosition(0);
     }
 
-    if (m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {// double check this value
-      m_armLeaderMotor.setSelectedSensorPosition(0);
-    }
+    // if (m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {// double check this value
+    //   m_armLeaderMotor.setSelectedSensorPosition(0);
+    // }
 
     double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
         * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
@@ -199,6 +199,7 @@ public class ArmSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
+    SmartDashboard.putNumber("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed());
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.set(
