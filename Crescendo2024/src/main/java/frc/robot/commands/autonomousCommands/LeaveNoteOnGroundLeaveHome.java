@@ -10,11 +10,11 @@ import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
-import frc.robot.commands.teleopCommands.commandGroups.StopIntakeAndShooter;
+import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
-import frc.robot.commands.teleopCommands.shooter.ShootAmp;
-import frc.robot.commands.teleopCommands.shooter.ShootSpeaker;
+import frc.robot.commands.teleopCommands.shooter.SetSpeedAmp;
+import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -28,7 +28,7 @@ public class LeaveNoteOnGroundLeaveHome extends SequentialCommandGroup {
   public LeaveNoteOnGroundLeaveHome(ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter, DriveSubsystem drive) {
     addCommands(
       new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ShootAmp(shooter).withTimeout(1),
+      new SetSpeedAmp(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),

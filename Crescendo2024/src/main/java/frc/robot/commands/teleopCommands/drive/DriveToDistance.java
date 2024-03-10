@@ -7,24 +7,24 @@ package frc.robot.commands.teleopCommands.drive;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveToDistance extends Command {
 
   private final DriveSubsystem m_driveSubsystem;
-  private final double targetDistance;
+  private final double targetDistanceInTicks;
   private double initialPosition;
 
   private final PIDController drivePID = new PIDController(1, 0, 0);
 
   /** Creates a new DriveToDistance. */
-  public DriveToDistance(DriveSubsystem driveSubsystem, double target) {
+  public DriveToDistance(DriveSubsystem driveSubsystem, double targetInMetres) {
     
     m_driveSubsystem = driveSubsystem;
-    targetDistance = target;
-    drivePID.setTolerance(0.00001, 1);
+    targetDistanceInTicks = targetInMetres * DriveConstants.encoderTicksPerRevolution / (DriveConstants.wheelDiameterMetres * Math.PI);
+    drivePID.setTolerance(0.05);
     addRequirements(m_driveSubsystem);
-
   }
 
   // Called when the command is initially scheduled.
@@ -36,11 +36,11 @@ public class DriveToDistance extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistance);
+    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInTicks);
     m_driveSubsystem.driveRaw(speed);
 
     SmartDashboard.putNumber("speed", speed);
-    SmartDashboard.putNumber("target distance", initialPosition + targetDistance);
+    SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInTicks);
     SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
   }

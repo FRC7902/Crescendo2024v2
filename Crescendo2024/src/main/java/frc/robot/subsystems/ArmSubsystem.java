@@ -150,6 +150,21 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
+    public boolean notAtTargetPosition(){
+    if(Math.abs(getAngle() - targetPosition) < 150){
+      targetPositionCounter++;
+    }else{
+      targetPositionCounter = 0;
+    }
+
+    if(targetPositionCounter > 20){
+      return false;
+    }else{
+      return true;
+    }
+
+  }
+
   public boolean atZeroPos() {
     return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
   }

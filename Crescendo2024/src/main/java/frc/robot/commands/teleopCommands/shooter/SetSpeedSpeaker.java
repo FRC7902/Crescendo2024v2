@@ -7,19 +7,18 @@ package frc.robot.commands.teleopCommands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootAmp extends Command {
+public class SetSpeedSpeaker extends Command {
   private ShooterSubsystem m_shooter;
 
-
   /** Creates a new setSpeed. */
-  public ShootAmp(ShooterSubsystem shooter) {
+  public SetSpeedSpeaker(ShooterSubsystem shooter) {
     m_shooter = shooter;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.amp();
+    m_shooter.speaker();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
