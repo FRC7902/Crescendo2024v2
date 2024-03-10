@@ -12,6 +12,7 @@ public class DriveRaw extends Command {
   private double m_power;
   /** Creates a new DriveRaw. */
   public DriveRaw(DriveSubsystem drive, double power) {
+    addRequirements(drive);
     m_driveSubsystem = drive;
     m_power = power;
   }

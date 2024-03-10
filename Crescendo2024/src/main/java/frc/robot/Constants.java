@@ -28,7 +28,6 @@ public final class Constants {
     public static final double gearRatio = 10.71;
     public static final double encoderTicksPerRevolution = 42;
     public static final double trackWidthInches = 24;
-    public static final int PigeonCAN = 3;
   }
 
   public static final class ArmConstants {
@@ -75,7 +74,7 @@ public final class Constants {
     public static final double spittingSpeed = -1;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
-    public static final int beamBrake = 5;
+    public static final int beamBrakePort = 5;
     public static final double kSFeedForward = 0;
     public static final double kVFeedForward = 0;
     public static final double kAFeedForward = 0;
@@ -120,15 +119,15 @@ public final class Constants {
   public static class ClimbConstants{
     public static final int ClimbLeaderCAN = 20;
     public static final int ClimbFollowerCAN = 18;
-    public static final double upSpeed = -0.5;
-    public static final double downSpeed = 0.5;
+    public static final double upSpeed = 0.7;
+    public static final double downSpeed = -0.7;
     public static final int peakCurrent = 30; 
     public static final int constantCurrent = 15; 
-    public static final int limitSwitchPort = 0;
+    public static final int limitSwitchPort = 7;
   }
 
   public static class AutoConstants{
-    public static final double autoDriveSpeed = 0.8;
+    public static final double autoDriveSpeed = 1;
   }
 }
 

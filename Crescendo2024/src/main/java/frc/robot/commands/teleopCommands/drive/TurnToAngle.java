@@ -31,7 +31,7 @@ public class TurnToAngle extends Command {
     isAdditive = IsAdditive;
     turnPID.setTolerance(1, 10000);
     initialAngle = m_driveSubsystem.getHeading();
-
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.

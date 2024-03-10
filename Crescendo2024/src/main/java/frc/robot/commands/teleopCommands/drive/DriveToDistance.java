@@ -19,12 +19,12 @@ public class DriveToDistance extends Command {
 
   /** Creates a new DriveToDistance. */
   public DriveToDistance(DriveSubsystem driveSubsystem, double target) {
-
+    
     m_driveSubsystem = driveSubsystem;
     targetDistance = target;
     drivePID.setTolerance(0.00001, 1);
+    addRequirements(m_driveSubsystem);
 
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

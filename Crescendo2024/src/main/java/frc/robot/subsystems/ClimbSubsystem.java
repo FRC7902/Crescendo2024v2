@@ -5,6 +5,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -17,21 +18,19 @@ import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
     private final WPI_TalonSRX m_climbLeaderMotor = new WPI_TalonSRX(ClimbConstants.ClimbLeaderCAN);
-    //private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
-    private final DigitalInput limitSwitch = new DigitalInput(0);
+    private final WPI_VictorSPX m_climbFollowerMotor = new WPI_VictorSPX(ClimbConstants.ClimbFollowerCAN);
+    private final DigitalInput limitSwitch = new DigitalInput(ClimbConstants.limitSwitchPort);
 
     public ClimbSubsystem() {
         m_climbLeaderMotor.configFactoryDefault();
         m_climbLeaderMotor.setInverted(false);
         m_climbLeaderMotor.configContinuousCurrentLimit(ClimbConstants.constantCurrent);
         m_climbLeaderMotor.configPeakCurrentLimit(ClimbConstants.peakCurrent);
-        //m_climbFollowerMotor.configFactoryDefault();
-        //m_climbFollowerMotor.setInverted(false);
-        //m_climbFollowerMotor.follow(m_climbLeaderMotor);
-
-        // Configure the encoder 
-        // m_climbMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0,
-        // 0);
+        m_climbLeaderMotor.setNeutralMode(NeutralMode.Brake);
+        m_climbFollowerMotor.configFactoryDefault();
+        m_climbFollowerMotor.setInverted(false);
+        m_climbFollowerMotor.follow(m_climbLeaderMotor);
+        m_climbFollowerMotor.setNeutralMode(NeutralMode.Brake);
     }
     
  
@@ -49,10 +48,18 @@ public class ClimbSubsystem extends SubsystemBase {
         return limitSwitch.get();
     }
 
+    public void stop(){
+        m_climbLeaderMotor.stopMotor();
+    }
+
 
     @Override
     public void periodic() { 
         SmartDashboard.putNumber("Climber Current Limit", m_climbLeaderMotor.getSupplyCurrent());
+        SmartDashboard.putBoolean("Climber Limit Switch", getLimitSwitch());
+        if(m_climbLeaderMotor.get() < 0 && getLimitSwitch()){
+            stop();
+        }
     }
 
     @Override

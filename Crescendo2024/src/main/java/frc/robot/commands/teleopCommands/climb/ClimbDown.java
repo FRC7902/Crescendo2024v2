@@ -28,6 +28,8 @@ public class ClimbDown extends Command {
   public void execute() {
     if(!m_climb.getLimitSwitch()){
       m_climb.setPower(ClimbConstants.downSpeed);
+    }else{
+      m_climb.setPower(0);
     }
   }
 

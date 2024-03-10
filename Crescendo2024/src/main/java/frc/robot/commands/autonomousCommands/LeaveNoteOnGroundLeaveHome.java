@@ -6,16 +6,15 @@ package frc.robot.commands.autonomousCommands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 import frc.robot.commands.teleopCommands.commandGroups.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
-import frc.robot.commands.teleopCommands.intake.IntakeNote;
-import frc.robot.commands.teleopCommands.intake.StopIntake;
+import frc.robot.commands.teleopCommands.shooter.ShootAmp;
 import frc.robot.commands.teleopCommands.shooter.ShootSpeaker;
-import frc.robot.commands.teleopCommands.shooter.StopShooter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -24,22 +23,16 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoNoteAutoSimple extends SequentialCommandGroup {
-  /** Creates a new TwoNoteAutoSimple. */
-  public TwoNoteAutoSimple(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
+public class LeaveNoteOnGroundLeaveHome extends SequentialCommandGroup {
+  /** Creates a new LeaveNoteOnGroundLeaveHome. */
+  public LeaveNoteOnGroundLeaveHome(ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter, DriveSubsystem drive) {
     addCommands(
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ShootSpeaker(shooter).withTimeout(1),
+      new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new ShootAmp(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveAndIntake(drive, intake).withTimeout(1),
-      new DriveRaw(drive, -AutoConstants.autoDriveSpeed).withTimeout(1),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ShootSpeaker(shooter).withTimeout(1),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
-      );
+      new DriveRaw(drive, AutoConstants.autoDriveSpeed)
+    );
   }
 }

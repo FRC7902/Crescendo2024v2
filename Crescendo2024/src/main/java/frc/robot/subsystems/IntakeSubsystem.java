@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
 
   private final PWMSparkMax m_intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
-  private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrake);
+  private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrakePort);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
       IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
 
@@ -48,6 +48,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setShootingStatus(boolean status){
     isShooting = status;
+  }
+
+  public boolean getBeamBrake(){
+    return intakeSensor.get();
   }
 
   @Override

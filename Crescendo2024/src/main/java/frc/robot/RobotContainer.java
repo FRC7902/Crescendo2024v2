@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.autonomousCommands.DriveOut;
+import frc.robot.commands.autonomousCommands.LeaveHome;
+import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoSimple;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
@@ -21,12 +23,14 @@ import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.commandGroups.ShootNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.ShootNoteSpeaker;
+import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.ScanField;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
 import frc.robot.commands.teleopCommands.shooter.StopShooter;
+import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -60,6 +64,8 @@ public class RobotContainer {
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private final TwoNoteAutoSimple m_simpleTwoNote = new TwoNoteAutoSimple(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
   private final DriveOut m_simpleOneNote = new DriveOut(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
+  private final LeaveHome m_leaveHome = new LeaveHome(m_driveSubsystem);
+  private final LeaveNoteOnGroundLeaveHome m_LeaveNoteOnGroundLeaveHome = new LeaveNoteOnGroundLeaveHome(m_armSubsystem, m_intake, m_shooterSubsystem, m_driveSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
@@ -71,6 +77,8 @@ public class RobotContainer {
 
     m_chooser.setDefaultOption("Simple Two Note", m_simpleTwoNote);
     m_chooser.addOption("Simple One Note", m_simpleOneNote);
+    m_chooser.addOption("Drive Only", m_leaveHome);
+    m_chooser.addOption("AMp", m_LeaveNoteOnGroundLeaveHome);
     SmartDashboard.putData(m_chooser);
   }
 
@@ -118,6 +126,7 @@ public class RobotContainer {
     // new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ClimbDown(m_climbSubsystem));
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
+    new POVButton(m_operatorStick, 90).whileTrue(new DriveRaw(m_driveSubsystem, 0.8));
 
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));
