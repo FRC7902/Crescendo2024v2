@@ -10,6 +10,7 @@ import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
@@ -29,7 +30,7 @@ public class DriveOut extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(1),
-      new DriveRaw(drive, -AutoConstants.autoDriveSpeed).withTimeout(2)
+      new DriveToDistance(drive, 3).withTimeout(5)
     );
   }
 }

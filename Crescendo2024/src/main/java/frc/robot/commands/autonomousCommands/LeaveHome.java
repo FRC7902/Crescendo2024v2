@@ -7,6 +7,7 @@ package frc.robot.commands.autonomousCommands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.subsystems.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,7 +19,7 @@ public class LeaveHome extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveRaw(drive, AutoConstants.autoDriveSpeed).withTimeout(2)
+      new DriveToDistance(drive, 1).withTimeout(2.5)
     );
   }
 }

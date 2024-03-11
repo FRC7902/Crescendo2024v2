@@ -10,6 +10,9 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import java.sql.Driver;
+
 import org.photonvision.PhotonCamera;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
@@ -103,9 +106,9 @@ public class DriveSubsystem extends SubsystemBase {
     m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
-        -DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        -(DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
     m_rightEncoder.setPositionConversionFactor(
-        DriveConstants.wheelDiameterMetres * Math.PI / DriveConstants.gearRatio);
+        DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio));
 
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
@@ -181,6 +184,10 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
+
+    if(DriverStation.isDisabled()){
+      resetEncoders();
+    }
 
     if (Robot.isSimulation()) {
       m_odometry.update(
@@ -269,7 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
 
-    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), Math.pow(zRotation, 3)
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), 0.8 * Math.pow(zRotation, 3)
     );
   }
 

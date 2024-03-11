@@ -12,6 +12,7 @@ import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedAmp;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
@@ -32,7 +33,8 @@ public class LeaveNoteOnGroundLeaveHome extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveRaw(drive, AutoConstants.autoDriveSpeed)
+      new DriveToDistance(drive, 5.5).withTimeout(5)
+      //new DriveToDistance(drive, -5).withTimeout(5)
     );
   }
 }

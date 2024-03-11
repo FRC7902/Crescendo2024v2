@@ -23,6 +23,7 @@ import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteSpeaker;
+import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
@@ -118,16 +119,19 @@ public class RobotContainer {
       new ShootNoteAmp(m_intake, m_shooterSubsystem),
       new ShootNoteSpeaker(m_intake, m_shooterSubsystem),
       m_armSubsystem::isArmAtAmp));;
-    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntake(m_intake));
-    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopShooter(m_shooterSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntake(m_intake));
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopShooter(m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
+
+    // new POVButton(m_operatorStick, 90).whileTrue(new DriveToDistance(m_driveSubsystem, 0.5));//POSITIVE VALUE GOES BACKWARDS
+    // new POVButton(m_operatorStick, 270).whileTrue(new DriveToDistance(m_driveSubsystem, -0.5));
 
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));

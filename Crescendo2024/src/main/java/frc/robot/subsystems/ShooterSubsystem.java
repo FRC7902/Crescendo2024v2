@@ -126,6 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter speed", sparkEncoder.getVelocity());
     SmartDashboard.putNumber("Target Speed", targetSpeed);
+    SmartDashboard.putBoolean("at target speed", atTargetSpeed());
 
   }
 

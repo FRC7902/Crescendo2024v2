@@ -7,6 +7,7 @@ package frc.robot.commands.teleopCommands.commandGroups;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -20,7 +21,7 @@ public class DriveAndIntake extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveRaw(drive, AutoConstants.autoDriveSpeed),
+      new DriveToDistance(drive, 1.5),
       new IntakeNote(intake)
     );
   }

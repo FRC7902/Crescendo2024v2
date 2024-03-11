@@ -11,6 +11,7 @@ import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
@@ -33,13 +34,15 @@ public class TwoNoteAutoSimple extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveAndIntake(drive, intake).withTimeout(1),
-      new DriveRaw(drive, -AutoConstants.autoDriveSpeed).withTimeout(1),
+      new DriveAndIntake(drive, intake).withTimeout(2.5),
+      new StopIntake(intake).withTimeout(0.01),
+      new DriveToDistance(drive, -1.5).withTimeout(2.5),
       new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new SetSpeedSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
+      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new DriveToDistance(drive, 3)
       );
   }
 }

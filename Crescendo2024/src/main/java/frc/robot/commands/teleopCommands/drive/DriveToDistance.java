@@ -13,17 +13,17 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DriveToDistance extends Command {
 
   private final DriveSubsystem m_driveSubsystem;
-  private final double targetDistanceInTicks;
+  private final double targetDistanceInMetres;
   private double initialPosition;
 
-  private final PIDController drivePID = new PIDController(1, 0, 0);
+  private final PIDController drivePID = new PIDController(0.25, 0, 0);
 
   /** Creates a new DriveToDistance. */
   public DriveToDistance(DriveSubsystem driveSubsystem, double targetInMetres) {
     
     m_driveSubsystem = driveSubsystem;
-    targetDistanceInTicks = targetInMetres * DriveConstants.encoderTicksPerRevolution / (DriveConstants.wheelDiameterMetres * Math.PI);
-    drivePID.setTolerance(0.05);
+    targetDistanceInMetres = targetInMetres;
+    drivePID.setTolerance(0.1);
     addRequirements(m_driveSubsystem);
   }
 
@@ -36,11 +36,20 @@ public class DriveToDistance extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInTicks);
-    m_driveSubsystem.driveRaw(speed);
+    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
+    double FF;
+    SmartDashboard.putNumber("Error", speed);
+
+    if(speed > 0){
+      FF = 0.01;
+    }else{
+      FF = -0.01;
+    }
+    
+    m_driveSubsystem.driveRaw(speed + FF);
 
     SmartDashboard.putNumber("speed", speed);
-    SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInTicks);
+    SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);
     SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
   }
