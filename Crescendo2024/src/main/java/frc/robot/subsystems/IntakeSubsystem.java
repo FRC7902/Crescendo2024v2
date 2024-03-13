@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -66,7 +67,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (!intakeSensor.get() && !isShooting) {
       m_intakeMotor.set(-0.3);
-      m_operatorStick.setRumble(RumbleType.kBothRumble, 1);
+      if(DriverStation.isTeleop()){
+        m_operatorStick.setRumble(RumbleType.kBothRumble, 1);
+      }
     } else {
       m_intakeMotor.set(targetPower);
       m_operatorStick.setRumble(RumbleType.kBothRumble, 0);
