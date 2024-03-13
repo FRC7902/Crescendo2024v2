@@ -26,19 +26,12 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNot
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
-import frc.robot.commands.teleopCommands.drive.DriveRaw;
-import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.ScanField;
-import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
-import frc.robot.commands.teleopCommands.intake.StopIntake;
-import frc.robot.commands.teleopCommands.shooter.StopShooter;
-import frc.robot.commands.teleopCommands.drive.DriveRaw;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -58,11 +51,14 @@ import frc.robot.subsystems.ShooterSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  
+  private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
+  private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
   private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem(m_driveSubsystem);
-  private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
   private final TwoNoteAutoSimple m_simpleTwoNote = new TwoNoteAutoSimple(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
@@ -71,8 +67,6 @@ public class RobotContainer {
   private final LeaveNoteOnGroundLeaveHome m_LeaveNoteOnGroundLeaveHome = new LeaveNoteOnGroundLeaveHome(m_armSubsystem, m_intake, m_shooterSubsystem, m_driveSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
-  private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
   public RobotContainer() {
     //driverCamera.setDriverMode(true);
@@ -129,9 +123,6 @@ public class RobotContainer {
 
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
-
-    // new POVButton(m_operatorStick, 90).whileTrue(new DriveToDistance(m_driveSubsystem, 0.5));//POSITIVE VALUE GOES BACKWARDS
-    // new POVButton(m_operatorStick, 270).whileTrue(new DriveToDistance(m_driveSubsystem, -0.5));
 
     // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new PathPlannerAuto("AutoSpeaker1"));

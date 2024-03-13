@@ -7,7 +7,6 @@ package frc.robot.commands.teleopCommands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
 
 public class IntakeNote extends Command {
   private IntakeSubsystem m_intake;
@@ -16,11 +15,6 @@ public class IntakeNote extends Command {
   public IntakeNote(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
-
-    // intake a note, when the beam brake is hit, stop spinning and apply a small
-    // feedforward to hold onto the note
-
-    // seperate command: feed the note into the shooter (ignore the beam brake)
   }
 
   // Called when the command is initially scheduled.
@@ -32,12 +26,7 @@ public class IntakeNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (true) {
-      m_intake.setTargetPower(Constants.IntakeConstants.suckingSpeed);
-      //m_shooter.setTargetSpeed(-100);
-    } else {
-      m_intake.setTargetPower(Constants.IntakeConstants.holdPower);
-    }
+    m_intake.setTargetPower(Constants.IntakeConstants.suckingSpeed);
   }
 
   // Called once the command ends or is interrupted.
