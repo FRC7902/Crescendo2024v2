@@ -119,8 +119,8 @@ public final class Constants {
   public static class ClimbConstants{
     public static final int ClimbLeaderCAN = 20;
     public static final int ClimbFollowerCAN = 18;
-    public static final double upSpeed = 0.7;
-    public static final double downSpeed = -0.7;
+    public static final double upSpeed = 1.0;
+    public static final double downSpeed = -1.0;
     public static final int peakCurrent = 30; 
     public static final int constantCurrent = 15; 
     public static final int limitSwitchPort = 7;
