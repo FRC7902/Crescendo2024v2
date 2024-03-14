@@ -19,9 +19,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveOut extends SequentialCommandGroup {
+public class OneNotePreload extends SequentialCommandGroup {
   /** Creates a new DriveOut. */
-  public DriveOut(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  public OneNotePreload(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter) {
     addCommands(
       new SpeakerSetpoint(arm).withTimeout(1),
       new SetSpeedSpeaker(shooter).withTimeout(1),

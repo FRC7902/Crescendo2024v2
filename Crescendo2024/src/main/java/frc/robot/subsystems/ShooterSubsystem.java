@@ -23,6 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
       CANSparkMax.MotorType.kBrushless); // right
 
   public double targetSpeed = 0;
+  public int targetSpeedCounter = 0;
 
   public SparkPIDController speedPID;
   public final RelativeEncoder sparkEncoder = m_leaderMotor.getEncoder();
@@ -81,9 +82,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    if (50 > Math.abs(0.7 * targetSpeed - sparkEncoder.getVelocity())) {
-      return true;
+    if (100 > Math.abs((0.7 * targetSpeed) - sparkEncoder.getVelocity())) {
+      targetSpeedCounter++;
     } else {
+      targetSpeedCounter = 0;
+    }
+
+    if(targetSpeedCounter > 20){
+      return true;
+    }else{
       return false;
     }
   }

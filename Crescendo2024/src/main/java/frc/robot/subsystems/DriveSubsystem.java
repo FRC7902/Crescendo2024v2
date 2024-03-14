@@ -4,9 +4,15 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.kauailabs.navx.frc.AHRS;
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -20,6 +26,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -34,15 +45,17 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSiz
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
 
-  private final CANSparkMax m_leftLeaderMotor = new CANSparkMax(DriveConstants.leftFrontCAN,
+  private final CANSparkMax m_leftLeaderMotor = new CANSparkMax(DriveConstants.leftBackCAN,
       CANSparkMax.MotorType.kBrushless);
-  private final CANSparkMax m_leftFollowerMotor = new CANSparkMax(DriveConstants.leftBackCAN,
+  private final CANSparkMax m_leftFollowerMotor = new CANSparkMax(DriveConstants.leftFrontCAN,
       CANSparkMax.MotorType.kBrushless);
   private final CANSparkMax m_rightLeaderMotor = new CANSparkMax(DriveConstants.rightFrontCAN,
       CANSparkMax.MotorType.kBrushless);
@@ -85,6 +98,49 @@ public class DriveSubsystem extends SubsystemBase {
       VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))// cam std devs
   );
 
+  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+   private final SysIdRoutine m_sysIdRoutine =
+      new SysIdRoutine(
+          // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+          new SysIdRoutine.Config(),
+          new SysIdRoutine.Mechanism(
+              // Tell SysId how to plumb the driving voltage to the motors.
+              (Measure<Voltage> volts) -> {
+                m_leftLeaderMotor.setVoltage(volts.in(Volts));
+                m_rightLeaderMotor.setVoltage(volts.in(Volts));
+              },
+              // Tell SysId how to record a frame of data for each motor on the mechanism being
+              // characterized.
+              log -> {
+                // Record a frame for the left motors.  Since these share an encoder, we consider
+                // the entire group to be one motor.
+                log.motor("drive-left")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            m_leftLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
+                // Record a frame for the right motors.  Since these share an encoder, we consider
+                // the entire group to be one motor.
+                log.motor("drive-right")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            m_rightLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
+              },
+              // Tell SysId to make generated commands require this subsystem, suffix test state in
+              // WPILog with this subsystem's name ("drive")
+              this));
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(PhotonCamera camera) {
     m_camera = camera;
@@ -103,9 +159,12 @@ public class DriveSubsystem extends SubsystemBase {
     m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
     m_leftEncoder.setPositionConversionFactor(
-        -(DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
+        (DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
     m_rightEncoder.setPositionConversionFactor(
-        DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio));
+        (DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
+
+    m_leftEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
+    m_rightEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
 
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
@@ -135,9 +194,9 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       m_odometry = new DifferentialDriveOdometry(
           m_gyro.getRotation2d(),
-          -m_leftEncoder.getPosition(),
-          -m_rightEncoder.getPosition(),
-          new Pose2d(1, 1, new Rotation2d()));
+          m_leftEncoder.getPosition(),
+          m_rightEncoder.getPosition(),
+          new Pose2d(0.65, 6.97, new Rotation2d()));
     }
 
     m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
@@ -153,25 +212,25 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
     m_gyroSim = new AnalogGyroSim(m_gyro);
 
-    // AutoBuilder.configureRamsete(
-    //     this::getPose,
-    //     this::resetPose,
-    //     this::getWheelSpeeds,
-    //     this::driveSpeeds, new ReplanningConfig(), // Default path replanning config. See the API for the options here
-    //     () -> {
-    //       // Boolean supplier that controls when the path will be mirrored for the red
-    //       // alliance
-    //       // This will flip the path being followed to the red side of the field.
-    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    AutoBuilder.configureRamsete(
+        this::getPose,
+        this::resetPose,
+        this::getWheelSpeeds,
+        this::driveSpeeds, new ReplanningConfig(), // Default path replanning config. See the API for the options here
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-    //       var alliance = DriverStation.getAlliance();
-    //       if (alliance.isPresent()) {
-    //         return alliance.get() == DriverStation.Alliance.Red;
-    //       }
-    //       return false;
-    //     },
-    //     this // Reference to this subsystem to set requirements
-    // );
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
   }
 
   @Override
@@ -181,6 +240,8 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
+
+
 
     if(DriverStation.isDisabled()){
       resetEncoders();
@@ -194,6 +255,7 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       if (m_camera.getLatestResult().hasTargets() && isScanningField) {
         updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
+        resetEncoders();
         m_odometry.resetPosition(
             ahrs.getRotation2d(),
             m_leftEncoder.getPosition(),
@@ -205,8 +267,8 @@ public class DriveSubsystem extends SubsystemBase {
       } else {
         m_odometry.update(
             ahrs.getRotation2d(),
-            -m_leftEncoder.getPosition(),
-            -m_rightEncoder.getPosition());
+            m_leftEncoder.getPosition(),
+            m_rightEncoder.getPosition());
       }
 
     }
@@ -222,6 +284,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
     SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
     SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Right velocity", m_rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Left velocity", m_leftEncoder.getVelocity());
 
 
     // This method will be called once per scheduler run
@@ -353,4 +417,13 @@ public class DriveSubsystem extends SubsystemBase {
   public void setFieldScan(boolean isScanning){
     isScanningField = isScanning;
   }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction){
+    return m_sysIdRoutine.dynamic(direction);
+  }
+
 }

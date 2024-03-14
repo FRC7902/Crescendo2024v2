@@ -5,25 +5,22 @@
 package frc.robot.commands.teleopCommands.drive;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveToDistance extends Command {
+public class DriveToCoordinateX extends Command {
 
   private final DriveSubsystem m_driveSubsystem;
-  private final double targetDistanceInMetres;
-  private double initialPosition;
-
+  private final double targetCoordinateX;
   private final PIDController drivePID = new PIDController(0.25, 0, 0);
 
   /** Creates a new DriveToDistance. 
    * Drives a set distance, positive value drives backward
   */
-  public DriveToDistance(DriveSubsystem driveSubsystem, double targetInMetres) {
+  public DriveToCoordinateX(DriveSubsystem driveSubsystem, double targetX) {
     
     m_driveSubsystem = driveSubsystem;
-    targetDistanceInMetres = targetInMetres;
+    targetCoordinateX = targetX;
     drivePID.setTolerance(0.1);
     addRequirements(m_driveSubsystem);
   }
@@ -31,15 +28,13 @@ public class DriveToDistance extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    initialPosition = m_driveSubsystem.getPosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
+    double speed = drivePID.calculate(m_driveSubsystem.getDisplacementX(), targetCoordinateX);
     double FF;
-    SmartDashboard.putNumber("Error", speed);
 
     if(speed > 0){
       FF = 0.01;
@@ -48,10 +43,6 @@ public class DriveToDistance extends Command {
     }
     
     m_driveSubsystem.driveRaw(speed + FF);
-
-    SmartDashboard.putNumber("speed", speed);
-    SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);
-    SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
   }
 

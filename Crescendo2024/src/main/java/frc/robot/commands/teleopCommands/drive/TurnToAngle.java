@@ -17,10 +17,9 @@ public class TurnToAngle extends Command {
   private double trueTarget;
   private boolean isAdditive;
   private double initialAngle;
-  private final FireBirdsUtils util = new FireBirdsUtils();
-  private final double[] PIDConstants = util.setZeiglerNicholsConstantsNoOvershoot(0.025, 0.47619);
-  // private final PIDController turnPID = new PIDController(PIDConstants[0], PIDConstants[1], 0);
-  private final PIDController turnPID = new PIDController(0.00625, 0.0025, 0);
+  private final PIDController turnPID1 = new PIDController(0.0025, 0.0025, 0);
+  private final PIDController turnPID2 = new PIDController(0.005, 0, 0);
+  private final PIDController turnPID3 = new PIDController(0.002, 0, 0);
 
 
   /** Creates a new TurnToAngle. */
@@ -29,7 +28,9 @@ public class TurnToAngle extends Command {
     m_driveSubsystem = drive;
     targetAngle = angle;
     isAdditive = IsAdditive;
-    turnPID.setTolerance(1, 10000);
+    turnPID1.setTolerance(1.5);
+    turnPID2.setTolerance(1.5);
+    turnPID3.setTolerance(1.5);
     initialAngle = m_driveSubsystem.getHeading();
     addRequirements(drive);
   }
@@ -49,19 +50,28 @@ public class TurnToAngle extends Command {
   @Override
   public void execute() {
     double speed;
-    speed = turnPID.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
     
-    SmartDashboard.putNumber("target angle", trueTarget);
-    SmartDashboard.putNumber("Current angle", convertRange(m_driveSubsystem.getHeading()));
-    int sign;
-
-    if(speed > 0){
-      sign = 1;
+    if(Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 5){
+      speed = turnPID3.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
+    }else if(Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 20){
+      speed = turnPID2.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
     }else{
-      sign = -1;
+      speed = turnPID1.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
     }
 
-    m_driveSubsystem.turn(-speed - sign * 0.1);
+    SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget));
+    SmartDashboard.putBoolean("atSetpoint", turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint());
+    double FF;
+
+    if(convertRange(m_driveSubsystem.getHeading()) - trueTarget > 0){
+      FF = -0.12;
+    }else if(convertRange(m_driveSubsystem.getHeading()) - trueTarget < 0){
+      FF = 0.12;
+    }else{
+      FF = 0;
+    }
+
+    m_driveSubsystem.turn(-speed - FF);
   }
 
   public double convertRange(double angle) {// range from targetAngle +- 180
@@ -82,6 +92,8 @@ public class TurnToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return turnPID.atSetpoint();
+    return turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint();
+    // return Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 1;
   }
+
 }
