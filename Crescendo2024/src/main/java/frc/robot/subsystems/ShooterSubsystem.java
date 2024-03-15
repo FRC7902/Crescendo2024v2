@@ -82,7 +82,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    if (100 > Math.abs((0.7 * targetSpeed) - sparkEncoder.getVelocity())) {
+    if (200 > Math.abs((0.75 * targetSpeed) - sparkEncoder.getVelocity())) {
       targetSpeedCounter++;
     } else {
       targetSpeedCounter = 0;

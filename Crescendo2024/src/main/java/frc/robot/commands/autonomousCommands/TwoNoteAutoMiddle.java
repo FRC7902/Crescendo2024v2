@@ -34,7 +34,7 @@ public class TwoNoteAutoMiddle extends SequentialCommandGroup {
       new StopIntake(intake).withTimeout(0.01),
       new DriveToDistance(drive, -1.5).withTimeout(2.5),
       new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedSpeaker(shooter).withTimeout(1),
+      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(2),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),

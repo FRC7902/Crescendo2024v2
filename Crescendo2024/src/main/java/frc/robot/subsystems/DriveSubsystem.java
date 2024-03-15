@@ -256,6 +256,7 @@ public class DriveSubsystem extends SubsystemBase {
       if (m_camera.getLatestResult().hasTargets() && isScanningField) {
         updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
         resetEncoders();
+        ahrs.reset();
         m_odometry.resetPosition(
             ahrs.getRotation2d(),
             m_leftEncoder.getPosition(),
@@ -278,14 +279,14 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     SmartDashboard.putBoolean("Is Scanning", isScanningField);
     
-    SmartDashboard.putNumber("Yaw", ahrs.getAngle());
-    SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
-    SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
+    // SmartDashboard.putNumber("Yaw", ahrs.getAngle());
+    // SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
+    // SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
     SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
     SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
     SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("Right velocity", m_rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Left velocity", m_leftEncoder.getVelocity());
+    // SmartDashboard.putNumber("Right velocity", m_rightEncoder.getVelocity());
+    // SmartDashboard.putNumber("Left velocity", m_leftEncoder.getVelocity());
 
 
     // This method will be called once per scheduler run
@@ -408,6 +409,11 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       return Math.IEEEremainder(ahrs.getAngle(), 360);
     }
+  }
+
+
+  public double getEstimatedRotation(){
+    return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
   }
 
   public double modAngle(double angle) {

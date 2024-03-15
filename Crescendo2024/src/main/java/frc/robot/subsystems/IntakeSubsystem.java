@@ -59,6 +59,11 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeSensor.get();
   }
 
+  public boolean hasNote(){
+    return !intakeSensor.get();
+  }
+
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("target power", targetPower);

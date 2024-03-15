@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.autonomousCommands.OneNotePreload;
+import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
+import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.LeaveHome;
 import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
@@ -30,6 +32,7 @@ import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
 import frc.robot.commands.teleopCommands.drive.AlignWithAmp;
 import frc.robot.commands.teleopCommands.drive.ScanField;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
+import frc.robot.commands.teleopCommands.drive.TurnToAngleOdometry;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -75,6 +78,8 @@ public class RobotContainer {
   private final OneNotePreload m_simpleOneNote = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   private final LeaveHome m_leaveHome = new LeaveHome(m_driveSubsystem);
   private final LeaveNoteOnGroundLeaveHome m_LeaveNoteOnGroundLeaveHome = new LeaveNoteOnGroundLeaveHome(m_armSubsystem, m_intake, m_shooterSubsystem, m_driveSubsystem);
+  private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem);
+  private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -86,6 +91,8 @@ public class RobotContainer {
     m_chooser.addOption("Simple One Note", m_simpleOneNote);
     m_chooser.addOption("Drive Only", m_leaveHome);
     m_chooser.addOption("Amp", m_LeaveNoteOnGroundLeaveHome);
+    m_chooser.addOption("Three note middle", m_ThreeNoteAutoMiddle);
+    m_chooser.addOption("Two note amp", m_TwoNoteAmpAutoClose);
     SmartDashboard.putData(m_chooser);
   }
 
@@ -134,7 +141,12 @@ public class RobotContainer {
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
-    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AlignWithAmp(m_driveSubsystem));
+    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AlignWithAmp(m_driveSubsystem));
+
+    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 0, false));
+    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 90, false));
+    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new TurnToAngleOdometry(m_driveSubsystem, -90, false));
+    new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 180, false));
 
     // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new PathPlannerAuto("AutoAmp1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new PathPlannerAuto("Speaker"));
