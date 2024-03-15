@@ -29,7 +29,7 @@ public class TwoNoteAmpAutoClose extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetStartingPosition(drive, 0, 1.5, 7.5),
+      new SetStartingPosition(drive, 0, 1.5, 7),
       new Level0Setpoint(arm).until(arm::atTargetPosition),
       new DriveToDistance(drive, 0.625).withTimeout(3),
       new TurnToAngle(drive, -90, false).withTimeout(3),

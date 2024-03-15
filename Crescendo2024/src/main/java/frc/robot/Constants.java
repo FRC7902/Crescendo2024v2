@@ -70,8 +70,8 @@ public final class Constants {
   public static class IntakeConstants {
 
     public static final int intakePWMid = 8;
-    public static final double suckingSpeed = 0.7;
-    public static final double outtakingSpeed = -0.7;
+    public static final double suckingSpeed = 1.0;
+    public static final double outtakingSpeed = -1.0;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
     public static final int beamBrakePort = 5;

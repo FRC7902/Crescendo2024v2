@@ -72,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (!intakeSensor.get() && !isShooting) {
       m_intakeMotor.set(-0.3);
-      if(DriverStation.isTeleop()){
+      if(DriverStation.isTeleopEnabled()){
         m_operatorStick.setRumble(RumbleType.kBothRumble, 1);
       }
     } else {

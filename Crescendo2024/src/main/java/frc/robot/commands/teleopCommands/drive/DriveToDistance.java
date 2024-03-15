@@ -15,7 +15,8 @@ public class DriveToDistance extends Command {
   private final double targetDistanceInMetres;
   private double initialPosition;
 
-  private final PIDController drivePID = new PIDController(0.25, 0, 0);
+  private final PIDController drivePID1 = new PIDController(0.5, 0, 0);
+  private final PIDController drivePID2 = new PIDController(0.25, 0, 0);
 
   /** Creates a new DriveToDistance. 
    * Drives a set distance, positive value drives backward
@@ -24,7 +25,8 @@ public class DriveToDistance extends Command {
     
     m_driveSubsystem = driveSubsystem;
     targetDistanceInMetres = targetInMetres;
-    drivePID.setTolerance(0.1);
+    drivePID1.setTolerance(0.1);
+    drivePID2.setTolerance(0.1);
     addRequirements(m_driveSubsystem);
   }
 
@@ -37,7 +39,13 @@ public class DriveToDistance extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = drivePID.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
+    double speed;
+    if(Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.1){
+      speed = drivePID2.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
+    }else{
+      speed = drivePID1.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
+    }
+
     double FF;
     SmartDashboard.putNumber("Error", speed);
 
@@ -48,11 +56,6 @@ public class DriveToDistance extends Command {
     }
     
     m_driveSubsystem.driveRaw(speed + FF);
-
-    SmartDashboard.putNumber("speed", speed);
-    SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);
-    SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
-
   }
 
   // Called once the command ends or is interrupted.
@@ -63,6 +66,6 @@ public class DriveToDistance extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivePID.atSetpoint();
+    return drivePID2.atSetpoint();
   }
 }
