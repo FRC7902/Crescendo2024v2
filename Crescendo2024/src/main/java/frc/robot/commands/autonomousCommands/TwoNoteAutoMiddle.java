@@ -10,6 +10,7 @@ import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
@@ -25,6 +26,7 @@ public class TwoNoteAutoMiddle extends SequentialCommandGroup {
   /** Creates a new TwoNoteAutoSimple. */
   public TwoNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
     addCommands(
+      new SetStartingPosition(drive, 0, 1.5, 5.5),
       new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new SetSpeedSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),

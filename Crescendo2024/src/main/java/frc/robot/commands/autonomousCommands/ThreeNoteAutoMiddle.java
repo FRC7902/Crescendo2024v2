@@ -12,6 +12,7 @@ import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.ScanField;
+import frc.robot.commands.teleopCommands.drive.SetStartingPosition;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
@@ -29,8 +30,10 @@ public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
   public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+
     addCommands(  
       //new ScanField(drive).withTimeout(3),    
+      new SetStartingPosition(drive, 0, 1.5, 5.5),
       new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(2),
       new FeedNote(intake).withTimeout(1),

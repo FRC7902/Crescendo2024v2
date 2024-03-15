@@ -74,6 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
   private DifferentialDriveOdometry m_odometry;
 
   private boolean isScanningField = false;
+  private double startingX = 0;
+  private double startingY = 0;
+  private double startingAngle = 0;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -196,7 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_gyro.getRotation2d(),
           m_leftEncoder.getPosition(),
           m_rightEncoder.getPosition(),
-          new Pose2d(0.65, 6.97, new Rotation2d()));
+          new Pose2d(startingX, startingY, Rotation2d.fromDegrees(startingAngle)));
     }
 
     m_driveTrainSim = DifferentialDrivetrainSim.createKitbotSim( // CHANGE AS NEEDED!!
@@ -422,6 +425,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void setFieldScan(boolean isScanning){
     isScanningField = isScanning;
+  }
+
+  public void setStartingPosition(Double degrees, double x, double y){
+    m_odometry.resetPosition(
+      ahrs.getRotation2d(),
+      m_leftEncoder.getPosition(),
+      m_rightEncoder.getPosition(),
+      new Pose2d(x, y, Rotation2d.fromDegrees(degrees))
+    );
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
