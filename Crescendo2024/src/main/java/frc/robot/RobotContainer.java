@@ -29,23 +29,18 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNot
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
-import frc.robot.commands.teleopCommands.drive.AlignWithAmp;
-import frc.robot.commands.teleopCommands.drive.DriveToDistance;
-import frc.robot.commands.teleopCommands.drive.ScanField;
-import frc.robot.commands.teleopCommands.drive.TurnToAngle;
-import frc.robot.commands.teleopCommands.drive.TurnToAngleOdometry;
+import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
+import frc.robot.commands.teleopCommands.drive.odometry.AlignWithAmp;
+import frc.robot.commands.teleopCommands.drive.odometry.ScanField;
+import frc.robot.commands.teleopCommands.drive.odometry.TurnToAngleOdometry;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-
-import java.nio.file.Path;
-
 import org.photonvision.PhotonCamera;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;

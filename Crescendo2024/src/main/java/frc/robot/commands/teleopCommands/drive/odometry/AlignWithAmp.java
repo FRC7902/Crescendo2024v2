@@ -2,30 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.teleopCommands.drive;
+package frc.robot.commands.teleopCommands.drive.odometry;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.FireBirdsUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TurnAndDrive extends SequentialCommandGroup {
-  private double targetY;
-  private double targetX;
-  private DriveSubsystem m_drive;
-  private final FireBirdsUtils util = new FireBirdsUtils();
-
-  /** Creates a new TurnAndDrive. */
-  public TurnAndDrive(DriveSubsystem drive, double Y, double X) {
+public class AlignWithAmp extends SequentialCommandGroup {
+  /** Creates a new AlignWithAmp. */
+  public AlignWithAmp(DriveSubsystem drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    targetY = Y;
-    targetX = X;
-    double target = util.TurnToPoint(Y, X);
     addCommands(
-        new TurnToAngle(m_drive, target, true),
-        new DriveToDistance(m_drive, util.FindDistance(targetY, targetX)));
+      new DriveToCoordinateX(drive, 2),
+      new TurnToAngle(drive, 90, false),
+      new DriveToCoordinateY(drive, 0.5)
+    );
   }
 }

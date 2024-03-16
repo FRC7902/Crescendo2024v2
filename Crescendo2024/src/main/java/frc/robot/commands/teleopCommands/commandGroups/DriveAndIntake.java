@@ -5,7 +5,7 @@
 package frc.robot.commands.teleopCommands.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.teleopCommands.drive.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
