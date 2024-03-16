@@ -73,4 +73,8 @@ public class DriveToDistance extends Command {
   public boolean isFinished() {
     return Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.1;
   }
+
+  public double getDistanceTravelled(){
+    return m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres);
+  }
 }

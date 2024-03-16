@@ -16,7 +16,7 @@ import frc.robot.Constants.IOConstants;
 import frc.robot.commands.autonomousCommands.OneNotePreload;
 import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
-import frc.robot.commands.autonomousCommands.LeaveHome;
+import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
 import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
@@ -70,12 +70,13 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  private final TwoNoteAutoMiddle m_simpleTwoNote = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
-  private final OneNotePreload m_simpleOneNote = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
-  private final LeaveHome m_leaveHome = new LeaveHome(m_driveSubsystem);
+  
+  private final TwoNoteAutoMiddle m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
+  private final OneNotePreload m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   private final LeaveNoteOnGroundLeaveHome m_LeaveNoteOnGroundLeaveHome = new LeaveNoteOnGroundLeaveHome(m_armSubsystem, m_intake, m_shooterSubsystem, m_driveSubsystem);
   private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem);
   private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
+  private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -83,12 +84,12 @@ public class RobotContainer {
     //driverCamera.setDriverMode(true);
     configureBindings();
 
-    m_chooser.setDefaultOption("Simple Two Note", m_simpleTwoNote);
-    m_chooser.addOption("Simple One Note", m_simpleOneNote);
-    m_chooser.addOption("Drive Only", m_leaveHome);
-    m_chooser.addOption("Amp", m_LeaveNoteOnGroundLeaveHome);
+    m_chooser.setDefaultOption("Two Note Middle", m_twoNoteMiddle);
+    m_chooser.addOption("One Note Preload", m_oneNotePreload);
+    m_chooser.addOption("Leave Note on Ground", m_LeaveNoteOnGroundLeaveHome);
     m_chooser.addOption("Three note middle", m_ThreeNoteAutoMiddle);
-    m_chooser.addOption("Two note amp", m_TwoNoteAmpAutoClose);
+    m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
+    m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);
     SmartDashboard.putData(m_chooser);
   }
 

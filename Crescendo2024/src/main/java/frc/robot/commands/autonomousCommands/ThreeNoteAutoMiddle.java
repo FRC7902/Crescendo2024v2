@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBack;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
@@ -34,27 +36,28 @@ public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
     addCommands(  
       //new ScanField(drive).withTimeout(3),    
       new SetStartingPosition(drive, 0, 1.5, 5.5),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(2),
-      new FeedNote(intake).withTimeout(1),
+      new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
+      new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
-      new DriveAndIntake(drive, intake, 1.5).withTimeout(5),
-      new StopIntake(intake).withTimeout(0.01),
-      new DriveToDistance(drive, -1.6).withTimeout(5),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      // new DriveAndIntake(drive, intake, 1.5).withTimeout(5),
+      // new StopIntake(intake).withTimeout(0.01),
+      // new DriveToDistance(drive, -1.6).withTimeout(5),
+      // new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new DriveIntakeComeBack(drive, intake, arm, 1.5, true),
       new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new DriveToDistance(drive, 1.75),
       new TurnToAngle(drive, 90, false),
-      new DriveAndIntake(drive, intake, 1).withTimeout(2.5),
-      new StopIntake(intake).withTimeout(0.01),
-      new DriveToDistance(drive, -1).withTimeout(2),
+      // new DriveAndIntake(drive, intake, 1).withTimeout(2.5),
+      // new StopIntake(intake).withTimeout(0.01),
+      // new DriveToDistance(drive, -1).withTimeout(2),
+      new DriveIntakeComeBack(drive, intake, arm, 1, false),
       new TurnToAngle(drive, 0, false),
+      new SpeakerSetpoint(arm).withTimeout(0.01),
       new DriveToDistance(drive, -1.75).withTimeout(2.5),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),

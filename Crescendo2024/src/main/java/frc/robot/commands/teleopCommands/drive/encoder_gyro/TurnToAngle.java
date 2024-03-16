@@ -7,7 +7,6 @@ package frc.robot.commands.teleopCommands.drive.encoder_gyro;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.FireBirdsUtils;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class TurnToAngle extends Command {
@@ -17,6 +16,7 @@ public class TurnToAngle extends Command {
   private double trueTarget;
   private boolean isAdditive;
   private double initialAngle;
+  private double maximumToleratedPower = 0.65;
   private final PIDController turnPID1 = new PIDController(0.000005, 0.00025, 0);
   private final PIDController turnPID2 = new PIDController(0.0015, 0, 0);
   private final PIDController turnPID3 = new PIDController(0.00075, 0, 0);
@@ -57,6 +57,14 @@ public class TurnToAngle extends Command {
       speed = turnPID2.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
     }else{
       speed = turnPID1.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
+    }
+
+    if(Math.abs(speed) > maximumToleratedPower){
+      if(speed > 0){
+        speed = maximumToleratedPower;
+      }else{
+        speed = -1.0 * maximumToleratedPower;
+      }
     }
 
     SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget));

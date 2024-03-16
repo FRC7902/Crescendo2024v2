@@ -7,10 +7,13 @@ package frc.robot.commands.autonomousCommands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.AmpArmAndShooter;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBack;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
+import frc.robot.commands.teleopCommands.drive.odometry.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedAmp;
@@ -28,24 +31,25 @@ public class TwoNoteAmpAutoFar extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new SetStartingPosition(drive, 0, 1.5, 7),
+      new Level0Setpoint(arm).until(arm::atTargetPosition),
       new DriveToDistance(drive, 0.25),
       new TurnToAngle(drive, 90, true),
       new DriveToDistance(drive, 0.25),
-      new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedAmp(shooter).withTimeout(1),
-      new FeedNote(intake).withTimeout(1),
+      new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
+      new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new DriveToDistance(drive, 0.5),
       new TurnToAngle(drive, 90, true),
-      new DriveAndIntake(drive, intake, 5),
-      new StopIntake(intake).withTimeout(0.01),
-      new DriveToDistance(drive, -5),
+      // new DriveAndIntake(drive, intake, 5),
+      // new StopIntake(intake).withTimeout(0.01),
+      // new DriveToDistance(drive, -5),
+      new DriveIntakeComeBack(drive, intake, arm, 5, false),
       new TurnToAngle(drive, -90, true),
       new DriveToDistance(drive, -0.5),
-      new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedAmp(shooter).withTimeout(1),
-      new FeedNote(intake).withTimeout(1),
+      new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
+      new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
     );
