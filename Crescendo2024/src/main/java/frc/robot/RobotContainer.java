@@ -30,6 +30,7 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopInta
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
 import frc.robot.commands.teleopCommands.drive.AlignWithAmp;
+import frc.robot.commands.teleopCommands.drive.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.ScanField;
 import frc.robot.commands.teleopCommands.drive.TurnToAngle;
 import frc.robot.commands.teleopCommands.drive.TurnToAngleOdometry;
@@ -141,12 +142,16 @@ public class RobotContainer {
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
+    new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
+
+
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AlignWithAmp(m_driveSubsystem));
 
-    new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 0, false));
-    new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 90, false));
-    new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new TurnToAngleOdometry(m_driveSubsystem, -90, false));
-    new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 180, false));
+    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 0, false));
+    // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 90, false));
+    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new TurnToAngleOdometry(m_driveSubsystem, -90, false));
+    // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 180, false));
 
     // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new PathPlannerAuto("AutoAmp1"));
     // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new PathPlannerAuto("Speaker"));

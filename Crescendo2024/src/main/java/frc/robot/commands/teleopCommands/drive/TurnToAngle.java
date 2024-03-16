@@ -17,9 +17,9 @@ public class TurnToAngle extends Command {
   private double trueTarget;
   private boolean isAdditive;
   private double initialAngle;
-  private final PIDController turnPID1 = new PIDController(0.0025, 0.0025, 0);
-  private final PIDController turnPID2 = new PIDController(0.005, 0, 0);
-  private final PIDController turnPID3 = new PIDController(0.002, 0, 0);
+  private final PIDController turnPID1 = new PIDController(0.000005, 0.00025, 0);
+  private final PIDController turnPID2 = new PIDController(0.0015, 0, 0);
+  private final PIDController turnPID3 = new PIDController(0.00075, 0, 0);
 
 
   /** Creates a new TurnToAngle. */
@@ -30,7 +30,7 @@ public class TurnToAngle extends Command {
     isAdditive = IsAdditive;
     turnPID1.setTolerance(1.5);
     turnPID2.setTolerance(1.5);
-    turnPID3.setTolerance(1.5);
+    turnPID3.setTolerance(1.5, 100);
     initialAngle = m_driveSubsystem.getHeading();
     addRequirements(drive);
   }
@@ -53,7 +53,7 @@ public class TurnToAngle extends Command {
     
     if(Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 5){
       speed = turnPID3.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
-    }else if(Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 20){
+    }else if(Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 10){
       speed = turnPID2.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
     }else{
       speed = turnPID1.calculate(convertRange(m_driveSubsystem.getHeading()), trueTarget);
@@ -61,6 +61,7 @@ public class TurnToAngle extends Command {
 
     SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget));
     SmartDashboard.putBoolean("atSetpoint", turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint());
+    SmartDashboard.putNumber("Turning velocity", turnPID1.getVelocityError());
     double FF;
 
     if(convertRange(m_driveSubsystem.getHeading()) - trueTarget > 0){
@@ -92,8 +93,8 @@ public class TurnToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint();
-    // return Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 1;
+    // return turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint();
+    return Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget) < 1 && turnPID3.getVelocityError() < 10;
   }
 
 }

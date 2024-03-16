@@ -15,8 +15,8 @@ public class DriveToDistance extends Command {
   private final double targetDistanceInMetres;
   private double initialPosition;
 
-  private final PIDController drivePID1 = new PIDController(0.5, 0, 0);
-  private final PIDController drivePID2 = new PIDController(0.25, 0, 0);
+  private final PIDController drivePID1 = new PIDController(0.25, 0, 0);
+  private final PIDController drivePID2 = new PIDController(0.75, 0, 0);
 
   /** Creates a new DriveToDistance. 
    * Drives a set distance, positive value drives backward
@@ -40,7 +40,7 @@ public class DriveToDistance extends Command {
   @Override
   public void execute() {
     double speed;
-    if(Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.1){
+    if(Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.5){
       speed = drivePID2.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
     }else{
       speed = drivePID1.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
@@ -56,6 +56,11 @@ public class DriveToDistance extends Command {
     }
     
     m_driveSubsystem.driveRaw(speed + FF);
+
+    // SmartDashboard.putNumber("speed", speed);
+    // SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);
+    // SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
+
   }
 
   // Called once the command ends or is interrupted.
@@ -66,6 +71,6 @@ public class DriveToDistance extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return drivePID2.atSetpoint();
+    return Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.1;
   }
 }

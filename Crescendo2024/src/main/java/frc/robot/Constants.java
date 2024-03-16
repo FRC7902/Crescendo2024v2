@@ -39,7 +39,7 @@ public final class Constants {
     public static final double restDegreesFromHorizontal = 90;
 
     public static final double ArmGroundSetpoint = 10;
-    public static final double ArmSpeakerSetpoint = 40;
+    public static final double ArmSpeakerSetpoint = 35;
     public static final double ArmAmpSetpoint = 100;
   }
 
@@ -70,8 +70,8 @@ public final class Constants {
   public static class IntakeConstants {
 
     public static final int intakePWMid = 8;
-    public static final double suckingSpeed = 1.0;
-    public static final double outtakingSpeed = -1.0;
+    public static final double suckingSpeed = 0.75;
+    public static final double outtakingSpeed = -0.75;
     public static final double feedingSpeed = 1;
     public static final double holdPower = 0;
     public static final int beamBrakePort = 5;
