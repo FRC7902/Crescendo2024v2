@@ -55,7 +55,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() { 
-        SmartDashboard.putNumber("Climber Current Limit", m_climbLeaderMotor.getSupplyCurrent());
+        // SmartDashboard.putNumber("Climber Current Limit", m_climbLeaderMotor.getSupplyCurrent());
         SmartDashboard.putBoolean("Climber Limit Switch", getLimitSwitch());
         if(m_climbLeaderMotor.get() < 0 && getLimitSwitch()){
             stop();

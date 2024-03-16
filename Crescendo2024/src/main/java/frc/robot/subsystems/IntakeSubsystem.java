@@ -66,8 +66,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("target power", targetPower);
-    SmartDashboard.putNumber("motor power", m_intakeMotor.get());
+    // SmartDashboard.putNumber("target power", targetPower);
+    // SmartDashboard.putNumber("motor power", m_intakeMotor.get());
     SmartDashboard.putBoolean("Beam brake", intakeSensor.get());
 
     if (!intakeSensor.get() && !isShooting) {
