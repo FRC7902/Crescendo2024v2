@@ -26,6 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
     
   public double targetPower = 0;
   public boolean isShooting = false;
+  public boolean beamBrakeOverride = false;
 
   public IntakeSubsystem(XboxController operatorStick) {
     m_operatorStick = operatorStick;
@@ -63,14 +64,23 @@ public class IntakeSubsystem extends SubsystemBase {
     return !intakeSensor.get();
   }
 
+  public void toggleOverrideBeamBrake(){
+    beamBrakeOverride = !beamBrakeOverride;
+  }
 
   @Override
   public void periodic() {
+
+    if(DriverStation.isDisabled()){
+      beamBrakeOverride = false;
+    }
+
     // SmartDashboard.putNumber("target power", targetPower);
     // SmartDashboard.putNumber("motor power", m_intakeMotor.get());
     SmartDashboard.putBoolean("Beam brake", intakeSensor.get());
+    SmartDashboard.putBoolean("Beam brake override", beamBrakeOverride);
 
-    if (!intakeSensor.get() && !isShooting) {
+    if (!intakeSensor.get() && !isShooting && !beamBrakeOverride) {
       m_intakeMotor.set(-0.2);
       if(DriverStation.isTeleopEnabled()){
         m_operatorStick.setRumble(RumbleType.kBothRumble, 1);

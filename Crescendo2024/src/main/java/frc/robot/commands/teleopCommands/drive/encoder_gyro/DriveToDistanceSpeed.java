@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveToDistance extends Command {
+public class DriveToDistanceSpeed extends Command {
 
   private final DriveSubsystem m_driveSubsystem;
   private final double targetDistanceInMetres;
@@ -21,7 +21,7 @@ public class DriveToDistance extends Command {
   /** Creates a new DriveToDistance. 
    * Drives a set distance, positive value drives backward
   */
-  public DriveToDistance(DriveSubsystem driveSubsystem, double targetInMetres) {
+  public DriveToDistanceSpeed(DriveSubsystem driveSubsystem, double targetInMetres) {
     
     m_driveSubsystem = driveSubsystem;
     targetDistanceInMetres = targetInMetres;
@@ -55,7 +55,7 @@ public class DriveToDistance extends Command {
       FF = -0.01;
     }
     
-    m_driveSubsystem.driveRaw(speed + FF);
+    m_driveSubsystem.driveSpeed((speed + FF) * 4000);
 
     // SmartDashboard.putNumber("speed", speed);
     // SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);

@@ -19,10 +19,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DriveIntakeComeBack extends SequentialCommandGroup {
+public class DriveIntakeComeBackLong extends SequentialCommandGroup {
   /** Creates a new DriveIntakeComeBack. */
   DriveAndIntake m_driveAndIntake;
-  public DriveIntakeComeBack(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, double distance, boolean raiseArmToSpeaker) {
+  public DriveIntakeComeBackLong(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, double distance, boolean raiseArmToSpeaker) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_driveAndIntake = new DriveAndIntake(drive, intake, distance);
@@ -33,7 +33,7 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
         new SpeakerSetpoint(arm), 
         new Level0Setpoint(arm), 
         () -> raiseArmToSpeaker).withTimeout(0.01),
-      new DriveToDistance(drive, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3)
+      new DriveToDistance(drive, m_driveAndIntake.getDistanceTravelled()).withTimeout(3)
     );
   }
 }

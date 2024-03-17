@@ -6,10 +6,8 @@ package frc.robot.commands.autonomousCommands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndRevSpeaker;
 import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBack;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBackLong;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
@@ -24,43 +22,29 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
-  /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-
-    addCommands(  
-      //new ScanField(drive).withTimeout(3),    
-      new SetStartingPosition(drive, 0, 1.5, 5.5),
+public class TwoNoteAutoSide extends SequentialCommandGroup {
+  /** Creates a new TwoNoteAutoSimple. */
+  public TwoNoteAutoSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
+    addCommands(
       new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).withTimeout(0.5),
+      new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
+      new DriveToDistance(drive, 24 * 2.54 * 0.01),
+      new TurnToAngle(drive, -65, true).withTimeout(2),
       // new DriveAndIntake(drive, intake, 1.5).withTimeout(5),
       // new StopIntake(intake).withTimeout(0.01),
       // new DriveToDistance(drive, -1.6).withTimeout(5),
       // new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveIntakeComeBack(drive, intake, arm, 1.5, true),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(3),
+      new DriveIntakeComeBackLong(drive, intake, arm, 1.5, true),
+      new TurnToAngle(drive, 65, true),
+      new DriveToDistance(drive, -24 * 2.54 * 0.01).withTimeout(2),
+      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveToDistance(drive, 1.75).withTimeout(3),
-      new TurnToAngle(drive, -90, false).withTimeout(3),
-      // new DriveAndIntake(drive, intake, 1).withTimeout(2.5),
-      // new StopIntake(intake).withTimeout(0.01),
-      // new DriveToDistance(drive, -1).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, 1, false),
-      new TurnToAngle(drive, 0, false).withTimeout(3),
-      new SpeakerSetpoint(arm).withTimeout(0.01),
-      new DriveAndRevSpeaker(drive, shooter, -1.75).until(shooter::atTargetSpeed).withTimeout(3),
-      // new DriveToDistance(drive, -1.75).withTimeout(2.5),
-      // new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(3),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
+      new TurnToAngle(drive, -65, true).withTimeout(2),
+      new DriveToDistance(drive, 1)
       );
-
   }
 }

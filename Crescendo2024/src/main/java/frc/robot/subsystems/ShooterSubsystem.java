@@ -88,7 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
       targetSpeedCounter = 0;
     }
 
-    if(targetSpeedCounter > 20){
+    if(targetSpeedCounter > 30){
       return true;
     }else{
       return false;

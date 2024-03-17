@@ -21,7 +21,7 @@ public class ScoreNoteAmp extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AmpArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed)
+      new FeedNote(intake)
     );
   }
 }

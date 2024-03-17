@@ -8,6 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CameraServerCvJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -19,6 +20,7 @@ import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
 import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
+import frc.robot.commands.autonomousCommands.TwoNoteAutoSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
@@ -33,8 +35,9 @@ import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
 import frc.robot.commands.teleopCommands.drive.odometry.AlignWithAmp;
 import frc.robot.commands.teleopCommands.drive.odometry.ScanField;
-import frc.robot.commands.teleopCommands.drive.odometry.TurnToAngleOdometry;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
+import frc.robot.commands.teleopCommands.intake.OuttakeNote;
+import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -77,6 +80,7 @@ public class RobotContainer {
   private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem);
   private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
+  private final TwoNoteAutoSide m_TwoNoteAutoSide = new TwoNoteAutoSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -90,6 +94,7 @@ public class RobotContainer {
     m_chooser.addOption("Three note middle", m_ThreeNoteAutoMiddle);
     m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
     m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);
+    m_chooser.addOption("m_TwoNoteAutoSide", m_TwoNoteAutoSide);
     SmartDashboard.putData(m_chooser);
   }
 
@@ -129,6 +134,8 @@ public class RobotContainer {
       m_armSubsystem::isArmAtAmp));;
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ToggleOverrideBeamBrake(m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
 
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
@@ -138,9 +145,12 @@ public class RobotContainer {
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
-    new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
-
+    // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
+    // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
+    
+    new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
+    // new POVButton(m_operatorStick, 270).onTrue(new DriveToDistance(m_driveSubsystem, 3));
+    // new POVButton(m_operatorStick, 90).onTrue(new DriveToDistance(m_driveSubsystem, -3));
 
     // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AlignWithAmp(m_driveSubsystem));
 

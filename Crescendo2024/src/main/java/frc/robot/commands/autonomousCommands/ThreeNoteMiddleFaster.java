@@ -24,9 +24,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
+public class ThreeNoteMiddleFaster extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
+  public ThreeNoteMiddleFaster(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 

@@ -15,6 +15,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import org.photonvision.PhotonCamera;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -61,6 +63,9 @@ public class DriveSubsystem extends SubsystemBase {
       CANSparkMax.MotorType.kBrushless);
   private final CANSparkMax m_rightFollowerMotor = new CANSparkMax(DriveConstants.rightBackCAN,
       CANSparkMax.MotorType.kBrushless);
+
+  private final SparkPIDController leftSpeedPID = m_leftLeaderMotor.getPIDController();
+  private final SparkPIDController rightSpeedPID = m_rightLeaderMotor.getPIDController();
 
   private final DifferentialDrive m_drive;
 
@@ -283,8 +288,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Is Scanning", isScanningField);
     
     // SmartDashboard.putNumber("Yaw", ahrs.getAngle());
-    // SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
-    // SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
+    SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
+    SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
     SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
     SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
     SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
@@ -348,6 +353,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void driveRaw(double power) {
     m_leftLeaderMotor.set(power);
     m_rightLeaderMotor.set(power);
+  }
+
+  public void driveSpeed(double speed){
+    leftSpeedPID.setReference(speed, ControlType.kVelocity);
+    rightSpeedPID.setReference(speed, ControlType.kVelocity);
+
   }
 
   public void driveSpeeds(ChassisSpeeds speeds) {

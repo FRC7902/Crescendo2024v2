@@ -27,8 +27,7 @@ public class OneNotePreload extends SequentialCommandGroup {
       new SetSpeedSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(1),
-      new DriveToDistance(drive, 3).withTimeout(5)
+      new Level0Setpoint(arm).withTimeout(1)
     );
   }
 }

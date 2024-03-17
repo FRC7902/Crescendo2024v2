@@ -6,13 +6,12 @@ package frc.robot.commands.autonomousCommands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveAndIntake;
+import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBack;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.odometry.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
-import frc.robot.commands.teleopCommands.intake.StopIntake;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -27,16 +26,16 @@ public class TwoNoteAutoMiddle extends SequentialCommandGroup {
   public TwoNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm) {
     addCommands(
       new SetStartingPosition(drive, 0, 1.5, 5.5),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedSpeaker(shooter).withTimeout(1),
+      new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveAndIntake(drive, intake, 1.5).withTimeout(2.5),
-      new StopIntake(intake).withTimeout(0.01),
-      new DriveToDistance(drive, -1.5).withTimeout(2.5),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(2),
+      new Level0Setpoint(arm).withTimeout(2),
+      // new DriveAndIntake(drive, intake, 1.5).withTimeout(5),
+      // new StopIntake(intake).withTimeout(0.01),
+      // new DriveToDistance(drive, -1.6).withTimeout(5),
+      // new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new DriveIntakeComeBack(drive, intake, arm, 1.5, true),
+      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),

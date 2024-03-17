@@ -39,7 +39,7 @@ public final class Constants {
     public static final double restDegreesFromHorizontal = 90;
 
     public static final double ArmGroundSetpoint = 10;
-    public static final double ArmSpeakerSetpoint = 35;
+    public static final double ArmSpeakerSetpoint = 37.5;
     public static final double ArmAmpSetpoint = 100;
   }
 

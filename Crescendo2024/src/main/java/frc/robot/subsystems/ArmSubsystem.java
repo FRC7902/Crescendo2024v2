@@ -212,7 +212,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // SmartDashboard.putNumber("Target Position", targetPosition);
     //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
-    // SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
+    SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
     // SmartDashboard.putNumber("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed());
 

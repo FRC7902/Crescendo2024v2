@@ -17,9 +17,9 @@ public class TurnToAngle extends Command {
   private boolean isAdditive;
   private double initialAngle;
   private double maximumToleratedPower = 0.65;
-  private final PIDController turnPID1 = new PIDController(0.000005, 0.00025, 0);
-  private final PIDController turnPID2 = new PIDController(0.0015, 0, 0);
-  private final PIDController turnPID3 = new PIDController(0.00075, 0, 0);
+  private final PIDController turnPID1 = new PIDController(0.0005, 0.00025, 0);
+  private final PIDController turnPID2 = new PIDController(0.0001, 0, 0);
+  private final PIDController turnPID3 = new PIDController(0.000325, 0, 0);
 
 
   /** Creates a new TurnToAngle. */
@@ -67,9 +67,9 @@ public class TurnToAngle extends Command {
       }
     }
 
-    SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget));
-    SmartDashboard.putBoolean("atSetpoint", turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint());
-    SmartDashboard.putNumber("Turning velocity", turnPID1.getVelocityError());
+    // SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getHeading()) - trueTarget));
+    // SmartDashboard.putBoolean("atSetpoint", turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint());
+    // SmartDashboard.putNumber("Turning velocity", turnPID1.getVelocityError());
     double FF;
 
     if(convertRange(m_driveSubsystem.getHeading()) - trueTarget > 0){
