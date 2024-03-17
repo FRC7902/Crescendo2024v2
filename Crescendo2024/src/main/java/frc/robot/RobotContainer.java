@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CameraServerCvJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,6 +19,7 @@ import frc.robot.commands.autonomousCommands.OneNotePreload;
 import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
+import frc.robot.commands.autonomousCommands.FourNoteMiddle;
 import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoSide;
@@ -73,29 +75,56 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  
-  private final TwoNoteAutoMiddle m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
-  private final OneNotePreload m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
-  private final LeaveNoteOnGroundLeaveHome m_LeaveNoteOnGroundLeaveHome = new LeaveNoteOnGroundLeaveHome(m_armSubsystem, m_intake, m_shooterSubsystem, m_driveSubsystem);
-  private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem);
+
+  int autoDirection;
+
+  private final TwoNoteAutoMiddle m_twoNoteMiddle;
+  private final OneNotePreload m_oneNotePreload;
+  private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle;
+  private final TwoNoteAutoSide m_TwoNoteAutoSide;
+  private final FourNoteMiddle m_FourNoteMiddle;
   private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
-  private final TwoNoteAutoSide m_TwoNoteAutoSide = new TwoNoteAutoSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Integer> mirrorAuto = new SendableChooser<>();
+  SendableChooser<Boolean> taxi = new SendableChooser<>();
 
 
   public RobotContainer() {
     //driverCamera.setDriverMode(true);
     configureBindings();
 
-    m_chooser.setDefaultOption("Two Note Middle", m_twoNoteMiddle);
+    if(DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)){
+      autoDirection = 1;
+    }else if(DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)){
+      autoDirection = -1;
+    }else{
+      autoDirection = 1;
+    }
+
+    mirrorAuto.setDefaultOption("No", 1);
+    mirrorAuto.addOption("Yes", -1);
+
+    autoDirection *= mirrorAuto.getSelected();
+
+    taxi.setDefaultOption("No", false);
+    taxi.addOption("Yes", true);
+
+    m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem, taxi.getSelected());
+    m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
+    m_TwoNoteAutoSide = new TwoNoteAutoSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
+    m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection);
+    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection);
+
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
-    m_chooser.addOption("Leave Note on Ground", m_LeaveNoteOnGroundLeaveHome);
+    m_chooser.setDefaultOption("Two Note Middle", m_twoNoteMiddle);
+    m_chooser.addOption("Two Note Side", m_TwoNoteAutoSide);
     m_chooser.addOption("Three note middle", m_ThreeNoteAutoMiddle);
+    m_chooser.addOption("Four Note Middle", m_FourNoteMiddle);
     m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
     m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);
-    m_chooser.addOption("m_TwoNoteAutoSide", m_TwoNoteAutoSide);
     SmartDashboard.putData(m_chooser);
+
   }
 
   /**

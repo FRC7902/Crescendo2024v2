@@ -41,7 +41,7 @@ public class TwoNoteAmpAutoFar extends SequentialCommandGroup {
       // new DriveAndIntake(drive, intake, 5),
       // new StopIntake(intake).withTimeout(0.01),
       // new DriveToDistance(drive, -5),
-      new DriveIntakeComeBack(drive, intake, arm, 5, false),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 5, false, false),
       new TurnToAngle(drive, -90, true),
       new DriveToDistance(drive, -0.5),
       new AmpArmAndShooter(arm, shooter).withTimeout(3.5),

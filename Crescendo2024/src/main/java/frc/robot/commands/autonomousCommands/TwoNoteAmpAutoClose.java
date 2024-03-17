@@ -41,7 +41,7 @@ public class TwoNoteAmpAutoClose extends SequentialCommandGroup {
       // new DriveAndIntake(drive, intake, 1).withTimeout(3),
       // new StopIntake(intake).withTimeout(0.01),
       // new DriveToDistance(drive, -1).withTimeout(3),
-      new DriveIntakeComeBack(drive, intake, arm, 1, false),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 1, false, false),
       new TurnToAngle(drive, -90, false).withTimeout(3),
       new DriveToDistance(drive, -0.6).withTimeout(3),
       new AmpArmAndShooter(arm, shooter).withTimeout(3.5),

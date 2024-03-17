@@ -4,6 +4,8 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
@@ -21,13 +23,17 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OneNotePreload extends SequentialCommandGroup {
   /** Creates a new DriveOut. */
-  public OneNotePreload(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter) {
+  public OneNotePreload(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter, boolean taxi) {
     addCommands(
       new SpeakerSetpoint(arm).withTimeout(1),
       new SetSpeedSpeaker(shooter).withTimeout(1),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(1)
+      new Level0Setpoint(arm).withTimeout(1),
+      new ConditionalCommand(
+        new DriveToDistance(drive, 1), 
+        new InstantCommand(), 
+        () -> taxi)
     );
   }
 }

@@ -12,9 +12,12 @@ import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
+import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
+import frc.robot.commands.teleopCommands.shooter.StopShooter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -22,7 +25,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class DriveIntakeComeBack extends SequentialCommandGroup {
   /** Creates a new DriveIntakeComeBack. */
   DriveAndIntake m_driveAndIntake;
-  public DriveIntakeComeBack(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, double distance, boolean raiseArmToSpeaker) {
+  public DriveIntakeComeBack(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, double distance, boolean raiseArmToSpeaker, boolean revSpeaker) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_driveAndIntake = new DriveAndIntake(drive, intake, distance);
@@ -32,7 +35,13 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
       new ConditionalCommand(
         new SpeakerSetpoint(arm), 
         new Level0Setpoint(arm), 
-        () -> raiseArmToSpeaker).withTimeout(0.01),
+        () -> raiseArmToSpeaker
+        ).withTimeout(0.01),
+      new ConditionalCommand(
+        new SetSpeedSpeaker(shooter),
+        new StopShooter(shooter),
+        () -> revSpeaker
+      ).withTimeout(0.01),
       new DriveToDistance(drive, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3)
     );
   }

@@ -26,7 +26,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter) {
+  public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -41,17 +41,16 @@ public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
       // new StopIntake(intake).withTimeout(0.01),
       // new DriveToDistance(drive, -1.6).withTimeout(5),
       // new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveIntakeComeBack(drive, intake, arm, 1.5, true),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed).withTimeout(3),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new DriveToDistance(drive, 1.75).withTimeout(3),
-      new TurnToAngle(drive, -90, false).withTimeout(3),
+      new TurnToAngle(drive, mirror * (-90), false).withTimeout(3),
       // new DriveAndIntake(drive, intake, 1).withTimeout(2.5),
       // new StopIntake(intake).withTimeout(0.01),
       // new DriveToDistance(drive, -1).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, 1, false),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 1, false, false),
       new TurnToAngle(drive, 0, false).withTimeout(3),
       new SpeakerSetpoint(arm).withTimeout(0.01),
       new DriveAndRevSpeaker(drive, shooter, -1.75).until(shooter::atTargetSpeed).withTimeout(3),
