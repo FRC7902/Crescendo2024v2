@@ -4,16 +4,13 @@
 
 package frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
+import frc.robot.commands.teleopCommands.commandGroups.DriveAndShooter.DriveAndRevSpeaker;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
-import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
-import frc.robot.commands.teleopCommands.shooter.StopShooter;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -38,11 +35,10 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
         () -> raiseArmToSpeaker
         ).withTimeout(0.01),
       new ConditionalCommand(
-        new SetSpeedSpeaker(shooter),
-        new StopShooter(shooter),
+        new DriveAndRevSpeaker(drive, shooter, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3),
+        new DriveToDistance(drive, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3),
         () -> revSpeaker
-      ).withTimeout(0.01),
-      new DriveToDistance(drive, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3)
+      )
     );
   }
 }

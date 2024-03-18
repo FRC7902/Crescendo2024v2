@@ -4,6 +4,8 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import java.util.concurrent.locks.Condition;
+
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -15,6 +17,8 @@ import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
 import frc.robot.commands.teleopCommands.drive.odometry.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
+import frc.robot.commands.teleopCommands.intake.IntakeNote;
+import frc.robot.commands.teleopCommands.intake.OuttakeNote;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,15 +33,11 @@ public class TwoNoteAutoSide extends SequentialCommandGroup {
   public TwoNoteAutoSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, int mirror, boolean taxi) {
     addCommands(
       new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).withTimeout(1),
+      new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
       new DriveToDistance(drive, 24 * 2.54 * 0.01),
       new TurnToAngle(drive, mirror * (-65), true).withTimeout(2),
-      // new DriveAndIntake(drive, intake, 1.5).withTimeout(5),
-      // new StopIntake(intake).withTimeout(0.01),
-      // new DriveToDistance(drive, -1.6).withTimeout(5),
-      // new SpeakerSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new DriveIntakeComeBackLong(drive, intake, arm, 1.5, true),
       new TurnToAngle(drive, mirror * 65, true),
       new DriveToDistance(drive, (-24) * 2.54 * 0.01).withTimeout(2),

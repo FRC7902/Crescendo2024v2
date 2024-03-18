@@ -20,6 +20,8 @@ public class ShootNoteSpeaker extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetSpeedSpeaker(shooter).withTimeout(1),
-      new FeedNote(intake));
+      new FeedNote(intake)
+      
+      );
   }
 }

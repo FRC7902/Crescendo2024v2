@@ -4,14 +4,15 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake.DriveIntakeComeBack;
-import frc.robot.commands.teleopCommands.commandGroups.DriveAndShooter.DriveAndRevSpeaker;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
+import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistanceSpeed;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
 import frc.robot.commands.teleopCommands.drive.odometry.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
@@ -25,7 +26,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FourNoteMiddle extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public FourNoteMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror) {
+  public FourNoteMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror, boolean taxi) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -35,22 +36,27 @@ public class FourNoteMiddle extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true).until(shooter::atTargetSpeed),
-      new FeedNote(intake).withTimeout(1),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
+      new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+      new DriveToDistanceSpeed(drive, 0.15).withTimeout(2),
       new TurnToAngle(drive, mirror * (-45), false).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 2.12, true, true).until(shooter::atTargetSpeed),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 2.12, true, true),
       new TurnToAngle(drive, 0, false).withTimeout(2),
-      new FeedNote(intake).withTimeout(0.01),
+      new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm),
       new TurnToAngle(drive, mirror * 45, false).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 2.12, true, true).until(shooter::atTargetSpeed),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 2.12, true, true),
       new TurnToAngle(drive, 0, false).withTimeout(2),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm)
+      new Level0Setpoint(arm).until(arm::atTargetPosition),
+      new ConditionalCommand(
+        new DriveToDistance(drive, 1), 
+        new InstantCommand(), 
+        () -> taxi)
       );
 
   }

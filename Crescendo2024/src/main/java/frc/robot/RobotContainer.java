@@ -4,11 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CameraServerCvJNI;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +36,7 @@ import frc.robot.commands.teleopCommands.drive.odometry.ScanField;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;
 import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
+import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -73,7 +70,7 @@ public class RobotContainer {
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem(m_driveSubsystem);
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
-  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
   int autoDirection;
@@ -94,27 +91,21 @@ public class RobotContainer {
     //driverCamera.setDriverMode(true);
     configureBindings();
 
-    if(DriverStation.getAlliance().get().equals(DriverStation.Alliance.Blue)){
-      autoDirection = 1;
-    }else if(DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red)){
-      autoDirection = -1;
-    }else{
-      autoDirection = 1;
-    }
-
     mirrorAuto.setDefaultOption("No", 1);
     mirrorAuto.addOption("Yes", -1);
+    SmartDashboard.putData("mirror auto?", mirrorAuto);
 
-    autoDirection *= mirrorAuto.getSelected();
+    autoDirection = mirrorAuto.getSelected();
 
     taxi.setDefaultOption("No", false);
     taxi.addOption("Yes", true);
+    SmartDashboard.putData("taxi?", taxi);
 
     m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem, taxi.getSelected());
     m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
     m_TwoNoteAutoSide = new TwoNoteAutoSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
-    m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection);
-    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection);
+    m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
 
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
     m_chooser.setDefaultOption("Two Note Middle", m_twoNoteMiddle);
@@ -123,7 +114,7 @@ public class RobotContainer {
     m_chooser.addOption("Four Note Middle", m_FourNoteMiddle);
     m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
     m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);
-    SmartDashboard.putData(m_chooser);
+    SmartDashboard.putData("routine", m_chooser);
 
   }
 
@@ -178,6 +169,7 @@ public class RobotContainer {
     // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
     
     new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
+    new POVButton(m_operatorStick, 90).whileTrue(new SetSpeedSpeaker(m_shooterSubsystem));
     // new POVButton(m_operatorStick, 270).onTrue(new DriveToDistance(m_driveSubsystem, 3));
     // new POVButton(m_operatorStick, 90).onTrue(new DriveToDistance(m_driveSubsystem, -3));
 

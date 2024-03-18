@@ -17,7 +17,7 @@ public class TurnToAngle extends Command {
   private boolean isAdditive;
   private double initialAngle;
   private double maximumToleratedPower = 0.65;
-  private final PIDController turnPID1 = new PIDController(0.0005, 0.00025, 0);
+  private final PIDController turnPID1 = new PIDController(0.001, 0.00025, 0);
   private final PIDController turnPID2 = new PIDController(0.0001, 0, 0);
   private final PIDController turnPID3 = new PIDController(0.000325, 0, 0);
 

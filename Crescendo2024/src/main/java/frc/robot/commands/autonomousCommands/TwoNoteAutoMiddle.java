@@ -14,7 +14,6 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopInta
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
 import frc.robot.commands.teleopCommands.drive.odometry.SetStartingPosition;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
-import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -32,7 +31,7 @@ public class TwoNoteAutoMiddle extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true).until(shooter::atTargetSpeed),
+      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
