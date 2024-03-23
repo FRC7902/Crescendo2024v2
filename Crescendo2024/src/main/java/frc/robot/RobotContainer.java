@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -16,7 +14,6 @@ import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
 import frc.robot.commands.autonomousCommands.FourNoteMiddle;
-import frc.robot.commands.autonomousCommands.LeaveNoteOnGroundLeaveHome;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
@@ -29,9 +26,6 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNot
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
-import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
-import frc.robot.commands.teleopCommands.drive.encoder_gyro.TurnToAngle;
-import frc.robot.commands.teleopCommands.drive.odometry.AlignWithAmp;
 import frc.robot.commands.teleopCommands.drive.odometry.ScanField;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;

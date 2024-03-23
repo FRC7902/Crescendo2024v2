@@ -9,7 +9,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
+import java.util.List;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -19,6 +20,8 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -82,6 +85,11 @@ public class DriveSubsystem extends SubsystemBase {
   private double startingX = 0;
   private double startingY = 0;
   private double startingAngle = 0;
+
+  private double angleFromTag1;
+  private double angleFromTag2;
+  private double distanceFromTag;
+  private double distanceBetweenTags = 1;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -283,6 +291,21 @@ public class DriveSubsystem extends SubsystemBase {
     }
     
     m_fieldSim.setRobotPose(getPose());
+
+    if(m_camera.getLatestResult().hasTargets()){
+      List <PhotonTrackedTarget> targets = m_camera.getLatestResult().getTargets();
+      if(targets.get(0).getFiducialId() == 3 && targets.get(1).getFiducialId() == 3){
+        if(targets.get(0).getFiducialId() == 3){
+          angleFromTag1 = targets.get(0).getYaw();
+          angleFromTag2 = targets.get(1).getYaw();
+        }else{
+          angleFromTag1 = targets.get(1).getYaw();
+          angleFromTag2 = targets.get(0).getYaw();
+        }
+
+
+      }
+    }
 
     SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     SmartDashboard.putBoolean("Is Scanning", isScanningField);
