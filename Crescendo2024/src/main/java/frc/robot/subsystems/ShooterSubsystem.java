@@ -127,8 +127,8 @@ public class ShooterSubsystem extends SubsystemBase {
       setSpeed(targetSpeed);
     }
 
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
-    SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
     // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
     // SmartDashboard.putNumber("Shooter speed", sparkEncoder.getVelocity());
     SmartDashboard.putNumber("Target Speed", targetSpeed);

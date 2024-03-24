@@ -135,6 +135,10 @@ public class ArmSubsystem extends SubsystemBase {
     targetPosition = -newTargetPosition;
   }
 
+  public double getTargetPosition(){
+    return -targetPosition;
+  }
+
   public boolean atTargetPosition(){
     if(Math.abs(getAngle() - targetPosition) < 150){
       targetPositionCounter++;
@@ -186,14 +190,9 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double calculateAutoAim(){
-    double speakerHeightMetres = 10;
-    double speakerX = 0;
-    double speakerY = 0;
-    double dx = speakerX - m_driveSubsystem.getDisplacementX();
-    double dy = speakerY - m_driveSubsystem.getDisplacementY();
-    double displacement = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-    double AngleInDegrees = Math.atan(speakerHeightMetres/displacement) * 180 / Math.PI;
-    return AngleInDegrees;
+    double displacement = m_driveSubsystem.getDistanceFromSpeaker();
+    double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 30;
+    return -autoAngle;
   }
 
   @Override
@@ -214,6 +213,7 @@ public class ArmSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
+    SmartDashboard.putNumber("current angle", targetPosition * -1);
     // SmartDashboard.putNumber("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed());
 
     if (RobotBase.isSimulation()) {
@@ -223,13 +223,13 @@ public class ArmSubsystem extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         adjusted_feedForward);
     } else {
-      if(targetPosition == 0 && atTargetPosition()){
+      if(targetPosition == 0 && atTargetPosition() && !isAutoAiming){
         m_armLeaderMotor.set(0);
       }else{
         if(isAutoAiming){
           m_armLeaderMotor.set(
             ControlMode.MotionMagic, 
-            -util.degToCTRESensorUnits(calculateAutoAim(), ArmConstants.EncoderCPR) * ArmConstants.EncoderToOutputRatio,
+            calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
             DemandType.ArbitraryFeedForward,
             adjusted_feedForward);
         }else{

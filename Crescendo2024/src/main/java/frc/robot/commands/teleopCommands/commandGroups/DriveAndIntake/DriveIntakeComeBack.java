@@ -35,8 +35,8 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
         () -> raiseArmToSpeaker
         ).withTimeout(0.01),
       new ConditionalCommand(
-        new DriveAndRevSpeaker(drive, shooter, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3),
-        new DriveToDistance(drive, 0.75 * m_driveAndIntake.getDistanceTravelled()).withTimeout(3),
+        new DriveAndRevSpeaker(drive, shooter, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
+        new DriveToDistance(drive, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
         () -> revSpeaker
       )
     );

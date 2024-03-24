@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -89,7 +90,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double angleFromTag1;
   private double angleFromTag2;
   private double distanceFromTag;
-  private double distanceBetweenTags = 1;
+  private double distanceBetweenTags = 22.1875/39.37;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -222,7 +223,7 @@ public class DriveSubsystem extends SubsystemBase {
         null);
 
     m_fieldSim = new Field2d();
-    SmartDashboard.putData("Field", m_fieldSim);
+    // SmartDashboard.putData("Field", m_fieldSim);
 
     m_leftEncoderSim = new EncoderSim(m_leftEncoderObj);
     m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
@@ -261,6 +262,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     if(DriverStation.isDisabled()){
       resetEncoders();
+      ahrs.reset();
     }
 
     if (Robot.isSimulation()) {
@@ -294,28 +296,36 @@ public class DriveSubsystem extends SubsystemBase {
 
     if(m_camera.getLatestResult().hasTargets()){
       List <PhotonTrackedTarget> targets = m_camera.getLatestResult().getTargets();
-      if(targets.get(0).getFiducialId() == 3 && targets.get(1).getFiducialId() == 3){
-        if(targets.get(0).getFiducialId() == 3){
-          angleFromTag1 = targets.get(0).getYaw();
+        // SmartDashboard.putNumber("ID1", targets.get(0).getFiducialId());
+        // SmartDashboard.putNumber("ID2", targets.get(1).getFiducialId());
+
+      if(targets.size() >= 2 && (targets.get(0).getFiducialId() == 4 || targets.get(1).getFiducialId() == 4)){
+        if(targets.get(0).getFiducialId() == 4){
+          angleFromTag1 = -1 * targets.get(0).getYaw();
           angleFromTag2 = targets.get(1).getYaw();
         }else{
-          angleFromTag1 = targets.get(1).getYaw();
+          angleFromTag1 = -1 * targets.get(1).getYaw();
           angleFromTag2 = targets.get(0).getYaw();
         }
 
+        distanceFromTag = distanceBetweenTags/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+
+        SmartDashboard.putNumber("middle tag angle", angleFromTag1);
+        SmartDashboard.putNumber("side tag angle", angleFromTag2);
+        SmartDashboard.putNumber("dist from middle tag", distanceFromTag);
 
       }
     }
 
     SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
-    SmartDashboard.putBoolean("Is Scanning", isScanningField);
+    // SmartDashboard.putBoolean("Is Scanning", isScanningField);
     
-    // SmartDashboard.putNumber("Yaw", ahrs.getAngle());
-    SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
-    SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
-    SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
-    SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Yaw", ahrs.getAngle());
+    // SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
+    // SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
+    // SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
+    // SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
+    // SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
     // SmartDashboard.putNumber("Right velocity", m_rightEncoder.getVelocity());
     // SmartDashboard.putNumber("Left velocity", m_leftEncoder.getVelocity());
 
@@ -382,6 +392,10 @@ public class DriveSubsystem extends SubsystemBase {
     leftSpeedPID.setReference(speed, ControlType.kVelocity);
     rightSpeedPID.setReference(speed, ControlType.kVelocity);
 
+  }
+
+  public double getDistanceFromSpeaker(){
+    return distanceFromTag;
   }
 
   public void driveSpeeds(ChassisSpeeds speeds) {

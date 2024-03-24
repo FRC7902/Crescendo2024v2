@@ -80,7 +80,7 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Beam brake override", beamBrakeOverride);
 
     if (!intakeSensor.get() && !isShooting && !beamBrakeOverride) {
-      m_intakeMotor.set(-0.2);
+      m_intakeMotor.set(-0.3);
       if(DriverStation.isTeleopEnabled()){
         m_operatorStick.setRumble(RumbleType.kBothRumble, 1);
       }
