@@ -96,6 +96,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Configure the encoder
     m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+    // m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
+    // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.setSensorPhase(false);
@@ -113,6 +115,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated,
         LimitSwitchNormal.NormallyOpen);
+
+    // m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated,
+    //     LimitSwitchNormal.NormallyOpen);
+
+    // m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+    //     LimitSwitchNormal.NormallyOpen);
   }
 
   // Getting the position of the motor
@@ -202,8 +210,8 @@ public class ArmSubsystem extends SubsystemBase {
       setNewTargetPosition(0);
     }
 
-    // if (m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {// double check this value
-    //   m_armLeaderMotor.setSelectedSensorPosition(0);
+    // if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1 && m_armLeaderMotor.getSelectedSensorVelocity() > 0) {// double check this value
+    //   m_armLeaderMotor.stopMotor();
     // }
 
     double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
