@@ -34,6 +34,7 @@ import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;
 import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
 import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
+import frc.robot.commands.teleopCommands.winch.ReelWinch;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -48,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.WinchSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -69,6 +71,7 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+  private final WinchSubsystem m_winchSubsystem = new WinchSubsystem();
 
   int autoDirection;
 
@@ -143,6 +146,7 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) > 0.25).whileTrue(new ReelWinch(m_winchSubsystem, m_operatorStick.getRawAxis(IOConstants.kLY)));
 
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
