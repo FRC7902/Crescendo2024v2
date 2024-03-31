@@ -34,9 +34,10 @@ public final class Constants {
     public static final int ArmLeaderMotorCAN = 21;// random
     public static final int ArmFollowerMotorCAN = 16;
     public static final int EncoderCPR = 4096;
-    public static final double ArmShoulderFeedForward = 0.25;
+    public static final double ArmShoulderFeedForward = 0.15;
     public static final double EncoderToOutputRatio = 2.05;
     public static final double restDegreesFromHorizontal = 90;
+    public static final double manualSlowSpeed = 0.2;
 
     public static final double ArmGroundSetpoint = 10;
     public static final double ArmSpeakerSetpoint = 37.5;

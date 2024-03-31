@@ -37,7 +37,6 @@ public class SpeakerSetpoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("targetAngle", (initialAngle + targetAngle));
     m_armSubsystem.setNewTargetPosition(util.degToCTRESensorUnits(targetAngle, ArmConstants.EncoderCPR));
   }
 

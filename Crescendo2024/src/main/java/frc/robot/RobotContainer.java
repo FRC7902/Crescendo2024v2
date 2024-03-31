@@ -164,11 +164,11 @@ public class RobotContainer {
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
-    new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
-    new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
+    // new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
+    // new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
-    // new POVButton(m_operatorStick, 0).whileTrue(new incrementAngle(m_armSubsystem));
-    // new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
+    new POVButton(m_operatorStick, 0).whileTrue(new incrementAngle(m_armSubsystem));
+    new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
 
     // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));

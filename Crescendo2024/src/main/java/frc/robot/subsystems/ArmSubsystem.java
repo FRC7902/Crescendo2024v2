@@ -41,6 +41,8 @@ public class ArmSubsystem extends SubsystemBase {
   private static double targetPosition = 0;
   private static int targetPositionCounter = 0;
   private static boolean isAutoAiming = false;
+  private static boolean isManualControl = false;
+  private static double adjusted_feedForward;
 
   /** Object of a simulated arm **/
   private final SingleJointedArmSim armSim = new SingleJointedArmSim(
@@ -96,8 +98,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Configure the encoder
     m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-    // m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-    // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.setSensorPhase(false);
@@ -110,16 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotFollower.setInverted(InvertType.FollowMaster);
 
     // Configuring the limit switch
-    m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
-        LimitSwitchNormal.NormallyOpen);
-
-    m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated,
-        LimitSwitchNormal.NormallyOpen);
-
-    // m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated,
-    //     LimitSwitchNormal.NormallyOpen);
-
-    // m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+    // m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
     //     LimitSwitchNormal.NormallyOpen);
   }
 
@@ -127,6 +118,10 @@ public class ArmSubsystem extends SubsystemBase {
   public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
     return modAngleTicks(m_armLeaderMotor.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
+  }
+
+  public double getCurrentPosition(){
+    return m_armLeaderMotor.getSensorCollection().getQuadraturePosition();
   }
 
   public double getLeaderPower() {
@@ -203,26 +198,38 @@ public class ArmSubsystem extends SubsystemBase {
     return -autoAngle;
   }
 
+  public void setManualControl(boolean manualControl){
+    isManualControl = manualControl;
+  }
+
+  public double getFeedforward(){
+    return adjusted_feedForward;
+  }
+
   @Override
   public void periodic() {
 
     if(DriverStation.isDisabled()){
       setNewTargetPosition(0);
+      // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
     }
 
-    // if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1 && m_armLeaderMotor.getSelectedSensorVelocity() > 0) {// double check this value
-    //   m_armLeaderMotor.stopMotor();
+    // if(m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {
+    //   m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 1);
     // }
 
-    double adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
-        * Math.cos(util.CTRESensorUnitsToRads(targetPosition, ArmConstants.EncoderCPR)));
+    adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
+        * Math.cos(-util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21));
 
     // SmartDashboard.putNumber("Target Position", targetPosition);
     //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
-    SmartDashboard.putNumber("current angle", targetPosition * -1);
-    // SmartDashboard.putNumber("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed());
+    SmartDashboard.putNumber("TARGET POSITION", targetPosition);
+    SmartDashboard.putBoolean("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
+    SmartDashboard.putBoolean("is manual control", isManualControl);
+    SmartDashboard.putNumber("angle in radians", -util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21);
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.set(
@@ -240,7 +247,7 @@ public class ArmSubsystem extends SubsystemBase {
             calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
             DemandType.ArbitraryFeedForward,
             adjusted_feedForward);
-        }else{
+        }else if(!isManualControl){
           m_armLeaderMotor.set(
             ControlMode.MotionMagic, 
             targetPosition * ArmConstants.EncoderToOutputRatio,
