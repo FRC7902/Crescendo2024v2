@@ -145,8 +145,8 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) > 0.25).whileTrue(new ReelWinch(m_winchSubsystem, m_operatorStick.getRawAxis(IOConstants.kLY)));
+    // new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
+    // new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) > 0.25).whileTrue(new ReelWinch(m_winchSubsystem, m_operatorStick.getRawAxis(IOConstants.kLY)));
 
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
@@ -169,11 +169,12 @@ public class RobotContainer {
 
     new POVButton(m_operatorStick, 0).whileTrue(new incrementAngle(m_armSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
+    
+    new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
 
     // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
     
-    new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
     // new POVButton(m_operatorStick, 270).onTrue(new DriveToDistance(m_driveSubsystem, 3));
     // new POVButton(m_operatorStick, 90).onTrue(new DriveToDistance(m_driveSubsystem, -3));
 
