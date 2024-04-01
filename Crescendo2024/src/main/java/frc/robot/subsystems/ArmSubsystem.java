@@ -194,7 +194,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public double calculateAutoAim(){
     double displacement = m_driveSubsystem.getDistanceFromSpeaker();
-    double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 30;
+    double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 30; //needs to be updated
     return -autoAngle;
   }
 
