@@ -31,7 +31,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int ArmLeaderMotorCAN = 21;// random
+    public static final int ArmLeaderMotorCAN = 21;//old one was 21
     public static final int ArmFollowerMotorCAN = 16;
     public static final int EncoderCPR = 4096;
     public static final double ArmShoulderFeedForward = 0.15;
@@ -40,7 +40,7 @@ public final class Constants {
     public static final double manualSlowSpeed = 0.2;
 
     public static final double ArmGroundSetpoint = 10;
-    public static final double ArmSpeakerSetpoint = 37.5;
+    public static final double ArmSpeakerSetpoint = 41;
     public static final double ArmAmpSetpoint = 100;
   }
 

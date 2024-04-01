@@ -172,9 +172,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  public boolean atZeroPos() {
-    return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
-  }
+  // public boolean atZeroPos() {
+  //   return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
+  // }
 
   public void stopMotor() {
     m_armLeaderMotor.stopMotor();
@@ -226,7 +226,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
     SmartDashboard.putNumber("TARGET POSITION", targetPosition);
-    SmartDashboard.putBoolean("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
+    // SmartDashboard.putBoolean("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
+    // SmartDashboard.putBoolean("fws Limit Switch", m_armLeaderMotor.isFwdLimitSwitchClosed() == 1);
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
     SmartDashboard.putBoolean("is manual control", isManualControl);
     SmartDashboard.putNumber("angle in radians", -util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21);
