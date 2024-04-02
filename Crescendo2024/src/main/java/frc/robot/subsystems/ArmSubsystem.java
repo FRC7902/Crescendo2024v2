@@ -80,7 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_armLeaderMotor.configVoltageCompSaturation(12, 0);
     m_armLeaderMotor.configPeakCurrentLimit(45);
 
-    m_armLeaderMotor.config_kP(0, 1.5);
+    m_armLeaderMotor.config_kP(0, 1.6);
     m_armLeaderMotor.config_kI(0, 0);// 54
     m_armLeaderMotor.config_kD(0, 0);// 3.374
 
@@ -143,7 +143,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 150){
+    if(Math.abs(getAngle() - targetPosition) < 50){
       targetPositionCounter++;
     }else{
       targetPositionCounter = 0;
@@ -158,7 +158,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
     public boolean notAtTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 150){
+    if(Math.abs(getAngle() - targetPosition) < 50){
       targetPositionCounter++;
     }else{
       targetPositionCounter = 0;
