@@ -82,6 +82,7 @@ public final class Constants {
     public static final double kAFeedForward = 0;
     public static final int intakeCurrentLimit = 15;
     public static final double intakeTargetSpeed = 1;
+    public static final double pullingSpeed = -0.1;
 
   }
 

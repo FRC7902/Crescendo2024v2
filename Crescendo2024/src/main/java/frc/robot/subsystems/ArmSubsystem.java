@@ -166,7 +166,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
     public boolean notAtTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 150){
+    if(Math.abs(getAngle() - targetPosition) < 50){
       targetPositionCounter++;
     }else{
       targetPositionCounter = 0;

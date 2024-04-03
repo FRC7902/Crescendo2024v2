@@ -4,7 +4,10 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm Sim": "Mechanism2d",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/SendableChooser[0]": "String Chooser"
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/mirror auto?": "String Chooser",
+      "/SmartDashboard/routine": "String Chooser",
+      "/SmartDashboard/taxi?": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Arm Sim": {
@@ -29,5 +32,8 @@
         }
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }
