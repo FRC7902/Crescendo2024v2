@@ -91,6 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double distanceFromTag;
   private double distanceBetweenTagsRed = 22.1875/39.37; //DIST BETWEEN 3 AND 4
   private double distanceBetweenTagsBlue = 22.1875/39.37; //DIST BETWEEN 7 AND 8
+  private boolean autoAimIsReady = false;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -258,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
 
-
+    SmartDashboard.putBoolean("auto aim", autoAimIsReady);
 
     if(DriverStation.isDisabled()){
       resetEncoders();
@@ -310,6 +311,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         distanceFromTag = distanceBetweenTagsRed/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
 
+        if(distanceFromTag < 3.6){
+          autoAimIsReady = true;
+        }else{
+          autoAimIsReady = false;
+        }
+
       }else if(targets.size() >= 2 && (targets.get(0).getFiducialId() == 7 || targets.get(1).getFiducialId() == 7)){
         if(targets.get(0).getFiducialId() == 7){
           angleFromTag1 = -1 * targets.get(0).getYaw();
@@ -321,12 +328,22 @@ public class DriveSubsystem extends SubsystemBase {
 
         distanceFromTag = distanceBetweenTagsBlue/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
 
+        if(distanceFromTag < 3.6){
+          autoAimIsReady = true;
+        }else{
+          autoAimIsReady = false;
+        }
+
+      }else{
+        autoAimIsReady = false;
       }
 
         SmartDashboard.putNumber("middle tag angle", angleFromTag1);
         SmartDashboard.putNumber("side tag angle", angleFromTag2);
         SmartDashboard.putNumber("dist from middle tag", distanceFromTag);
 
+    }else{
+      autoAimIsReady = false;
     }
 
     SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
