@@ -28,24 +28,24 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoNoteAutoSide extends SequentialCommandGroup {
+public class TwoNoteAutoLeftSide extends SequentialCommandGroup {
   /** Creates a new TwoNoteAutoSimple. */
-  public TwoNoteAutoSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, int mirror, boolean taxi) {
+  public TwoNoteAutoLeftSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, int mirror, boolean taxi) {
     addCommands(
       new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
       new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
       new DriveToDistance(drive, 0.4096), //24 * 2.54 * 0.01
-      new TurnToAngle(drive, mirror * (-65), true).withTimeout(2),
+      new TurnToAngle(drive, mirror * (65), true).withTimeout(2),
       new DriveIntakeComeBackLong(drive, intake, arm, 1.5, true),
-      new TurnToAngle(drive, mirror * 65, true),
+      new TurnToAngle(drive, mirror * -65, true),
       new DriveToDistance(drive, (-24) * 2.54 * 0.01).withTimeout(2),
       new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new TurnToAngle(drive, mirror * (-65), true).withTimeout(2),
+      new TurnToAngle(drive, mirror * (65), true).withTimeout(2),
       new ConditionalCommand(
         new DriveToDistance(drive, 1), 
         new InstantCommand(), 

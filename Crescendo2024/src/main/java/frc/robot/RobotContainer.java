@@ -13,9 +13,10 @@ import frc.robot.commands.autonomousCommands.OneNotePreload;
 import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
+import frc.robot.commands.autonomousCommands.TwoNoteAutoLeftSide;
 import frc.robot.commands.autonomousCommands.FourNoteMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
-import frc.robot.commands.autonomousCommands.TwoNoteAutoSide;
+import frc.robot.commands.autonomousCommands.TwoNoteAutoRightSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
@@ -78,7 +79,8 @@ public class RobotContainer {
   private final TwoNoteAutoMiddle m_twoNoteMiddle;
   private final OneNotePreload m_oneNotePreload;
   private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle;
-  private final TwoNoteAutoSide m_TwoNoteAutoSide;
+  private final TwoNoteAutoRightSide m_TwoNoteAutoRightSide;
+  private final TwoNoteAutoLeftSide m_TwoNoteAutoLeftSide;
   private final FourNoteMiddle m_FourNoteMiddle;
   private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
   private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
@@ -103,14 +105,15 @@ public class RobotContainer {
 
     m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem, taxi.getSelected());
     m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
-    m_TwoNoteAutoSide = new TwoNoteAutoSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
+    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
+    m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
     m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
     m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
 
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
-    m_chooser.setDefaultOption("Two Note Middle", m_twoNoteMiddle);
-    m_chooser.addOption("Two Note Side", m_TwoNoteAutoSide);
-    m_chooser.addOption("Three note middle", m_ThreeNoteAutoMiddle);
+    m_chooser.addOption("Two Note Middle", m_twoNoteMiddle);
+    m_chooser.addOption("Two Note Right", m_TwoNoteAutoRightSide);
+    m_chooser.setDefaultOption("Three note middle", m_ThreeNoteAutoMiddle);
     m_chooser.addOption("Four Note Middle", m_FourNoteMiddle);
     m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
     m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);

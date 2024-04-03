@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -230,16 +229,13 @@ public class ArmSubsystem extends SubsystemBase {
     adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
         * Math.cos(-util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.07));
 
-    //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
-    SmartDashboard.putNumber("feedforward", adjusted_feedForward);
+    // SmartDashboard.putNumber("feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
     SmartDashboard.putNumber("TARGET POSITION", targetPosition);
     // SmartDashboard.putBoolean("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
-    // SmartDashboard.putBoolean("fws Limit Switch", m_armLeaderMotor.isFwdLimitSwitchClosed() == 1);
+    SmartDashboard.putBoolean("arm Limit Switch", m_armLeaderMotor.isFwdLimitSwitchClosed() == 1);
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
-    SmartDashboard.putBoolean("is manual control", isManualControl);
-    SmartDashboard.putNumber("angle in radians", -util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21);
     SmartDashboard.putNumber("autoAngle", calculateAutoAim());
     // SmartDashboard.putNumber("s", calculateAutoAim() - getAngle());
     // SmartDashboard.putNumber("d", calculateAutoAim() / getAngle());

@@ -89,7 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
   private double angleFromTag1;
   private double angleFromTag2;
   private double distanceFromTag;
-  private double distanceBetweenTags = 22.1875/39.37;
+  private double distanceBetweenTagsRed = 22.1875/39.37;
+  private double distanceBetweenTagsBlue = 22.1875/39.37;
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
@@ -307,13 +308,25 @@ public class DriveSubsystem extends SubsystemBase {
           angleFromTag2 = targets.get(0).getYaw();
         }
 
-        distanceFromTag = distanceBetweenTags/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+        distanceFromTag = distanceBetweenTagsRed/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+
+      }else if(targets.size() >= 2 && (targets.get(0).getFiducialId() == 7 || targets.get(1).getFiducialId() == 7)){
+        if(targets.get(0).getFiducialId() == 7){
+          angleFromTag1 = -1 * targets.get(0).getYaw();
+          angleFromTag2 = targets.get(1).getYaw();
+        }else{
+          angleFromTag1 = -1 * targets.get(1).getYaw();
+          angleFromTag2 = targets.get(0).getYaw();
+        }
+
+        distanceFromTag = distanceBetweenTagsBlue/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+
+      }
 
         SmartDashboard.putNumber("middle tag angle", angleFromTag1);
         SmartDashboard.putNumber("side tag angle", angleFromTag2);
         SmartDashboard.putNumber("dist from middle tag", distanceFromTag);
 
-      }
     }
 
     SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
