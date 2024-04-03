@@ -36,7 +36,7 @@ public class TwoNoteAutoSide extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
-      new DriveToDistance(drive, 24 * 2.54 * 0.01),
+      new DriveToDistance(drive, 0.4096), //24 * 2.54 * 0.01
       new TurnToAngle(drive, mirror * (-65), true).withTimeout(2),
       new DriveIntakeComeBackLong(drive, intake, arm, 1.5, true),
       new TurnToAngle(drive, mirror * 65, true),

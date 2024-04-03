@@ -40,7 +40,7 @@ public final class Constants {
     public static final double manualSlowSpeed = 0.2;
 
     public static final double ArmGroundSetpoint = 10;
-    public static final double ArmSpeakerSetpoint = 35;//used to be 37.5
+    public static final double ArmSpeakerSetpoint = 34;//used to be 37.5
     // public static final double ArmSpeakerSetpoint = 20;
     public static final double ArmAmpSetpoint = 100;
   }

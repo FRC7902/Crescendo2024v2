@@ -118,8 +118,8 @@ public class ArmSubsystem extends SubsystemBase {
     armPivotFollower.setInverted(InvertType.FollowMaster);
 
     // Configuring the limit switch
-    // m_armLeaderMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
-    //     LimitSwitchNormal.NormallyOpen);
+    m_armLeaderMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector,
+        LimitSwitchNormal.NormallyOpen);
   }
 
   // Getting the position of the motor
@@ -151,13 +151,13 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 25){
+    if(Math.abs(getAngle() - targetPosition) < 100){
       targetPositionCounter++;
     }else{
       targetPositionCounter = 0;
     }
 
-    if(targetPositionCounter > 20){
+    if(targetPositionCounter > 50){
       return true;
     }else{
       return false;
@@ -172,7 +172,7 @@ public class ArmSubsystem extends SubsystemBase {
       targetPositionCounter = 0;
     }
 
-    if(targetPositionCounter > 20){
+    if(targetPositionCounter > 50){
       return false;
     }else{
       return true;
@@ -180,9 +180,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  // public boolean atZeroPos() {
-  //   return m_armLeaderMotor.isRevLimitSwitchClosed() == 0; // switch is open
-  // }
+  public boolean atZeroPos() {
+    return m_armLeaderMotor.isFwdLimitSwitchClosed() == 0; // switch is open
+  }
 
   public void stopMotor() {
     m_armLeaderMotor.stopMotor();
@@ -203,7 +203,8 @@ public class ArmSubsystem extends SubsystemBase {
   public double calculateAutoAim(){
     double displacement = m_driveSubsystem.getDistanceFromSpeaker();
     // double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 33; //needs to be updated
-    double autoAngle = ((-11.336 * displacement * displacement) - (51.952 * displacement) - 214.78 - 40);
+    // double autoAngle = ((-11.336 * displacement * displacement) - (51.952 * displacement) - 214.78 - 40);
+    double autoAngle = (55.067 * displacement * displacement) - (419.7 * displacement) + 152.7 + 30;
     return autoAngle;
   }
 
@@ -222,9 +223,9 @@ public class ArmSubsystem extends SubsystemBase {
       // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
     }
 
-    // if(m_armLeaderMotor.isRevLimitSwitchClosed() == 1) {
-    //   m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 1);
-    // }
+    if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1) {
+      m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 1);
+    }
 
     adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
         * Math.cos(-util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.07));
@@ -239,7 +240,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
     SmartDashboard.putBoolean("is manual control", isManualControl);
     SmartDashboard.putNumber("angle in radians", -util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21);
-    SmartDashboard.putNumber("autoAngle", 1.3 * calculateAutoAim());
+    SmartDashboard.putNumber("autoAngle", calculateAutoAim());
     // SmartDashboard.putNumber("s", calculateAutoAim() - getAngle());
     // SmartDashboard.putNumber("d", calculateAutoAim() / getAngle());
 
@@ -256,7 +257,7 @@ public class ArmSubsystem extends SubsystemBase {
         if(isAutoAiming){
           m_armLeaderMotor.set(
             ControlMode.MotionMagic, 
-            1.3 * calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
+            calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
             DemandType.ArbitraryFeedForward,
             adjusted_feedForward);
         }else if(!isManualControl){

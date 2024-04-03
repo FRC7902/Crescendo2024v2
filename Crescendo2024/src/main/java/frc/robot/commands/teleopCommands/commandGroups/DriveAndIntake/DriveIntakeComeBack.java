@@ -10,6 +10,7 @@ import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndShooter.DriveAndRevSpeaker;
 import frc.robot.commands.teleopCommands.drive.encoder_gyro.DriveToDistance;
+import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.StopIntake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,16 +30,17 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
     addCommands(
       m_driveAndIntake.until(intake::hasNote),
       new StopIntake(intake).withTimeout(0.01),
+      new IntakeNote(intake).withTimeout(0.2),
+      new StopIntake(intake).withTimeout(0.01),
+      new ConditionalCommand(
+        new DriveAndRevSpeaker(drive, shooter, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
+        new DriveToDistance(drive, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
+        () -> revSpeaker),
       new ConditionalCommand(
         new SpeakerSetpoint(arm), 
         new Level0Setpoint(arm), 
         () -> raiseArmToSpeaker
-        ).withTimeout(0.01),
-      new ConditionalCommand(
-        new DriveAndRevSpeaker(drive, shooter, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
-        new DriveToDistance(drive, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
-        () -> revSpeaker
-      )
+        ).until(arm::atTargetPosition)
     );
   }
 }
