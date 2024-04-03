@@ -89,8 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
   private double angleFromTag1;
   private double angleFromTag2;
   private double distanceFromTag;
-  private double distanceBetweenTagsRed = 22.1875/39.37;
-  private double distanceBetweenTagsBlue = 22.1875/39.37;
+  private double distanceBetweenTagsRed = 22.1875/39.37; //DIST BETWEEN 3 AND 4
+  private double distanceBetweenTagsBlue = 22.1875/39.37; //DIST BETWEEN 7 AND 8
 
   // Simulation Stuff
   private final Encoder m_leftEncoderObj = new Encoder(0, 1);
