@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -80,12 +81,19 @@ public class ArmSubsystem extends SubsystemBase {
     m_armLeaderMotor.configVoltageCompSaturation(12, 0);
     m_armLeaderMotor.configPeakCurrentLimit(45);
 
-    m_armLeaderMotor.config_kP(0, 1.5);
-    m_armLeaderMotor.config_kI(0, 0);// 54
-    m_armLeaderMotor.config_kD(0, 0);// 3.374
+    m_armLeaderMotor.config_kP(0, 5.5);
+    m_armLeaderMotor.config_kI(0, 0); //0.00025
+    m_armLeaderMotor.config_kD(0, 0.00045);// 3.374
+
+    //tu = 0.5
+    //ku = 7.5
+
+    // m_armLeaderMotor.config_kP(0, 0.2 * 7.5);
+    // m_armLeaderMotor.config_kI(0, 0.4 * 7.5 / 0.5);// 54
+    // m_armLeaderMotor.config_kD(0, 0.066 * 7.5 * 0.5);// 3.374
 
     // Setting the velocity and acceleration of the motors
-    m_armLeaderMotor.configMotionCruiseVelocity(2500);
+    m_armLeaderMotor.configMotionCruiseVelocity(200);
     m_armLeaderMotor.configMotionAcceleration(500);
 
     m_armLeaderMotor.configNeutralDeadband(0.04);
@@ -143,7 +151,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 150){
+    if(Math.abs(getAngle() - targetPosition) < 25){
       targetPositionCounter++;
     }else{
       targetPositionCounter = 0;
@@ -194,8 +202,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public double calculateAutoAim(){
     double displacement = m_driveSubsystem.getDistanceFromSpeaker();
-    double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 30; //needs to be updated
-    return -autoAngle;
+    // double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 33; //needs to be updated
+    double autoAngle = ((-11.336 * displacement * displacement) - (51.952 * displacement) - 214.78 - 40);
+    return autoAngle;
   }
 
   public void setManualControl(boolean manualControl){
@@ -208,7 +217,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     if(DriverStation.isDisabled()){
       setNewTargetPosition(0);
       // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
@@ -219,10 +227,10 @@ public class ArmSubsystem extends SubsystemBase {
     // }
 
     adjusted_feedForward = (ArmConstants.ArmShoulderFeedForward
-        * Math.cos(-util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21));
+        * Math.cos(-util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.07));
 
-    // SmartDashboard.putNumber("Target Position", targetPosition);
     //SmartDashboard.putNumber("Adjusted feedforward", adjusted_feedForward);
+    SmartDashboard.putNumber("feedforward", adjusted_feedForward);
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
     SmartDashboard.putNumber("TARGET POSITION", targetPosition);
@@ -231,6 +239,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
     SmartDashboard.putBoolean("is manual control", isManualControl);
     SmartDashboard.putNumber("angle in radians", -util.CTRESensorUnitsToRads(getAngle(), ArmConstants.EncoderCPR) - 0.21);
+    SmartDashboard.putNumber("autoAngle", 1.3 * calculateAutoAim());
+    // SmartDashboard.putNumber("s", calculateAutoAim() - getAngle());
+    // SmartDashboard.putNumber("d", calculateAutoAim() / getAngle());
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.set(
@@ -245,7 +256,7 @@ public class ArmSubsystem extends SubsystemBase {
         if(isAutoAiming){
           m_armLeaderMotor.set(
             ControlMode.MotionMagic, 
-            calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
+            1.3 * calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
             DemandType.ArbitraryFeedForward,
             adjusted_feedForward);
         }else if(!isManualControl){

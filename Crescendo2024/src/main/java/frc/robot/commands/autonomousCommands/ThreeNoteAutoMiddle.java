@@ -34,6 +34,7 @@ public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
 
     addCommands(  
       new SetStartingPosition(drive, 0, 1.5, 5.5),
+      // new ConditionalCommand(new FeedNote(intake).withTimeout(0.3), new InstantCommand(), intake::hasNote),
       new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
       new FeedNote(intake).withTimeout(0.5),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
