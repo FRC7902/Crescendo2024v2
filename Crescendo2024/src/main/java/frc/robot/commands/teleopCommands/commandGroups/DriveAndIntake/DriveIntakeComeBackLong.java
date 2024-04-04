@@ -31,7 +31,7 @@ public class DriveIntakeComeBackLong extends SequentialCommandGroup {
         new SpeakerSetpoint(arm), 
         new Level0Setpoint(arm), 
         () -> raiseArmToSpeaker).withTimeout(0.01),
-      new DriveToDistance(drive, m_driveAndIntake.getDistanceTravelled()).withTimeout(3)
+      new DriveToDistance(drive, m_driveAndIntake.getDistanceTravelled() * 0.8).withTimeout(3)
     );
   }
 }

@@ -326,7 +326,7 @@ public class DriveSubsystem extends SubsystemBase {
           angleFromTag2 = targets.get(0).getYaw();
         }
 
-        distanceFromTag = distanceBetweenTagsBlue/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+        distanceFromTag = -distanceBetweenTagsBlue/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
 
         if(distanceFromTag < 3.6){
           autoAimIsReady = true;

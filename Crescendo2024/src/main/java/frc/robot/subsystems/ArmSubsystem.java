@@ -157,7 +157,7 @@ public class ArmSubsystem extends SubsystemBase {
       targetPositionCounter = 0;
     }
 
-    if(targetPositionCounter > 50){
+    if(targetPositionCounter > 75){
       return true;
     }else{
       return false;
