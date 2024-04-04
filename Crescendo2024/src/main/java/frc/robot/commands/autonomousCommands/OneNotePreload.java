@@ -7,6 +7,7 @@ package frc.robot.commands.autonomousCommands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
@@ -32,14 +33,15 @@ public class OneNotePreload extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(5),
+      new WaitCommand(5),
       new ConditionalCommand(
-        new DriveToDistance(drive, 1), 
+        new DriveToDistance(drive, 1.5), 
         new InstantCommand(), 
         () -> m_taxi)
     );
   }
 
-  // public void setTaxi(boolean setting){
-  //   m_taxi = setting;
-  // }
+  public void setTaxi(boolean setting){
+    m_taxi = setting;
+  }
 }

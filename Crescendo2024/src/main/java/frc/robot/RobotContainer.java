@@ -19,6 +19,7 @@ import frc.robot.commands.autonomousCommands.FourNoteMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoRightSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
+import frc.robot.commands.teleopCommands.arm.FeedingSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.MuteLimitSwitch;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
@@ -146,7 +147,8 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new decrementAngle(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new FeedingSetpoint(m_armSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kLA).whileTrue(new decrementAngle(m_armSubsystem));
     // new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
     // new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) > 0.25).whileTrue(new ReelWinch(m_winchSubsystem, m_operatorStick.getRawAxis(IOConstants.kLY)));
 
@@ -183,7 +185,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // m_oneNotePreload.setTaxi(taxi.getSelected());
+    m_oneNotePreload.setTaxi(taxi.getSelected());
     return m_chooser.getSelected();
   }
 }
