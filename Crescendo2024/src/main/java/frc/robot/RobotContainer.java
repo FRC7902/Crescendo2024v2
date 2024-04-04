@@ -4,14 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.IOConstants;
 import frc.robot.commands.autonomousCommands.OneNotePreload;
-import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddle;
+import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddleLeft;
+import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddleRight;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoLeftSide;
@@ -20,10 +20,10 @@ import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoRightSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
+import frc.robot.commands.teleopCommands.arm.MuteLimitSwitch;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.arm.decrementAngle;
-import frc.robot.commands.teleopCommands.arm.incrementAngle;
 import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteAmp;
@@ -31,18 +31,13 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNot
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
-import frc.robot.commands.teleopCommands.drive.odometry.ScanField;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;
 import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
-import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
-import frc.robot.commands.teleopCommands.winch.ReelWinch;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.PhotonCamera;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -51,7 +46,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.WinchSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -73,13 +67,13 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
-  private final WinchSubsystem m_winchSubsystem = new WinchSubsystem();
 
   int autoDirection;
 
   private final TwoNoteAutoMiddle m_twoNoteMiddle;
   private final OneNotePreload m_oneNotePreload;
-  private final ThreeNoteAutoMiddle m_ThreeNoteAutoMiddle;
+  private final ThreeNoteAutoMiddleRight m_ThreeNoteAutoMiddleRight;
+  private final ThreeNoteAutoMiddleLeft m_ThreeNoteAutoMiddleLeft;
   private final TwoNoteAutoRightSide m_TwoNoteAutoRightSide;
   private final TwoNoteAutoLeftSide m_TwoNoteAutoLeftSide;
   private final FourNoteMiddle m_FourNoteMiddle;
@@ -104,17 +98,20 @@ public class RobotContainer {
     taxi.addOption("Yes", true);
     SmartDashboard.putData("taxi?", taxi);
 
-    m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem, taxi.getSelected());
+    m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
     m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
     m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
     m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
-    m_ThreeNoteAutoMiddle = new ThreeNoteAutoMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_ThreeNoteAutoMiddleRight = new ThreeNoteAutoMiddleRight(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_ThreeNoteAutoMiddleLeft = new ThreeNoteAutoMiddleLeft(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
     m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
 
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
     m_chooser.addOption("Two Note Middle", m_twoNoteMiddle);
     m_chooser.addOption("Two Note Right", m_TwoNoteAutoRightSide);
-    m_chooser.setDefaultOption("Three note middle", m_ThreeNoteAutoMiddle);
+    m_chooser.addOption("Two Note Left", m_TwoNoteAutoLeftSide);
+    m_chooser.setDefaultOption("Three note right", m_ThreeNoteAutoMiddleRight);
+    m_chooser.addOption("Three note left", m_ThreeNoteAutoMiddleLeft);
     m_chooser.addOption("Four Note Middle", m_FourNoteMiddle);
     m_chooser.addOption("Two note amp close", m_TwoNoteAmpAutoClose);
     m_chooser.addOption("Two note amp far", m_TwoNoteAmpAutoFar);
@@ -160,7 +157,6 @@ public class RobotContainer {
       m_armSubsystem::isArmAtAmp));;
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
-    // new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new ToggleOverrideBeamBrake(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new SetAutoAimStatus(m_armSubsystem));
 
@@ -176,6 +172,7 @@ public class RobotContainer {
     // new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
     
     new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
+    new POVButton(m_operatorStick, 90).whileTrue(new MuteLimitSwitch(m_armSubsystem));
 
     // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
     // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
@@ -183,21 +180,10 @@ public class RobotContainer {
     // new POVButton(m_operatorStick, 270).onTrue(new DriveToDistance(m_driveSubsystem, 3));
     // new POVButton(m_operatorStick, 90).onTrue(new DriveToDistance(m_driveSubsystem, -3));
 
-    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new AlignWithAmp(m_driveSubsystem));
-
-    // new JoystickButton(m_driverStick, IOConstants.kA).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 0, false));
-    // new JoystickButton(m_driverStick, IOConstants.kB).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 90, false));
-    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new TurnToAngleOdometry(m_driveSubsystem, -90, false));
-    // new JoystickButton(m_driverStick, IOConstants.kY).onTrue(new TurnToAngleOdometry(m_driveSubsystem, 180, false));
-
-    // new JoystickButton(m_driverStick, IOConstants.kA).whileTrue(new PathPlannerAuto("AutoAmp1"));
-    // new JoystickButton(m_driverStick, IOConstants.kB).whileTrue(new PathPlannerAuto("Speaker"));
-    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerTrajectory(, m_driveSubsystem.getWheelSpeeds(), Rotation2d.fromDegrees(m_driveSubsystem.getHeading())));
-    // new JoystickButton(m_driverStick, IOConstants.kX).onTrue(new PathPlannerAuto("AutoAmp1"));
-
   }
 
   public Command getAutonomousCommand() {
+    // m_oneNotePreload.setTaxi(taxi.getSelected());
     return m_chooser.getSelected();
   }
 }

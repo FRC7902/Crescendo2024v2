@@ -7,8 +7,6 @@ package frc.robot.commands.autonomousCommands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
@@ -27,9 +25,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
+public class ThreeNoteAutoMiddleLeft extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror, boolean taxi) {
+  public ThreeNoteAutoMiddleLeft(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror, boolean taxi) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -45,7 +43,7 @@ public class ThreeNoteAutoMiddle extends SequentialCommandGroup {
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new DriveToDistance(drive, 1.6).withTimeout(3),
-      new TurnToAngle(drive, mirror * (90), false).withTimeout(3),
+      new TurnToAngle(drive, mirror * (-90), false).withTimeout(3),
       new DriveIntakeComeBack(drive, intake, arm, shooter, 1, false, false),
       new TurnToAngle(drive, 0, false).withTimeout(3),
       new SpeakerSetpoint(arm).withTimeout(0.01),

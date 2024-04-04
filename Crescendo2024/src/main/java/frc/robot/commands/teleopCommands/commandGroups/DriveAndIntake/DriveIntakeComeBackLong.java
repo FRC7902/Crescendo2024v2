@@ -4,8 +4,6 @@
 
 package frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.arm.Level0Setpoint;

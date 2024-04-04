@@ -42,7 +42,8 @@ public final class Constants {
     public static final double ArmGroundSetpoint = 10;
     public static final double ArmSpeakerSetpoint = 34;//used to be 37.5
     // public static final double ArmSpeakerSetpoint = 20;
-    public static final double ArmAmpSetpoint = 100;
+    public static final double ArmFeedingSetpoint = 60;
+    public static final double ArmAmpSetpoint = 103;
   }
 
   public final static class ShooterConstants {

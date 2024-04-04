@@ -10,17 +10,17 @@ import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class SpeakerSetpoint extends Command {
+public class FeedingSetpoint extends Command {
   private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = ArmConstants.ArmSpeakerSetpoint;
+  private double targetAngle = ArmConstants.ArmFeedingSetpoint;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SpeakerSetpoint(ArmSubsystem arm) {
+  public FeedingSetpoint(ArmSubsystem arm) {
     m_armSubsystem = arm;
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(subsystem);

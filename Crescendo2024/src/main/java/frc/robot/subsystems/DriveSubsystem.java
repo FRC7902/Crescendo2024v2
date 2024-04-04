@@ -338,16 +338,16 @@ public class DriveSubsystem extends SubsystemBase {
         autoAimIsReady = false;
       }
 
-        SmartDashboard.putNumber("middle tag angle", angleFromTag1);
-        SmartDashboard.putNumber("side tag angle", angleFromTag2);
-        SmartDashboard.putNumber("dist from middle tag", distanceFromTag);
-
     }else{
       autoAimIsReady = false;
     }
 
-    SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
+    // SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
     // SmartDashboard.putBoolean("Is Scanning", isScanningField);
+    // SmartDashboard.putNumber("middle tag angle", angleFromTag1);
+    // SmartDashboard.putNumber("side tag angle", angleFromTag2);
+    SmartDashboard.putNumber("dist from tag", distanceFromTag);
+
     
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
     // SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());

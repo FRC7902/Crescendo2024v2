@@ -4,22 +4,15 @@
 
 package frc.robot.commands.teleopCommands.arm;
 
-import frc.robot.FireBirdsUtils;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class incrementAngle extends Command {
-  private final static FireBirdsUtils util = new FireBirdsUtils();
   private ArmSubsystem m_armSubsystem;
-  private double targetAngle = ArmConstants.ArmAmpSetpoint;
 
   // private final PIDController turnPID = new PIDController(0.102, 2.04,
   // 0.001275);
-
-  private double initialAngle;
 
   /**
    * Creates a new ExampleCommand.
@@ -27,7 +20,6 @@ public class incrementAngle extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public incrementAngle(ArmSubsystem arm) {
-    initialAngle = arm.getAngle();
     m_armSubsystem = arm;
     // Use addRequirements() here to declare subsystem dependencies.
     // addRequirements(subsystem);

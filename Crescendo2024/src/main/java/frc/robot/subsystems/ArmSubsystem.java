@@ -42,6 +42,7 @@ public class ArmSubsystem extends SubsystemBase {
   private static int targetPositionCounter = 0;
   private static boolean isAutoAiming = false;
   private static boolean isManualControl = false;
+  private static boolean isLimitSwitchMuted = false;
   private static double adjusted_feedForward;
 
   /** Object of a simulated arm **/
@@ -215,6 +216,10 @@ public class ArmSubsystem extends SubsystemBase {
     return adjusted_feedForward;
   }
 
+  public void toggleLimitSwitchMute(){
+    isLimitSwitchMuted = !isLimitSwitchMuted;
+  }
+
   @Override
   public void periodic() {
     if(DriverStation.isDisabled()){
@@ -222,7 +227,7 @@ public class ArmSubsystem extends SubsystemBase {
       // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
     }
 
-    if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1) {
+    if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1 && !isLimitSwitchMuted) {
       m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 1);
     }
 
@@ -237,6 +242,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("arm Limit Switch", m_armLeaderMotor.isFwdLimitSwitchClosed() == 1);
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
     SmartDashboard.putNumber("autoAngle", calculateAutoAim());
+    SmartDashboard.putBoolean("Limit switch muted", isLimitSwitchMuted);
     // SmartDashboard.putNumber("s", calculateAutoAim() - getAngle());
     // SmartDashboard.putNumber("d", calculateAutoAim() / getAngle());
 
