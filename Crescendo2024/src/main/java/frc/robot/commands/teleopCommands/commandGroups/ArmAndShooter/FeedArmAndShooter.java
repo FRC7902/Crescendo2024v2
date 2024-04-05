@@ -2,25 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.teleopCommands.commandGroups.Scoring;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
-import frc.robot.commands.teleopCommands.intake.FeedNote;
+package frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter;
+
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.teleopCommands.arm.FeedingSetpoint;
+import frc.robot.commands.teleopCommands.shooter.SetSpeedSpeaker;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ScoreNoteSpeaker extends SequentialCommandGroup {
-  /** Creates a new ScoreNoteSpeaker. */
-  public ScoreNoteSpeaker(ArmSubsystem arm, ShooterSubsystem shooter, IntakeSubsystem intake) {
+public class FeedArmAndShooter extends ParallelCommandGroup {
+  /** Creates a new FeedArmAndShooter. */
+  public FeedArmAndShooter(ArmSubsystem arm, ShooterSubsystem shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SpeakerArmAndShooter(arm, shooter).withTimeout(4),
-      new FeedNote(intake)
+      new FeedingSetpoint(arm).until(arm::atTargetPosition),
+      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed)
     );
   }
 }

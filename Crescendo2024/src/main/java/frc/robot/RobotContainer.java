@@ -31,6 +31,7 @@ import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNot
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteSpeaker;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteAmp;
+import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteFeedAngle;
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;
@@ -166,6 +167,7 @@ public class RobotContainer {
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kRA).whileTrue(new ScoreNoteFeedAngle(m_shooterSubsystem, m_armSubsystem, m_intake)); 
 
     new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
