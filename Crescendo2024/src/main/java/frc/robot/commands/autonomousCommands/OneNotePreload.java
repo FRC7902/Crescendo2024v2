@@ -33,7 +33,7 @@ public class OneNotePreload extends SequentialCommandGroup {
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(5),
-      new WaitCommand(5),
+      new WaitCommand(8),
       new ConditionalCommand(
         new DriveToDistance(drive, 1.5), 
         new InstantCommand(), 

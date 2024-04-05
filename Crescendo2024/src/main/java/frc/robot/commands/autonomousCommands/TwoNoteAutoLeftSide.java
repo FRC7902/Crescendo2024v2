@@ -24,8 +24,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TwoNoteAutoLeftSide extends SequentialCommandGroup {
+  boolean m_taxi = false;
   /** Creates a new TwoNoteAutoSimple. */
-  public TwoNoteAutoLeftSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, int mirror, boolean taxi) {
+  public TwoNoteAutoLeftSide(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, int mirror) {
     addCommands(
       new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
       new FeedNote(intake).withTimeout(0.5),
@@ -42,9 +43,12 @@ public class TwoNoteAutoLeftSide extends SequentialCommandGroup {
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
       new TurnToAngle(drive, mirror * (65), true).withTimeout(2),
       new ConditionalCommand(
-        new DriveToDistance(drive, 1), 
+        new DriveToDistance(drive, 5), 
         new InstantCommand(), 
-        () -> taxi)
+        () -> m_taxi)
       );
+  }
+  public void setTaxi(boolean setting){
+    m_taxi = setting;
   }
 }

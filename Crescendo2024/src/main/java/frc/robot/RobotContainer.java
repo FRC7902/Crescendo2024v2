@@ -101,8 +101,8 @@ public class RobotContainer {
 
     m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
     m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
-    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
-    m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection, taxi.getSelected());
+    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection);
+    m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection);
     m_ThreeNoteAutoMiddleRight = new ThreeNoteAutoMiddleRight(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
     m_ThreeNoteAutoMiddleLeft = new ThreeNoteAutoMiddleLeft(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
     m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
@@ -186,6 +186,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     m_oneNotePreload.setTaxi(taxi.getSelected());
+    m_TwoNoteAutoLeftSide.setTaxi(taxi.getSelected());
+    m_TwoNoteAutoRightSide.setTaxi(taxi.getSelected());
     return m_chooser.getSelected();
   }
 }
