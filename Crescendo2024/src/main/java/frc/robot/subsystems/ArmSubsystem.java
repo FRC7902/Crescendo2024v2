@@ -253,7 +253,7 @@ public class ArmSubsystem extends SubsystemBase {
         DemandType.ArbitraryFeedForward,
         adjusted_feedForward);
     } else {
-      if(targetPosition == 0 && atTargetPosition() && !isAutoAiming){
+      if(Math.abs(targetPosition) == 0 && atTargetPosition() && !isAutoAiming){
         m_armLeaderMotor.set(0);
       }else{
         if(isAutoAiming){

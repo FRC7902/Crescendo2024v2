@@ -33,15 +33,15 @@ public class TwoNoteAutoLeftSide extends SequentialCommandGroup {
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).withTimeout(2),
       new DriveToDistance(drive, 0.4096), //24 * 2.54 * 0.01
-      new TurnToAngle(drive, mirror * (70), true).withTimeout(2),
+      new TurnToAngle(drive, mirror * (65), true).withTimeout(2),
       new DriveIntakeComeBackLong(drive, intake, arm, 1.5, true),
-      new TurnToAngle(drive, mirror * -70, true),
+      new TurnToAngle(drive, mirror * -67, true),
       new DriveToDistance(drive, (-24) * 2.54 * 0.01).withTimeout(2),
       new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
       new FeedNote(intake).withTimeout(1),
       new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
       new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new TurnToAngle(drive, mirror * (65), true).withTimeout(2),
+      new TurnToAngle(drive, mirror * (67), true).withTimeout(2),
       new ConditionalCommand(
         new DriveToDistance(drive, 5), 
         new InstantCommand(), 
