@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.OutreachConstants;
 import frc.robot.Constants.ShooterConstants;;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -109,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void speaker() {
-    setTargetSpeed(ShooterConstants.kSpeakerSpeed);
+    setTargetSpeed(ShooterConstants.kSpeakerSpeed * OutreachConstants.speakerShootingSpeedMultiplier);
 
   }
 

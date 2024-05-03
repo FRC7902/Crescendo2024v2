@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OutreachConstants;
 import frc.robot.Robot;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -408,7 +409,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
 
-    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), 0.8 * Math.pow(zRotation, 3)
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2) * OutreachConstants.driveSpeedMultiplier,
+     0.8 * Math.pow(zRotation, 3) * OutreachConstants.driveSpeedMultiplier
     );
   }
 

@@ -133,6 +133,14 @@ public final class Constants {
   public static class AutoConstants{
     public static final double autoDriveSpeed = 1;
   }
+
+  public static class OutreachConstants {
+    public static final double driveSpeedMultiplier = 0.1;
+    public static final double armSpeedMultiplier = 0.1; 
+    public static final double armAcclerationMultiplier = 0.1; 
+    public static final double speakerShootingSpeedMultiplier = 0.5;
+    
+  }
 }
 
 // all 0 need to be changed later, theyre place holders rn

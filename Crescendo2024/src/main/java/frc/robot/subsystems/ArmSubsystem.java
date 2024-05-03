@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.OutreachConstants;
 import frc.robot.FireBirdsUtils;
 import frc.robot.Robot;
 
@@ -93,8 +94,8 @@ public class ArmSubsystem extends SubsystemBase {
     // m_armLeaderMotor.config_kD(0, 0.066 * 7.5 * 0.5);// 3.374
 
     // Setting the velocity and acceleration of the motors
-    m_armLeaderMotor.configMotionCruiseVelocity(200);
-    m_armLeaderMotor.configMotionAcceleration(500);
+    m_armLeaderMotor.configMotionCruiseVelocity(200 * OutreachConstants.armSpeedMultiplier);
+    m_armLeaderMotor.configMotionAcceleration(500 * OutreachConstants.armAcclerationMultiplier);
 
     m_armLeaderMotor.configNeutralDeadband(0.04);
 
