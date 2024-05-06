@@ -72,6 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive;
 
+  //DECLARATION OF ENCODERS
   private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
@@ -176,6 +177,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
+
+    //SET ENCODER CONVERSION
     m_leftEncoder.setPositionConversionFactor(
         (DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
     m_rightEncoder.setPositionConversionFactor(
@@ -183,7 +186,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_leftEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
     m_rightEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
-
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
@@ -196,7 +198,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollowerMotor.setIdleMode(IdleMode.kBrake);
     m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
-
 
     m_leftLeaderMotor.setSmartCurrentLimit(45);
     m_leftFollowerMotor.setSmartCurrentLimit(45);
@@ -230,6 +231,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
     m_gyroSim = new AnalogGyroSim(m_gyro);
 
+
+    //PATHPLANNER DECLARATION
     AutoBuilder.configureRamsete(
         this::getPose,
         this::resetPose,
