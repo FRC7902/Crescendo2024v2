@@ -82,11 +82,11 @@ public class ArmSubsystem extends SubsystemBase {
     m_armLeaderMotor.configPeakCurrentLimit(45);
 
     m_armLeaderMotor.config_kP(0, 5.5);
-    m_armLeaderMotor.config_kI(0, 0); //0.00025
+    m_armLeaderMotor.config_kI(0, 0); // 0.00025
     m_armLeaderMotor.config_kD(0, 0.00045);// 3.374
 
-    //tu = 0.5
-    //ku = 7.5
+    // tu = 0.5
+    // ku = 7.5
 
     // m_armLeaderMotor.config_kP(0, 0.2 * 7.5);
     // m_armLeaderMotor.config_kI(0, 0.4 * 7.5 / 0.5);// 54
@@ -98,11 +98,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_armLeaderMotor.configNeutralDeadband(0.04);
 
-
-    if(Robot.isSimulation()){
+    if (Robot.isSimulation()) {
       SmartDashboard.putData("Arm Sim", m_mech2d);
       m_armTower.setColor(new Color8Bit(Color.kBlue));
-    }    
+    }
 
     // Configure the encoder
     m_armLeaderMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -125,10 +124,11 @@ public class ArmSubsystem extends SubsystemBase {
   // Getting the position of the motor
   public double getAngle() {
     // Absolute position gets the location of the arm in ticks (4096 per revolution)
-    return modAngleTicks(m_armLeaderMotor.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
+    return modAngleTicks(
+        m_armLeaderMotor.getSensorCollection().getQuadraturePosition() / ArmConstants.EncoderToOutputRatio);
   }
 
-  public double getCurrentPosition(){
+  public double getCurrentPosition() {
     return m_armLeaderMotor.getSensorCollection().getQuadraturePosition();
   }
 
@@ -146,35 +146,35 @@ public class ArmSubsystem extends SubsystemBase {
     targetPosition = -newTargetPosition;
   }
 
-  public double getTargetPosition(){
+  public double getTargetPosition() {
     return -targetPosition;
   }
 
-  public boolean atTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 100){
+  public boolean atTargetPosition() {
+    if (Math.abs(getAngle() - targetPosition) < 100) {
       targetPositionCounter++;
-    }else{
+    } else {
       targetPositionCounter = 0;
     }
 
-    if(targetPositionCounter > 75){
+    if (targetPositionCounter > 75) {
       return true;
-    }else{
+    } else {
       return false;
     }
 
   }
 
-    public boolean notAtTargetPosition(){
-    if(Math.abs(getAngle() - targetPosition) < 50){
+  public boolean notAtTargetPosition() {
+    if (Math.abs(getAngle() - targetPosition) < 50) {
       targetPositionCounter++;
-    }else{
+    } else {
       targetPositionCounter = 0;
     }
 
-    if(targetPositionCounter > 50){
+    if (targetPositionCounter > 50) {
       return false;
-    }else{
+    } else {
       return true;
     }
 
@@ -188,46 +188,52 @@ public class ArmSubsystem extends SubsystemBase {
     m_armLeaderMotor.stopMotor();
   }
 
-  public double modAngleTicks(double angleInTicks){
+  public double modAngleTicks(double angleInTicks) {
     return Math.IEEEremainder(angleInTicks, ArmConstants.EncoderCPR);
   }
-  
-  public boolean isArmAtAmp(){
-    return targetPosition - (-1 * (int) ArmConstants.ArmAmpSetpoint * ArmConstants.EncoderCPR/ 360) < 5;
+
+  public boolean isArmAtAmp() {
+    return targetPosition - (-1 * (int) ArmConstants.ArmAmpSetpoint * ArmConstants.EncoderCPR / 360) < 5;
   }
 
-  public void setAutoAimingStatus(boolean status){
+  public void setAutoAimingStatus(boolean status) {
     isAutoAiming = status;
   }
 
-  public double calculateAutoAim(){
+  public double calculateAutoAim() {
     double displacement = m_driveSubsystem.getDistanceFromSpeaker();
-    // double autoAngle = -54.831 * displacement * displacement + 381.77 * displacement - 59.147 + 33; //needs to be updated
-    // double autoAngle = ((-11.336 * displacement * displacement) - (51.952 * displacement) - 214.78 - 40);
+    // double autoAngle = -54.831 * displacement * displacement + 381.77 *
+    // displacement - 59.147 + 33; //needs to be updated
+    // double autoAngle = ((-11.336 * displacement * displacement) - (51.952 *
+    // displacement) - 214.78 - 40);
     double autoAngle = (55.067 * displacement * displacement) - (419.7 * displacement) + 152.7 + 30;
     return autoAngle;
   }
 
-  public void setManualControl(boolean manualControl){
+  public void setManualControl(boolean manualControl) {
     isManualControl = manualControl;
   }
 
-  public double getFeedforward(){
+  public double getFeedforward() {
     return adjusted_feedForward;
   }
 
-  public void toggleLimitSwitchMute(){
+  public void toggleLimitSwitchMute() {
     isLimitSwitchMuted = !isLimitSwitchMuted;
   }
 
   @Override
   public void periodic() {
-    if(DriverStation.isDisabled()){
+    // SmartDashboard.putNumber("Arm encoder angle", getAngle());
+
+    SmartDashboard.putNumber("Shoulder Supply Current", m_armLeaderMotor.getSupplyCurrent());
+
+    if (DriverStation.isDisabled()) {
       setNewTargetPosition(0);
       // m_armLeaderMotor.setSelectedSensorPosition(m_armLeaderMotor.getSensorCollection().getAnalogInRaw());
     }
 
-    if(m_armLeaderMotor.isFwdLimitSwitchClosed() == 1 && !isLimitSwitchMuted) {
+    if (m_armLeaderMotor.isFwdLimitSwitchClosed() == 1 && !isLimitSwitchMuted) {
       m_armLeaderMotor.getSensorCollection().setQuadraturePosition(0, 1);
     }
 
@@ -238,7 +244,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Current Shoulder Position: ", getAngle());
     SmartDashboard.putBoolean("at target position", atTargetPosition());
     SmartDashboard.putNumber("TARGET POSITION", targetPosition);
-    // SmartDashboard.putBoolean("Arm Limit Switch", m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
+    // SmartDashboard.putBoolean("Arm Limit Switch",
+    // m_armLeaderMotor.isRevLimitSwitchClosed() == 1);
     SmartDashboard.putBoolean("arm Limit Switch", m_armLeaderMotor.isFwdLimitSwitchClosed() == 1);
     SmartDashboard.putBoolean("is auto aiming", isAutoAiming);
     SmartDashboard.putNumber("autoAngle", calculateAutoAim());
@@ -248,26 +255,26 @@ public class ArmSubsystem extends SubsystemBase {
 
     if (RobotBase.isSimulation()) {
       m_armLeaderMotor.set(
-        ControlMode.MotionMagic, 
-        targetPosition, 
-        DemandType.ArbitraryFeedForward,
-        adjusted_feedForward);
+          ControlMode.MotionMagic,
+          targetPosition,
+          DemandType.ArbitraryFeedForward,
+          adjusted_feedForward);
     } else {
-      if(Math.abs(targetPosition) == 0 && atTargetPosition() && !isAutoAiming){
+      if (Math.abs(targetPosition) == 0 && atTargetPosition() && !isAutoAiming) {
         m_armLeaderMotor.set(0);
-      }else{
-        if(isAutoAiming){
+      } else {
+        if (isAutoAiming) {
           m_armLeaderMotor.set(
-            ControlMode.MotionMagic, 
-            calculateAutoAim() *  ArmConstants.EncoderToOutputRatio,
-            DemandType.ArbitraryFeedForward,
-            adjusted_feedForward);
-        }else if(!isManualControl){
+              ControlMode.MotionMagic,
+              calculateAutoAim() * ArmConstants.EncoderToOutputRatio,
+              DemandType.ArbitraryFeedForward,
+              adjusted_feedForward);
+        } else if (!isManualControl) {
           m_armLeaderMotor.set(
-            ControlMode.MotionMagic, 
-            targetPosition * ArmConstants.EncoderToOutputRatio,
-            DemandType.ArbitraryFeedForward,
-            adjusted_feedForward);
+              ControlMode.MotionMagic,
+              targetPosition * ArmConstants.EncoderToOutputRatio,
+              DemandType.ArbitraryFeedForward,
+              adjusted_feedForward);
         }
       }
     }
@@ -289,6 +296,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     m_armLeaderMotorSim.setAnalogPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), 4096));
+
+    
 
   }
 }

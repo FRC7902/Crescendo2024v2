@@ -31,8 +31,8 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int ArmLeaderMotorCAN = 21;//old one was 21
-    public static final int ArmFollowerMotorCAN = 16;
+    public static final int ArmLeaderMotorCAN = 20;//old one was 21
+    public static final int ArmFollowerMotorCAN = 18;
     public static final int EncoderCPR = 4096;
     public static final double ArmShoulderFeedForward = 0.38;
     public static final double EncoderToOutputRatio = 2.05;
@@ -121,8 +121,8 @@ public final class Constants {
   }
 
   public static class ClimbConstants{
-    public static final int ClimbLeaderCAN = 20;
-    public static final int ClimbFollowerCAN = 18;
+    public static final int ClimbLeaderCAN = 21;
+    public static final int ClimbFollowerCAN = 16;
     public static final double upSpeed = 1.0;
     public static final double downSpeed = -1.0;
     public static final int peakCurrent = 30; 

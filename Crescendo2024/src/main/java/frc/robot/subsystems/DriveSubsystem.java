@@ -2,7 +2,6 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
@@ -73,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive;
 
-  //DECLARATION OF ENCODERS
+  // DECLARATION OF ENCODERS
   private final RelativeEncoder m_leftEncoder = m_leftLeaderMotor.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeaderMotor.getEncoder();
 
@@ -91,8 +90,8 @@ public class DriveSubsystem extends SubsystemBase {
   private double angleFromTag1;
   private double angleFromTag2;
   private double distanceFromTag;
-  private double distanceBetweenTagsRed = 22.1875/39.37; //DIST BETWEEN 3 AND 4
-  private double distanceBetweenTagsBlue = 22.1875/39.37; //DIST BETWEEN 7 AND 8
+  private double distanceBetweenTagsRed = 22.1875 / 39.37; // DIST BETWEEN 3 AND 4
+  private double distanceBetweenTagsBlue = 22.1875 / 39.37; // DIST BETWEEN 7 AND 8
   private boolean autoAimIsReady = false;
 
   // Simulation Stuff
@@ -104,7 +103,6 @@ public class DriveSubsystem extends SubsystemBase {
   private AnalogGyroSim m_gyroSim;
   public DifferentialDrivetrainSim m_driveTrainSim;
   private Field2d m_fieldSim;
-  private PhotonCamera m_camera;
 
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       DriveConstants.trackWidthInches);
@@ -120,50 +118,53 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  // Mutable holder for unit-safe linear distance values, persisted to avoid
+  // reallocation.
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid
+  // reallocation.
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-   private final SysIdRoutine m_sysIdRoutine =
-      new SysIdRoutine(
-          // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-          new SysIdRoutine.Config(),
-          new SysIdRoutine.Mechanism(
-              // Tell SysId how to plumb the driving voltage to the motors.
-              (Measure<Voltage> volts) -> {
-                m_leftLeaderMotor.setVoltage(volts.in(Volts));
-                m_rightLeaderMotor.setVoltage(volts.in(Volts));
-              },
-              // Tell SysId how to record a frame of data for each motor on the mechanism being
-              // characterized.
-              log -> {
-                // Record a frame for the left motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-left")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            m_leftLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
-                // Record a frame for the right motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-right")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            m_rightLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
-              },
-              // Tell SysId to make generated commands require this subsystem, suffix test state in
-              // WPILog with this subsystem's name ("drive")
-              this));
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          // Tell SysId how to plumb the driving voltage to the motors.
+          (Measure<Voltage> volts) -> {
+            m_leftLeaderMotor.setVoltage(volts.in(Volts));
+            m_rightLeaderMotor.setVoltage(volts.in(Volts));
+          },
+          // Tell SysId how to record a frame of data for each motor on the mechanism
+          // being
+          // characterized.
+          log -> {
+            // Record a frame for the left motors. Since these share an encoder, we consider
+            // the entire group to be one motor.
+            log.motor("drive-left")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        m_leftLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
+            // Record a frame for the right motors. Since these share an encoder, we
+            // consider
+            // the entire group to be one motor.
+            log.motor("drive-right")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        m_rightLeaderMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
+          },
+          // Tell SysId to make generated commands require this subsystem, suffix test
+          // state in
+          // WPILog with this subsystem's name ("drive")
+          this));
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem(PhotonCamera camera) {
-    m_camera = camera;
+  public DriveSubsystem() {
 
     m_leftLeaderMotor.restoreFactoryDefaults();
     m_leftFollowerMotor.restoreFactoryDefaults();
@@ -178,15 +179,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
 
-
-    //SET ENCODER CONVERSION
+    // SET ENCODER CONVERSION
     m_leftEncoder.setPositionConversionFactor(
         (DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
     m_rightEncoder.setPositionConversionFactor(
         (DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio)));
 
-    m_leftEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
-    m_rightEncoder.setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
+    m_leftEncoder
+        .setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
+    m_rightEncoder
+        .setVelocityConversionFactor((DriveConstants.wheelDiameterMetres * Math.PI / (DriveConstants.gearRatio * 60)));
 
     m_leftEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
     m_rightEncoderObj.setDistancePerPulse(0.1524 * Math.PI / 1024);
@@ -232,8 +234,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightEncoderSim = new EncoderSim(m_rightEncoderObj);
     m_gyroSim = new AnalogGyroSim(m_gyro);
 
-
-    //PATHPLANNER DECLARATION
+    // PATHPLANNER DECLARATION
     AutoBuilder.configureRamsete(
         this::getPose,
         this::resetPose,
@@ -258,110 +259,123 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // SmartDashboard.putNumber("Current Left leader", m_leftLeaderMotor.getOutputCurrent());
-    // SmartDashboard.putNumber("Current Left follower", m_leftFollowerMotor.getOutputCurrent());
-    // SmartDashboard.putNumber("Current Right leader", m_rightLeaderMotor.getOutputCurrent());
-    // SmartDashboard.putNumber("Current Right follower", m_rightFollowerMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Left leader",
+    // m_leftLeaderMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Left follower",
+    // m_leftFollowerMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Right leader",
+    // m_rightLeaderMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("Current Right follower",
+    // m_rightFollowerMotor.getOutputCurrent());
 
     SmartDashboard.putBoolean("auto aim", autoAimIsReady);
 
-    if(DriverStation.isDisabled()){
+    if (DriverStation.isDisabled()) {
       resetEncoders();
       ahrs.reset();
     }
 
-    if (Robot.isSimulation()) {
-      m_odometry.update(
-          m_gyro.getRotation2d(),
-          m_leftEncoderObj.getDistance(),
-          m_rightEncoderObj.getDistance());
-    } else {
-      if (m_camera.getLatestResult().hasTargets() && isScanningField) {
-        updatePoseFromCamera(m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
-        resetEncoders();
-        ahrs.reset();
-        m_odometry.resetPosition(
-            ahrs.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition(),
-            new Pose2d(
-                m_poseEstimator.getEstimatedPosition().getX(),
-                m_poseEstimator.getEstimatedPosition().getY(),
-                m_poseEstimator.getEstimatedPosition().getRotation()));
-      } else {
-        m_odometry.update(
-            ahrs.getRotation2d(),
-            m_leftEncoder.getPosition(),
-            m_rightEncoder.getPosition());
-      }
+    // if (Robot.isSimulation()) {
+    // m_odometry.update(
+    // m_gyro.getRotation2d(),
+    // m_leftEncoderObj.getDistance(),
+    // m_rightEncoderObj.getDistance());
+    // } else {
+    // if (m_camera.getLatestResult().hasTargets() && isScanningField) {
+    // updatePoseFromCamera(m_leftEncoder.getPosition(),
+    // m_rightEncoder.getPosition());
+    // resetEncoders();
+    // ahrs.reset();
+    // m_odometry.resetPosition(
+    // ahrs.getRotation2d(),
+    // m_leftEncoder.getPosition(),
+    // m_rightEncoder.getPosition(),
+    // new Pose2d(
+    // m_poseEstimator.getEstimatedPosition().getX(),
+    // m_poseEstimator.getEstimatedPosition().getY(),
+    // m_poseEstimator.getEstimatedPosition().getRotation()));
+    // } else {
+    // m_odometry.update(
+    // ahrs.getRotation2d(),
+    // m_leftEncoder.getPosition(),
+    // m_rightEncoder.getPosition());
+    // }
+    //
+    // }
+    //
+    // m_fieldSim.setRobotPose(getPose());
 
-    }
-    
-    m_fieldSim.setRobotPose(getPose());
+    // if (m_camera.getLatestResult().hasTargets()) {
+    // List<PhotonTrackedTarget> targets = m_camera.getLatestResult().getTargets();
+    // // SmartDashboard.putNumber("ID1", targets.get(0).getFiducialId());
+    // // SmartDashboard.putNumber("ID2", targets.get(1).getFiducialId());
 
-    if(m_camera.getLatestResult().hasTargets()){
-      List <PhotonTrackedTarget> targets = m_camera.getLatestResult().getTargets();
-        // SmartDashboard.putNumber("ID1", targets.get(0).getFiducialId());
-        // SmartDashboard.putNumber("ID2", targets.get(1).getFiducialId());
+    // if (targets.size() >= 2 && (targets.get(0).getFiducialId() == 4 ||
+    // targets.get(1).getFiducialId() == 4)) {
+    // if (targets.get(0).getFiducialId() == 4) {
+    // angleFromTag1 = -1 * targets.get(0).getYaw();
+    // angleFromTag2 = targets.get(1).getYaw();
+    // } else {
+    // angleFromTag1 = -1 * targets.get(1).getYaw();
+    // angleFromTag2 = targets.get(0).getYaw();
+    // }
 
-      if(targets.size() >= 2 && (targets.get(0).getFiducialId() == 4 || targets.get(1).getFiducialId() == 4)){
-        if(targets.get(0).getFiducialId() == 4){
-          angleFromTag1 = -1 * targets.get(0).getYaw();
-          angleFromTag2 = targets.get(1).getYaw();
-        }else{
-          angleFromTag1 = -1 * targets.get(1).getYaw();
-          angleFromTag2 = targets.get(0).getYaw();
-        }
+    // distanceFromTag = distanceBetweenTagsRed / (Math.sin(angleFromTag1 * Math.PI
+    // / 180)
+    // + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI
+    // / 180));
 
-        distanceFromTag = distanceBetweenTagsRed/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+    // if (distanceFromTag < 3.6) {
+    // autoAimIsReady = true;
+    // } else {
+    // autoAimIsReady = false;
+    // }
 
-        if(distanceFromTag < 3.6){
-          autoAimIsReady = true;
-        }else{
-          autoAimIsReady = false;
-        }
+    // } else if (targets.size() >= 2 && (targets.get(0).getFiducialId() == 7 ||
+    // targets.get(1).getFiducialId() == 7)) {
+    // if (targets.get(0).getFiducialId() == 7) {
+    // angleFromTag1 = -1 * targets.get(0).getYaw();
+    // angleFromTag2 = targets.get(1).getYaw();
+    // } else {
+    // angleFromTag1 = -1 * targets.get(1).getYaw();
+    // angleFromTag2 = targets.get(0).getYaw();
+    // }
 
-      }else if(targets.size() >= 2 && (targets.get(0).getFiducialId() == 7 || targets.get(1).getFiducialId() == 7)){
-        if(targets.get(0).getFiducialId() == 7){
-          angleFromTag1 = -1 * targets.get(0).getYaw();
-          angleFromTag2 = targets.get(1).getYaw();
-        }else{
-          angleFromTag1 = -1 * targets.get(1).getYaw();
-          angleFromTag2 = targets.get(0).getYaw();
-        }
+    // distanceFromTag = -distanceBetweenTagsBlue / (Math.sin(angleFromTag1 *
+    // Math.PI / 180)
+    // + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI
+    // / 180));
 
-        distanceFromTag = -distanceBetweenTagsBlue/(Math.sin(angleFromTag1 * Math.PI / 180) + Math.cos(angleFromTag1 * Math.PI / 180) * Math.tan(angleFromTag2 * Math.PI / 180));
+    // if (distanceFromTag < 3.6) {
+    // autoAimIsReady = true;
+    // } else {
+    // autoAimIsReady = false;
+    // }
 
-        if(distanceFromTag < 3.6){
-          autoAimIsReady = true;
-        }else{
-          autoAimIsReady = false;
-        }
+    // } else {
+    // autoAimIsReady = false;
+    // }
 
-      }else{
-        autoAimIsReady = false;
-      }
+    // } else {
+    // autoAimIsReady = false;
+    // }
 
-    }else{
-      autoAimIsReady = false;
-    }
-
-    // SmartDashboard.putBoolean("hasAprilTag", m_camera.getLatestResult().hasTargets());
+    // SmartDashboard.putBoolean("hasAprilTag",
+    // m_camera.getLatestResult().hasTargets());
     // SmartDashboard.putBoolean("Is Scanning", isScanningField);
     // SmartDashboard.putNumber("middle tag angle", angleFromTag1);
     // SmartDashboard.putNumber("side tag angle", angleFromTag2);
     SmartDashboard.putNumber("dist from tag", distanceFromTag);
 
-    
     SmartDashboard.putNumber("Yaw", ahrs.getAngle());
     // SmartDashboard.putNumber("Right encoder", m_rightEncoder.getPosition());
     // SmartDashboard.putNumber("Left encoder", m_leftEncoder.getPosition());
     // SmartDashboard.putNumber("Estimated X", m_fieldSim.getRobotPose().getX());
     // SmartDashboard.putNumber("Estimated Y", m_fieldSim.getRobotPose().getY());
-    // SmartDashboard.putNumber("Estimated Rotation", m_fieldSim.getRobotPose().getRotation().getDegrees());
+    // SmartDashboard.putNumber("Estimated Rotation",
+    // m_fieldSim.getRobotPose().getRotation().getDegrees());
     // SmartDashboard.putNumber("Right velocity", m_rightEncoder.getVelocity());
     // SmartDashboard.putNumber("Left velocity", m_leftEncoder.getVelocity());
-
 
     // This method will be called once per scheduler run
   }
@@ -391,29 +405,27 @@ public class DriveSubsystem extends SubsystemBase {
   public void updatePoseFromCamera(double leftDist, double rightDist) {
     m_poseEstimator.update(ahrs.getRotation2d(), leftDist, rightDist);
 
-    var res = m_camera.getLatestResult();
+    // var res = m_camera.getLatestResult();
 
-    if (res.hasTargets()) {
-      var imageCaptureTime = res.getTimestampSeconds();
-      var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
-      var camPose = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField()
-          .getTagPose(res.getBestTarget().getFiducialId()).get().transformBy(camToTargetTrans.inverse());
+    // if (res.hasTargets()) {
+    // var imageCaptureTime = res.getTimestampSeconds();
+    // var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
+    // var camPose = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField()
+    // .getTagPose(res.getBestTarget().getFiducialId()).get().transformBy(camToTargetTrans.inverse());
 
-      m_poseEstimator.addVisionMeasurement(camPose.toPose2d(), imageCaptureTime);
-    }
+    // m_poseEstimator.addVisionMeasurement(camPose.toPose2d(), imageCaptureTime);
+    // }
   }
 
   public void driveArcade(double xForward, double zRotation) {
     int sign;
-    if(xForward > 0){
+    if (xForward > 0) {
       sign = 1;
-    }else{
+    } else {
       sign = -1;
     }
 
-
-    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), 0.8 * Math.pow(zRotation, 3)
-    );
+    m_drive.arcadeDrive(sign * Math.pow(xForward, 2), 0.8 * Math.pow(zRotation, 3));
   }
 
   public void driveRaw(double power) {
@@ -421,13 +433,13 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightLeaderMotor.set(power);
   }
 
-  public void driveSpeed(double speed){
+  public void driveSpeed(double speed) {
     leftSpeedPID.setReference(speed, ControlType.kVelocity);
     rightSpeedPID.setReference(speed, ControlType.kVelocity);
 
   }
 
-  public double getDistanceFromSpeaker(){
+  public double getDistanceFromSpeaker() {
     return distanceFromTag;
   }
 
@@ -495,8 +507,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-
-  public double getEstimatedRotation(){
+  public double getEstimatedRotation() {
     return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
   }
 
@@ -504,24 +515,23 @@ public class DriveSubsystem extends SubsystemBase {
     return Math.IEEEremainder(angle, 360);
   }
 
-  public void setFieldScan(boolean isScanning){
+  public void setFieldScan(boolean isScanning) {
     isScanningField = isScanning;
   }
 
-  public void setStartingPosition(Double degrees, double x, double y){
+  public void setStartingPosition(Double degrees, double x, double y) {
     m_odometry.resetPosition(
-      ahrs.getRotation2d(),
-      m_leftEncoder.getPosition(),
-      m_rightEncoder.getPosition(),
-      new Pose2d(x, y, Rotation2d.fromDegrees(degrees))
-    );
+        ahrs.getRotation2d(),
+        m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition(),
+        new Pose2d(x, y, Rotation2d.fromDegrees(degrees)));
   }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction){
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }
 

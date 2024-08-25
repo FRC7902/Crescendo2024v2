@@ -39,7 +39,6 @@ import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -63,8 +62,7 @@ public class RobotContainer {
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
-  private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem(camera);
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final ArmSubsystem m_armSubsystem = new ArmSubsystem(m_driveSubsystem);
   private final IntakeSubsystem m_intake = new IntakeSubsystem(m_operatorStick);
   private final ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
@@ -171,8 +169,8 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kRA).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
 
-    new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
-    new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
+    //new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
+    //new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
     // new POVButton(m_operatorStick, 0).whileTrue(new incrementAngle(m_armSubsystem));
     // new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
