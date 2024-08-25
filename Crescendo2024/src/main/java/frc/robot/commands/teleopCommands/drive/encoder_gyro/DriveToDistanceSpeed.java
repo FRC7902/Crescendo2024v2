@@ -18,11 +18,12 @@ public class DriveToDistanceSpeed extends Command {
   private final PIDController drivePID1 = new PIDController(0.5, 0, 0);
   private final PIDController drivePID2 = new PIDController(1, 0, 0);
 
-  /** Creates a new DriveToDistance. 
+  /**
+   * Creates a new DriveToDistance.
    * Drives a set distance, positive value drives backward
-  */
+   */
   public DriveToDistanceSpeed(DriveSubsystem driveSubsystem, double targetInMetres) {
-    
+
     m_driveSubsystem = driveSubsystem;
     targetDistanceInMetres = targetInMetres;
     drivePID1.setTolerance(0.05);
@@ -40,25 +41,26 @@ public class DriveToDistanceSpeed extends Command {
   @Override
   public void execute() {
     double speed;
-    if(Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.5){
+    if (Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.5) {
       speed = drivePID2.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
-    }else{
+    } else {
       speed = drivePID1.calculate(m_driveSubsystem.getPosition(), initialPosition + targetDistanceInMetres);
     }
 
     double FF;
     SmartDashboard.putNumber("Error", speed);
 
-    if(speed > 0){
+    if (speed > 0) {
       FF = 0.01;
-    }else{
+    } else {
       FF = -0.01;
     }
-    
+
     m_driveSubsystem.driveSpeed((speed + FF) * 4000);
 
     // SmartDashboard.putNumber("speed", speed);
-    // SmartDashboard.putNumber("target distance", initialPosition + targetDistanceInMetres);
+    // SmartDashboard.putNumber("target distance", initialPosition +
+    // targetDistanceInMetres);
     // SmartDashboard.putNumber("current position", m_driveSubsystem.getPosition());
 
   }
@@ -74,7 +76,7 @@ public class DriveToDistanceSpeed extends Command {
     return Math.abs(m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres)) < 0.05;
   }
 
-  public double getDistanceTravelled(){
+  public double getDistanceTravelled() {
     return m_driveSubsystem.getPosition() - (initialPosition + targetDistanceInMetres);
   }
 }

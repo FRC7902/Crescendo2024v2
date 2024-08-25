@@ -19,8 +19,7 @@ public class AmpArmAndShooter extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AmpSetpoint(arm).until(arm::atTargetPosition),
-      new SetSpeedAmp(shooter).until((shooter::atTargetSpeed))
-    );
+        new AmpSetpoint(arm).until(arm::atTargetPosition),
+        new SetSpeedAmp(shooter).until((shooter::atTargetSpeed)));
   }
 }

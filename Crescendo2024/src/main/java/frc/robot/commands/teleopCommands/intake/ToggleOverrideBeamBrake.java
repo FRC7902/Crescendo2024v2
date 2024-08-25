@@ -9,6 +9,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class ToggleOverrideBeamBrake extends Command {
   private IntakeSubsystem m_intake;
+
   /** Creates a new ToggleOverrideBeamBrake. */
   public ToggleOverrideBeamBrake(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,7 +24,8 @@ public class ToggleOverrideBeamBrake extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

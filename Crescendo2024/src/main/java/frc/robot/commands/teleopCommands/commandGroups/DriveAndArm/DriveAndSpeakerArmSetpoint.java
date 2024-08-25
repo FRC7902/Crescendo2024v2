@@ -19,8 +19,7 @@ public class DriveAndSpeakerArmSetpoint extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveToDistance(drive, distance).withTimeout(1.5),
-      new SpeakerSetpoint(arm).until(arm:: atTargetPosition)
-    );
+        new DriveToDistance(drive, distance).withTimeout(1.5),
+        new SpeakerSetpoint(arm).until(arm::atTargetPosition));
   }
 }

@@ -9,7 +9,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class PullBack extends Command {
-   private IntakeSubsystem m_intake;
+  private IntakeSubsystem m_intake;
+
   /** Creates a new PullBack. */
   public PullBack(IntakeSubsystem intake) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,7 +31,8 @@ public class PullBack extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

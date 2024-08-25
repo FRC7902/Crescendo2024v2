@@ -12,6 +12,7 @@ public class SetStartingPosition extends Command {
   double m_degrees;
   double m_x;
   double m_y;
+
   /** Creates a new SetStartingPosition. */
   public SetStartingPosition(DriveSubsystem driveSubsystem, double degrees, double x, double y) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,11 +30,13 @@ public class SetStartingPosition extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

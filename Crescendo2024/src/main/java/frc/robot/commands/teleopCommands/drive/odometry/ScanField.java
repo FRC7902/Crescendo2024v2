@@ -9,6 +9,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class ScanField extends Command {
   private final DriveSubsystem m_driveSubsystem;
+
   /** Creates a new ScanField. */
   public ScanField(DriveSubsystem drive) {
     m_driveSubsystem = drive;
@@ -22,7 +23,8 @@ public class ScanField extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

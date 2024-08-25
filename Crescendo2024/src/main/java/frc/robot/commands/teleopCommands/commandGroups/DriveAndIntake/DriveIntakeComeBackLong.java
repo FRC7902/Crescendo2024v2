@@ -20,18 +20,19 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class DriveIntakeComeBackLong extends SequentialCommandGroup {
   /** Creates a new DriveIntakeComeBack. */
   DriveAndIntake m_driveAndIntake;
-  public DriveIntakeComeBackLong(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, double distance, boolean raiseArmToSpeaker) {
+
+  public DriveIntakeComeBackLong(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, double distance,
+      boolean raiseArmToSpeaker) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_driveAndIntake = new DriveAndIntake(drive, intake, distance);
     addCommands(
-      m_driveAndIntake.until(intake::hasNote),
-      new StopIntake(intake).withTimeout(0.01),
-      new ConditionalCommand(
-        new SpeakerSetpoint(arm), 
-        new Level0Setpoint(arm), 
-        () -> raiseArmToSpeaker).withTimeout(0.01),
-      new DriveToDistance(drive, m_driveAndIntake.getDistanceTravelled() * 0.8).withTimeout(3)
-    );
+        m_driveAndIntake.until(intake::hasNote),
+        new StopIntake(intake).withTimeout(0.01),
+        new ConditionalCommand(
+            new SpeakerSetpoint(arm),
+            new Level0Setpoint(arm),
+            () -> raiseArmToSpeaker).withTimeout(0.01),
+        new DriveToDistance(drive, m_driveAndIntake.getDistanceTravelled() * 0.8).withTimeout(3));
   }
 }

@@ -10,7 +10,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class SetSpeedAmp extends Command {
   private ShooterSubsystem m_shooter;
 
-
   /** Creates a new setSpeed. */
   public SetSpeedAmp(ShooterSubsystem shooter) {
     m_shooter = shooter;

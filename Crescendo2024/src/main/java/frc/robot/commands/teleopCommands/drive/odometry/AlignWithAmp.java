@@ -17,9 +17,8 @@ public class AlignWithAmp extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveToCoordinateX(drive, 2),
-      new TurnToAngle(drive, 90, false),
-      new DriveToCoordinateY(drive, 0.5)
-    );
+        new DriveToCoordinateX(drive, 2),
+        new TurnToAngle(drive, 90, false),
+        new DriveToCoordinateY(drive, 0.5));
   }
 }

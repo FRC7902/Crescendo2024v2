@@ -20,8 +20,7 @@ public class HomeAll extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new StopIntakeAndShooter(intake, shooter),
-      new Level0Setpoint(arm)
-    );
+        new StopIntakeAndShooter(intake, shooter),
+        new Level0Setpoint(arm));
   }
 }

@@ -16,17 +16,17 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class DriveAndIntake extends ParallelCommandGroup {
   /** Creates a new DriveAndIntake. */
   DriveToDistance m_driveToDistance;
+
   public DriveAndIntake(DriveSubsystem drive, IntakeSubsystem intake, double distance) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_driveToDistance = new DriveToDistance(drive, distance);
     addCommands(
-      m_driveToDistance,
-      new IntakeNote(intake)
-    );
+        m_driveToDistance,
+        new IntakeNote(intake));
   }
 
-  public double getDistanceTravelled(){
+  public double getDistanceTravelled() {
     return m_driveToDistance.getDistanceTravelled();
   }
 }

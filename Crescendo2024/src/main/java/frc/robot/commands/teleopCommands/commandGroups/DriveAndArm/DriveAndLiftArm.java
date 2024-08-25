@@ -19,8 +19,7 @@ public class DriveAndLiftArm extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new DriveRaw(drive, -0.25),
-      new incrementAngle(arm)
-    );
+        new DriveRaw(drive, -0.25),
+        new incrementAngle(arm));
   }
 }

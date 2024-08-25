@@ -28,20 +28,19 @@ public class OneNotePreload extends SequentialCommandGroup {
   /** Creates a new DriveOut. */
   public OneNotePreload(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter) {
     addCommands(
-      new SpeakerSetpoint(arm).withTimeout(1),
-      new SetSpeedSpeaker(shooter).withTimeout(1),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(5),
-      new WaitCommand(8),
-      new ConditionalCommand(
-        new DriveToDistance(drive, 1.5), 
-        new InstantCommand(), 
-        () -> m_taxi)
-    );
+        new SpeakerSetpoint(arm).withTimeout(1),
+        new SetSpeedSpeaker(shooter).withTimeout(1),
+        new FeedNote(intake).withTimeout(1),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).withTimeout(5),
+        new WaitCommand(8),
+        new ConditionalCommand(
+            new DriveToDistance(drive, 1.5),
+            new InstantCommand(),
+            () -> m_taxi));
   }
 
-  public void setTaxi(boolean setting){
+  public void setTaxi(boolean setting) {
     m_taxi = setting;
   }
 }

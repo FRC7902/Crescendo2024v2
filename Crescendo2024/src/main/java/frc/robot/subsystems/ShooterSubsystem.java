@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
     speedPID = m_leaderMotor.getPIDController();
     speedPID.setReference(0, CANSparkBase.ControlType.kVelocity);
     speedPID.setOutputRange(0, 1);
-    
+
     m_leaderMotor.setSmartCurrentLimit(45);
     m_followerMotor.setSmartCurrentLimit(45);
 
@@ -88,9 +88,9 @@ public class ShooterSubsystem extends SubsystemBase {
       targetSpeedCounter = 0;
     }
 
-    if(targetSpeedCounter > 30){
+    if (targetSpeedCounter > 30) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -121,14 +121,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(targetSpeed == 0){
+    if (targetSpeed == 0) {
       stop();
-    }else{
+    } else {
       setSpeed(targetSpeed);
     }
 
-    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power", m_leaderMotor.getAppliedOutput());
-    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2", m_followerMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power",
+    // m_leaderMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("ShooterSubsystem/Shooter Power 2",
+    // m_followerMotor.getAppliedOutput());
     // SmartDashboard.putString("ShooterSubsystem/Shooter Status", status);
     // SmartDashboard.putNumber("Shooter speed", sparkEncoder.getVelocity());
     SmartDashboard.putNumber("Target Speed", targetSpeed);

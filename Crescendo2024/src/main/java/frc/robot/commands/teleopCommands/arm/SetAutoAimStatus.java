@@ -9,6 +9,7 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class SetAutoAimStatus extends Command {
   private ArmSubsystem m_armSubsystem;
+
   /** Creates a new AutoAimSpeaker. */
   public SetAutoAimStatus(ArmSubsystem armSubsystem) {
     m_armSubsystem = armSubsystem;
@@ -22,7 +23,8 @@ public class SetAutoAimStatus extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -19,7 +19,7 @@ public class WinchSubsystem extends SubsystemBase {
     m_followerMotor.setSmartCurrentLimit(45);
   }
 
-  public void setPower(double power){
+  public void setPower(double power) {
     m_leaderMotor.set(power);
   }
 

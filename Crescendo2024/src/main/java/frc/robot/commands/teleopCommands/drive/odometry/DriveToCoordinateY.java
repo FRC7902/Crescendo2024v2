@@ -14,11 +14,12 @@ public class DriveToCoordinateY extends Command {
   private final double targetCoordinateY;
   private final PIDController drivePID = new PIDController(0.25, 0, 0);
 
-  /** Creates a new DriveToDistance. 
+  /**
+   * Creates a new DriveToDistance.
    * Drives a set distance, positive value drives backward
-  */
+   */
   public DriveToCoordinateY(DriveSubsystem driveSubsystem, double targetY) {
-    
+
     m_driveSubsystem = driveSubsystem;
     targetCoordinateY = targetY;
     drivePID.setTolerance(0.1);
@@ -36,12 +37,12 @@ public class DriveToCoordinateY extends Command {
     double speed = drivePID.calculate(m_driveSubsystem.getDisplacementY(), targetCoordinateY);
     double FF;
 
-    if(speed > 0){
+    if (speed > 0) {
       FF = 0.01;
-    }else{
+    } else {
       FF = -0.01;
     }
-    
+
     m_driveSubsystem.driveRaw(speed + FF);
 
   }

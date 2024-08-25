@@ -297,7 +297,5 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_armLeaderMotorSim.setAnalogPosition(util.radsToCTRESensorUnits(armSim.getAngleRads(), 4096));
 
-    
-
   }
 }

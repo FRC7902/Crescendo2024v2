@@ -20,7 +20,6 @@ public class TurnToAngleOdometry extends Command {
   private final PIDController turnPID2 = new PIDController(0.005, 0, 0);
   private final PIDController turnPID3 = new PIDController(0.002, 0, 0);
 
-
   /** Creates a new TurnToAngle. */
   public TurnToAngleOdometry(DriveSubsystem drive, double angle, boolean IsAdditive) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -49,24 +48,25 @@ public class TurnToAngleOdometry extends Command {
   @Override
   public void execute() {
     double speed;
-    
-    if(Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget) < 5){
+
+    if (Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget) < 5) {
       speed = turnPID3.calculate(convertRange(m_driveSubsystem.getEstimatedRotation()), trueTarget);
-    }else if(Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget) < 20){
+    } else if (Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget) < 20) {
       speed = turnPID2.calculate(convertRange(m_driveSubsystem.getEstimatedRotation()), trueTarget);
-    }else{
+    } else {
       speed = turnPID1.calculate(convertRange(m_driveSubsystem.getEstimatedRotation()), trueTarget);
     }
 
-    SmartDashboard.putNumber("turning error", Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget));
+    SmartDashboard.putNumber("turning error",
+        Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget));
     SmartDashboard.putBoolean("atSetpoint", turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint());
     double FF;
 
-    if(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget > 0){
+    if (convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget > 0) {
       FF = -0.12;
-    }else if(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget < 0){
+    } else if (convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget < 0) {
       FF = 0.12;
-    }else{
+    } else {
       FF = 0;
     }
 
@@ -92,7 +92,8 @@ public class TurnToAngleOdometry extends Command {
   @Override
   public boolean isFinished() {
     return turnPID1.atSetpoint() || turnPID2.atSetpoint() || turnPID3.atSetpoint();
-    // return Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) - trueTarget) < 1;
+    // return Math.abs(convertRange(m_driveSubsystem.getEstimatedRotation()) -
+    // trueTarget) < 1;
   }
 
 }

@@ -23,17 +23,17 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class LeaveNoteOnGroundLeaveHome extends SequentialCommandGroup {
   /** Creates a new LeaveNoteOnGroundLeaveHome. */
-  public LeaveNoteOnGroundLeaveHome(ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter, DriveSubsystem drive, boolean taxi) {
+  public LeaveNoteOnGroundLeaveHome(ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter,
+      DriveSubsystem drive, boolean taxi) {
     addCommands(
-      new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new SetSpeedAmp(shooter).withTimeout(1),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ConditionalCommand(
-        new DriveToDistance(drive, 1), 
-        new InstantCommand(), 
-        () -> taxi)
-    );
+        new AmpSetpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new SetSpeedAmp(shooter).withTimeout(1),
+        new FeedNote(intake).withTimeout(1),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new ConditionalCommand(
+            new DriveToDistance(drive, 1),
+            new InstantCommand(),
+            () -> taxi));
   }
 }

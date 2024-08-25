@@ -9,6 +9,7 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class MuteLimitSwitch extends Command {
   private static ArmSubsystem m_armSubsystem;
+
   /** Creates a new MuteLimitSwitch. */
   public MuteLimitSwitch(ArmSubsystem armSubsystem) {
     m_armSubsystem = armSubsystem;
@@ -28,7 +29,8 @@ public class MuteLimitSwitch extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

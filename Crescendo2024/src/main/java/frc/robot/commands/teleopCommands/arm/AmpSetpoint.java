@@ -18,7 +18,6 @@ public class AmpSetpoint extends Command {
   // private final PIDController turnPID = new PIDController(0.102, 2.04,
   // 0.001275);
 
-
   /**
    * Creates a new ExampleCommand.
    *

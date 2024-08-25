@@ -27,35 +27,36 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ThreeNoteAutoMiddleLeft extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteAutoMiddleLeft(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror, boolean taxi) {
+  public ThreeNoteAutoMiddleLeft(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm,
+      ShooterSubsystem shooter, int mirror, boolean taxi) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(  
-      new SetStartingPosition(drive, 0, 1.5, 5.5),
-      // new ConditionalCommand(new FeedNote(intake).withTimeout(0.3), new InstantCommand(), intake::hasNote),
-      new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
-      new FeedNote(intake).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveToDistance(drive, 1.6).withTimeout(3),
-      new TurnToAngle(drive, mirror * (-90), false).withTimeout(3),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1, false, false),
-      new TurnToAngle(drive, 0, false).withTimeout(3),
-      new SpeakerSetpoint(arm).withTimeout(0.01),
-      new DriveAndRevSpeaker(drive, shooter, -1.6).withTimeout(1.5),
-      new FeedNote(intake).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ConditionalCommand(
-        new DriveToDistance(drive, 1), 
-        new InstantCommand(), 
-        () -> taxi)
-      );
+    addCommands(
+        new SetStartingPosition(drive, 0, 1.5, 5.5),
+        // new ConditionalCommand(new FeedNote(intake).withTimeout(0.3), new
+        // InstantCommand(), intake::hasNote),
+        new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
+        new FeedNote(intake).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(2),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
+        new FeedNote(intake).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new DriveToDistance(drive, 1.6).withTimeout(3),
+        new TurnToAngle(drive, mirror * (-90), false).withTimeout(3),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 1, false, false),
+        new TurnToAngle(drive, 0, false).withTimeout(3),
+        new SpeakerSetpoint(arm).withTimeout(0.01),
+        new DriveAndRevSpeaker(drive, shooter, -1.6).withTimeout(1.5),
+        new FeedNote(intake).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new ConditionalCommand(
+            new DriveToDistance(drive, 1),
+            new InstantCommand(),
+            () -> taxi));
 
   }
 }

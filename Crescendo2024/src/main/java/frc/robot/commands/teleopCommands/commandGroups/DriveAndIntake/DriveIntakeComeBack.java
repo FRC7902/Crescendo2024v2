@@ -26,26 +26,27 @@ public class DriveIntakeComeBack extends SequentialCommandGroup {
   /** Creates a new DriveIntakeComeBack. */
   DriveAndIntake m_driveAndIntake;
   static boolean bothAreTrue;
-  public DriveIntakeComeBack(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, double distance, boolean raiseArmToSpeaker, boolean revSpeaker) {
+
+  public DriveIntakeComeBack(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter,
+      double distance, boolean raiseArmToSpeaker, boolean revSpeaker) {
     bothAreTrue = raiseArmToSpeaker && revSpeaker;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_driveAndIntake = new DriveAndIntake(drive, intake, distance);
     addCommands(
-      m_driveAndIntake.until(intake::hasNote),
-      new StopIntake(intake).withTimeout(0.01),
-      new IntakeNote(intake).withTimeout(0.2),
-      new StopIntake(intake).withTimeout(0.01),
-      new ConditionalCommand(
-        new DriveAndRevSpeakerAndRaiseArm(drive, shooter, arm, 0.7 * m_driveAndIntake.getDistanceTravelled()), 
+        m_driveAndIntake.until(intake::hasNote),
+        new StopIntake(intake).withTimeout(0.01),
+        new IntakeNote(intake).withTimeout(0.2),
+        new StopIntake(intake).withTimeout(0.01),
         new ConditionalCommand(
-          new DriveAndRevSpeaker(drive, shooter, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5), 
-          new ConditionalCommand(
-            new DriveAndSpeakerArmSetpoint(drive, arm, 0.7 * m_driveAndIntake.getDistanceTravelled()),
-            new DriveToDistance(drive,  0.7 * m_driveAndIntake.getDistanceTravelled()),
-            () -> raiseArmToSpeaker),
-          () -> revSpeaker),
-        () -> bothAreTrue)
-    );
+            new DriveAndRevSpeakerAndRaiseArm(drive, shooter, arm, 0.7 * m_driveAndIntake.getDistanceTravelled()),
+            new ConditionalCommand(
+                new DriveAndRevSpeaker(drive, shooter, 0.7 * m_driveAndIntake.getDistanceTravelled()).withTimeout(1.5),
+                new ConditionalCommand(
+                    new DriveAndSpeakerArmSetpoint(drive, arm, 0.7 * m_driveAndIntake.getDistanceTravelled()),
+                    new DriveToDistance(drive, 0.7 * m_driveAndIntake.getDistanceTravelled()),
+                    () -> raiseArmToSpeaker),
+                () -> revSpeaker),
+            () -> bothAreTrue));
   }
 }

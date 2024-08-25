@@ -10,6 +10,7 @@ import frc.robot.subsystems.WinchSubsystem;
 public class ReelWinch extends Command {
   private WinchSubsystem m_winchSubsystem;
   double m_speed;
+
   /** Creates a new ReelWinch. */
   public ReelWinch(WinchSubsystem winch, double speed) {
     m_winchSubsystem = winch;
@@ -19,7 +20,8 @@ public class ReelWinch extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

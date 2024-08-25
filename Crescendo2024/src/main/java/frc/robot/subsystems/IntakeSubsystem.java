@@ -19,10 +19,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final PWMSparkMax m_intakeMotor = new PWMSparkMax(IntakeConstants.intakePWMid);
   private final DigitalInput intakeSensor = new DigitalInput(IntakeConstants.beamBrakePort);
-  // private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
-  //     IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find estimates
+  // private final SimpleMotorFeedforward feedforward = new
+  // SimpleMotorFeedforward(IntakeConstants.kSFeedForward,
+  // IntakeConstants.kVFeedForward, IntakeConstants.kAFeedForward); // find
+  // estimates
   private final XboxController m_operatorStick;
-    
+
   public double targetPower = 0;
   public boolean isShooting = false;
   public boolean beamBrakeOverride = false;
@@ -44,33 +46,33 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   // public boolean getSensor() {
-  //   return intakeSensor.get();
+  // return intakeSensor.get();
   // }
 
   public void setTargetPower(double target) {
     targetPower = target;
   }
 
-  public void setShootingStatus(boolean status){
+  public void setShootingStatus(boolean status) {
     isShooting = status;
   }
 
-  public boolean getBeamBrake(){
+  public boolean getBeamBrake() {
     return intakeSensor.get();
   }
 
-  public boolean hasNote(){
+  public boolean hasNote() {
     return !intakeSensor.get();
   }
 
-  public void toggleOverrideBeamBrake(){
+  public void toggleOverrideBeamBrake() {
     beamBrakeOverride = !beamBrakeOverride;
   }
 
   @Override
   public void periodic() {
 
-    if(DriverStation.isDisabled()){
+    if (DriverStation.isDisabled()) {
       beamBrakeOverride = false;
     }
 
@@ -81,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     if (!intakeSensor.get() && !isShooting && !beamBrakeOverride) {
       m_intakeMotor.set(-0.3);
-      if(DriverStation.isTeleopEnabled()){
+      if (DriverStation.isTeleopEnabled()) {
         m_operatorStick.setRumble(RumbleType.kBothRumble, 1);
       }
     } else {

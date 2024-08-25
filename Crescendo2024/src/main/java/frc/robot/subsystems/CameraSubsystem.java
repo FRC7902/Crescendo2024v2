@@ -18,33 +18,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CameraSubsystem extends SubsystemBase {
   Thread m_visionThread;
+
   /** Creates a new CameraSubsystem. */
   public CameraSubsystem() {
     m_visionThread = new Thread(
-      () -> {
-        UsbCamera camera = CameraServer.startAutomaticCapture();
-        camera.setResolution(100, 100);
+        () -> {
+          UsbCamera camera = CameraServer.startAutomaticCapture();
+          camera.setResolution(100, 100);
 
-        CvSink cvSink = CameraServer.getVideo();
-        CvSource outputStream = CameraServer.putVideo("Rectangle", 100, 100);
+          CvSink cvSink = CameraServer.getVideo();
+          CvSource outputStream = CameraServer.putVideo("Rectangle", 100, 100);
 
-        Mat mat = new Mat();
+          Mat mat = new Mat();
 
-        while(!Thread.interrupted()){
-          if(cvSink.grabFrame(mat) == 0){
-            outputStream.notifyError(cvSink.getError());
-            continue;
+          while (!Thread.interrupted()) {
+            if (cvSink.grabFrame(mat) == 0) {
+              outputStream.notifyError(cvSink.getError());
+              continue;
+            }
           }
-        }
 
-        Imgproc.rectangle(mat, new Point (100,100), new Point(400,400), new Scalar(255, 255, 255), 5);
-        outputStream.putFrame(mat);
+          Imgproc.rectangle(mat, new Point(100, 100), new Point(400, 400), new Scalar(255, 255, 255), 5);
+          outputStream.putFrame(mat);
 
-      }
-    );
+        });
     m_visionThread.setDaemon(true);
     m_visionThread.start();
-
 
   }
 

@@ -27,27 +27,26 @@ public class TwoNoteAmpAutoFar extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetStartingPosition(drive, 0, 1.5, 7),
-      new Level0Setpoint(arm).until(arm::atTargetPosition),
-      new DriveToDistance(drive, 0.25),
-      new TurnToAngle(drive, 90, true),
-      new DriveToDistance(drive, 0.25),
-      new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
-      new FeedNote(intake).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveToDistance(drive, 0.5),
-      new TurnToAngle(drive, 90, true),
-      // new DriveAndIntake(drive, intake, 5),
-      // new StopIntake(intake).withTimeout(0.01),
-      // new DriveToDistance(drive, -5),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 5, false, false),
-      new TurnToAngle(drive, -90, true),
-      new DriveToDistance(drive, -0.5),
-      new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
-      new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1)
-    );
+        new SetStartingPosition(drive, 0, 1.5, 7),
+        new Level0Setpoint(arm).until(arm::atTargetPosition),
+        new DriveToDistance(drive, 0.25),
+        new TurnToAngle(drive, 90, true),
+        new DriveToDistance(drive, 0.25),
+        new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
+        new FeedNote(intake).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new DriveToDistance(drive, 0.5),
+        new TurnToAngle(drive, 90, true),
+        // new DriveAndIntake(drive, intake, 5),
+        // new StopIntake(intake).withTimeout(0.01),
+        // new DriveToDistance(drive, -5),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 5, false, false),
+        new TurnToAngle(drive, -90, true),
+        new DriveToDistance(drive, -0.5),
+        new AmpArmAndShooter(arm, shooter).withTimeout(3.5),
+        new FeedNote(intake).onlyWhile(arm::atTargetPosition).onlyWhile(shooter::atTargetSpeed).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1));
   }
 }

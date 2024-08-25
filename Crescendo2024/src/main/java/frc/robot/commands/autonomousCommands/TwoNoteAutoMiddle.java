@@ -24,21 +24,21 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TwoNoteAutoMiddle extends SequentialCommandGroup {
   /** Creates a new TwoNoteAutoSimple. */
-  public TwoNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm, boolean taxi) {
+  public TwoNoteAutoMiddle(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter, ArmSubsystem arm,
+      boolean taxi) {
     addCommands(
-      new SetStartingPosition(drive, 0, 1.5, 5.5),
-      new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new ConditionalCommand(
-        new DriveToDistance(drive, 1), 
-        new InstantCommand(), 
-        () -> taxi)
-      );
+        new SetStartingPosition(drive, 0, 1.5, 5.5),
+        new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
+        new FeedNote(intake).withTimeout(1),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).withTimeout(2),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
+        new FeedNote(intake).withTimeout(1),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new ConditionalCommand(
+            new DriveToDistance(drive, 1),
+            new InstantCommand(),
+            () -> taxi));
   }
 }

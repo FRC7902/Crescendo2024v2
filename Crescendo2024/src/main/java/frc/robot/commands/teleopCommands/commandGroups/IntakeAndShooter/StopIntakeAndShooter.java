@@ -18,8 +18,7 @@ public class StopIntakeAndShooter extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new StopShooter(shooter),
-      new StopIntake(intake)
-    );
+        new StopShooter(shooter),
+        new StopIntake(intake));
   }
 }

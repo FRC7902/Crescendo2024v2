@@ -58,7 +58,7 @@ import frc.robot.subsystems.ShooterSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
+
   private final XboxController m_driverStick = new XboxController(IOConstants.kDriverStick);
   private final XboxController m_operatorStick = new XboxController(IOConstants.kOperatorStick);
 
@@ -77,15 +77,16 @@ public class RobotContainer {
   private final TwoNoteAutoRightSide m_TwoNoteAutoRightSide;
   private final TwoNoteAutoLeftSide m_TwoNoteAutoLeftSide;
   private final FourNoteMiddle m_FourNoteMiddle;
-  private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
-  private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
+  private final TwoNoteAmpAutoClose m_TwoNoteAmpAutoClose = new TwoNoteAmpAutoClose(m_driveSubsystem, m_armSubsystem,
+      m_intake, m_shooterSubsystem);
+  private final TwoNoteAmpAutoFar m_TwoNoteAmpAutoFar = new TwoNoteAmpAutoFar(m_driveSubsystem, m_armSubsystem,
+      m_intake, m_shooterSubsystem);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   SendableChooser<Integer> mirrorAuto = new SendableChooser<>();
   SendableChooser<Boolean> taxi = new SendableChooser<>();
 
-
   public RobotContainer() {
-    //driverCamera.setDriverMode(true);
+    // driverCamera.setDriverMode(true);
     configureBindings();
 
     mirrorAuto.setDefaultOption("No", 1);
@@ -99,12 +100,18 @@ public class RobotContainer {
     SmartDashboard.putData("taxi?", taxi);
 
     m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
-    m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, taxi.getSelected());
-    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection);
-    m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem, autoDirection);
-    m_ThreeNoteAutoMiddleRight = new ThreeNoteAutoMiddleRight(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
-    m_ThreeNoteAutoMiddleLeft = new ThreeNoteAutoMiddleLeft(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
-    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
+        taxi.getSelected());
+    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
+        autoDirection);
+    m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
+        autoDirection);
+    m_ThreeNoteAutoMiddleRight = new ThreeNoteAutoMiddleRight(m_driveSubsystem, m_intake, m_armSubsystem,
+        m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_ThreeNoteAutoMiddleLeft = new ThreeNoteAutoMiddleLeft(m_driveSubsystem, m_intake, m_armSubsystem,
+        m_shooterSubsystem, autoDirection, taxi.getSelected());
+    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection,
+        taxi.getSelected());
 
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
     m_chooser.addOption("Two Note Middle", m_twoNoteMiddle);
@@ -148,41 +155,59 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new FeedingSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLA).whileTrue(new decrementAngle(m_armSubsystem));
-    // new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new ScanField(m_driveSubsystem));
-    // new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) > 0.25).whileTrue(new ReelWinch(m_winchSubsystem, m_operatorStick.getRawAxis(IOConstants.kLY)));
+    // new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new
+    // ScanField(m_driveSubsystem));
+    // new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) >
+    // 0.25).whileTrue(new ReelWinch(m_winchSubsystem,
+    // m_operatorStick.getRawAxis(IOConstants.kLY)));
 
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
-      new ShootNoteAmp(m_intake, m_shooterSubsystem),
-      new ShootNoteSpeaker(m_intake, m_shooterSubsystem),
-      m_armSubsystem::isArmAtAmp));;
-    new JoystickButton(m_operatorStick, IOConstants.kRB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kLB).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+        new ShootNoteAmp(m_intake, m_shooterSubsystem),
+        new ShootNoteSpeaker(m_intake, m_shooterSubsystem),
+        m_armSubsystem::isArmAtAmp));
+    ;
+    new JoystickButton(m_operatorStick, IOConstants.kRB)
+        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kLB)
+        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new SetAutoAimStatus(m_armSubsystem));
 
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kRA).whileTrue(new ScoreNoteFeedAngle(m_shooterSubsystem, m_armSubsystem, m_intake));
-    new JoystickButton(m_operatorStick, IOConstants.kRA).whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
+        .whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
+        .whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
+        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
+        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    new JoystickButton(m_operatorStick, IOConstants.kRA)
+        .whileTrue(new ScoreNoteFeedAngle(m_shooterSubsystem, m_armSubsystem, m_intake));
+    new JoystickButton(m_operatorStick, IOConstants.kRA)
+        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
+    // new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
+    // new POVButton(m_operatorStick, 180).whileTrue(new
+    // ClimbDown(m_climbSubsystem));
 
-    //new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
-    //new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
+    // new POVButton(m_operatorStick, 0).whileTrue(new
+    // incrementAngle(m_armSubsystem));
+    // new POVButton(m_operatorStick, 180).whileTrue(new
+    // decrementAngle(m_armSubsystem));
 
-    // new POVButton(m_operatorStick, 0).whileTrue(new incrementAngle(m_armSubsystem));
-    // new POVButton(m_operatorStick, 180).whileTrue(new decrementAngle(m_armSubsystem));
-    
     new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
     new POVButton(m_operatorStick, 90).whileTrue(new MuteLimitSwitch(m_armSubsystem));
 
-    // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem, 0, false));
-    // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem, -90, false));
-    
-    // new POVButton(m_operatorStick, 270).onTrue(new DriveToDistance(m_driveSubsystem, 3));
-    // new POVButton(m_operatorStick, 90).onTrue(new DriveToDistance(m_driveSubsystem, -3));
+    // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem,
+    // 0, false));
+    // new POVButton(m_operatorStick, 90).onTrue(new TurnToAngle(m_driveSubsystem,
+    // -90, false));
+
+    // new POVButton(m_operatorStick, 270).onTrue(new
+    // DriveToDistance(m_driveSubsystem, 3));
+    // new POVButton(m_operatorStick, 90).onTrue(new
+    // DriveToDistance(m_driveSubsystem, -3));
 
   }
 

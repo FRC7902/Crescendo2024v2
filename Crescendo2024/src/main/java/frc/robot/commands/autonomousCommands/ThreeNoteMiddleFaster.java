@@ -23,27 +23,27 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ThreeNoteMiddleFaster extends SequentialCommandGroup {
   /** Creates a new ThreeNoteAutoMiddle. */
-  public ThreeNoteMiddleFaster(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter, int mirror) {
+  public ThreeNoteMiddleFaster(DriveSubsystem drive, IntakeSubsystem intake, ArmSubsystem arm, ShooterSubsystem shooter,
+      int mirror) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(  
-      new SetStartingPosition(drive, 0, 1.5, 5.5),
-      new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake).withTimeout(0.5),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
-      new FeedNote(intake).withTimeout(1),
-      new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
-      new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
-      new DriveToDistance(drive, 0.25),
-      new TurnToAngle(drive, mirror * (-45), false).withTimeout(2),
-      new DriveIntakeComeBack(drive, intake, arm, shooter, 2.4, true, true),//actual distance is 2.12
-      new TurnToAngle(drive, 0, false).withTimeout(2),
-      new FeedNote(intake).withTimeout(0.01),
-      new Level0Setpoint(arm)
-      );
+    addCommands(
+        new SetStartingPosition(drive, 0, 1.5, 5.5),
+        new SpeakerArmAndShooter(arm, shooter).withTimeout(3),
+        new FeedNote(intake).withTimeout(0.5),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).withTimeout(2),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 1.5, true, true),
+        new FeedNote(intake).withTimeout(1),
+        new StopIntakeAndShooter(intake, shooter).withTimeout(0.01),
+        new Level0Setpoint(arm).until(arm::atTargetPosition).withTimeout(1),
+        new DriveToDistance(drive, 0.25),
+        new TurnToAngle(drive, mirror * (-45), false).withTimeout(2),
+        new DriveIntakeComeBack(drive, intake, arm, shooter, 2.4, true, true), // actual distance is 2.12
+        new TurnToAngle(drive, 0, false).withTimeout(2),
+        new FeedNote(intake).withTimeout(0.01),
+        new Level0Setpoint(arm));
 
   }
 }

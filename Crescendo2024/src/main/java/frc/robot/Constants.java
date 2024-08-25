@@ -31,7 +31,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int ArmLeaderMotorCAN = 20;//old one was 21
+    public static final int ArmLeaderMotorCAN = 20;// old one was 21
     public static final int ArmFollowerMotorCAN = 18;
     public static final int EncoderCPR = 4096;
     public static final double ArmShoulderFeedForward = 0.38;
@@ -40,7 +40,7 @@ public final class Constants {
     public static final double manualSlowSpeed = 0.2;
 
     public static final double ArmGroundSetpoint = 10;
-    public static final double ArmSpeakerSetpoint = 34;//used to be 37.5
+    public static final double ArmSpeakerSetpoint = 34;// used to be 37.5
     // public static final double ArmSpeakerSetpoint = 20;
     public static final double ArmFeedingSetpoint = 20;
     public static final double ArmAmpSetpoint = 103;
@@ -87,11 +87,11 @@ public final class Constants {
 
   }
 
-    public static class OperatorConstants {
+  public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
 
   }
-  
+
   public static final class IOConstants {
     public static final int kDriverStick = 0;
     public static final int kOperatorStick = 1;
@@ -120,17 +120,17 @@ public final class Constants {
 
   }
 
-  public static class ClimbConstants{
+  public static class ClimbConstants {
     public static final int ClimbLeaderCAN = 21;
     public static final int ClimbFollowerCAN = 16;
     public static final double upSpeed = 1.0;
     public static final double downSpeed = -1.0;
-    public static final int peakCurrent = 30; 
-    public static final int constantCurrent = 15; 
+    public static final int peakCurrent = 30;
+    public static final int constantCurrent = 15;
     public static final int limitSwitchPort = 7;
   }
 
-  public static class AutoConstants{
+  public static class AutoConstants {
     public static final double autoDriveSpeed = 1;
   }
 }

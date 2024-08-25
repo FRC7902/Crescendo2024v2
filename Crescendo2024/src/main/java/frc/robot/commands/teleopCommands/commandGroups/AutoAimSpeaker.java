@@ -16,12 +16,12 @@ import frc.robot.subsystems.DriveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoAimSpeaker extends ParallelCommandGroup {
   private final FireBirdsUtils util = new FireBirdsUtils();
+
   public AutoAimSpeaker(ArmSubsystem arm, DriveSubsystem drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetAutoAimStatus(arm),
-      new TurnToAngle(drive, util.TurnToPoint(0, 0), true)
-    );
+        new SetAutoAimStatus(arm),
+        new TurnToAngle(drive, util.TurnToPoint(0, 0), true));
   }
 }

@@ -18,15 +18,17 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveAndRevSpeakerAndRaiseArm extends ParallelCommandGroup {
   DriveToDistance m_DriveToDistance;
+
   /** Creates a new DriveAndRevSpeakerAndRaiseArm. */
-  public DriveAndRevSpeakerAndRaiseArm(DriveSubsystem drive, ShooterSubsystem shooter, ArmSubsystem arm, double distance) {
+  public DriveAndRevSpeakerAndRaiseArm(DriveSubsystem drive, ShooterSubsystem shooter, ArmSubsystem arm,
+      double distance) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     m_DriveToDistance = new DriveToDistance(drive, distance);
     addCommands(
-      new DriveToDistance(drive, distance).until(() -> 0.1 > Math.abs(m_DriveToDistance.getDistanceTravelled() - distance)).withTimeout(5),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
-      new SpeakerSetpoint(arm).until(arm::atTargetPosition)
-    );
+        new DriveToDistance(drive, distance)
+            .until(() -> 0.1 > Math.abs(m_DriveToDistance.getDistanceTravelled() - distance)).withTimeout(5),
+        new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed),
+        new SpeakerSetpoint(arm).until(arm::atTargetPosition));
   }
 }

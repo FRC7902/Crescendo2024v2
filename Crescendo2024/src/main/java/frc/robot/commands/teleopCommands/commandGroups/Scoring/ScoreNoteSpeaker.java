@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.teleopCommands.commandGroups.Scoring;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleopCommands.commandGroups.ArmAndShooter.SpeakerArmAndShooter;
 import frc.robot.commands.teleopCommands.intake.FeedNote;
@@ -19,8 +20,7 @@ public class ScoreNoteSpeaker extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SpeakerArmAndShooter(arm, shooter).withTimeout(4),
-      new FeedNote(intake)
-    );
+        new SpeakerArmAndShooter(arm, shooter).withTimeout(4),
+        new FeedNote(intake));
   }
 }

@@ -19,8 +19,7 @@ public class FeedArmAndShooter extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FeedingSetpoint(arm).until(arm::atTargetPosition),
-      new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed)
-    );
+        new FeedingSetpoint(arm).until(arm::atTargetPosition),
+        new SetSpeedSpeaker(shooter).until(shooter::atTargetSpeed));
   }
 }

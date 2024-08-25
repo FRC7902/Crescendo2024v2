@@ -20,8 +20,7 @@ public class ScoreNoteFeedAngle extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FeedArmAndShooter(arm, shooter).withTimeout(3),
-      new FeedNote(intake)
-    );
+        new FeedArmAndShooter(arm, shooter).withTimeout(3),
+        new FeedNote(intake));
   }
 }
