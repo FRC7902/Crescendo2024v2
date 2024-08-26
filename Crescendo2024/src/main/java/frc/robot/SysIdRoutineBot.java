@@ -24,88 +24,88 @@ import frc.robot.subsystems.DriveSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class SysIdRoutineBot {
-        // The robot's subsystems
-        // private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
+  // The robot's subsystems
+  // private final PhotonCamera camera = new PhotonCamera("FirebirdsCamera");
 
-        private final DriveSubsystem m_drive = new DriveSubsystem();
+  private final DriveSubsystem m_drive = new DriveSubsystem();
 
-        // The driver's controller
-        CommandXboxController m_driverController = new CommandXboxController(IOConstants.kDriverStick);
+  // The driver's controller
+  CommandXboxController m_driverController = new CommandXboxController(IOConstants.kDriverStick);
 
-        /**
-         * Use this method to define bindings between conditions and commands. These are
-         * useful for
-         * automating robot behaviors based on button and sensor input.
-         *
-         * <p>
-         * Should be called during {@link Robot#robotInit()}.
-         *
-         * <p>
-         * Event binding methods are available on the {@link Trigger} class.
-         */
-        public void configureBindings() {
-                // Control the drive with split-stick arcade controls
-                m_drive.setDefaultCommand(
-                                new RunCommand(
-                                                () -> m_drive.driveArcade(
-                                                                m_driverController
-                                                                                .getRawAxis(Constants.IOConstants.kLY),
-                                                                m_driverController
-                                                                                .getRawAxis(Constants.IOConstants.kRX)),
-                                                m_drive));
+  /**
+   * Use this method to define bindings between conditions and commands. These are
+   * useful for
+   * automating robot behaviors based on button and sensor input.
+   *
+   * <p>
+   * Should be called during {@link Robot#robotInit()}.
+   *
+   * <p>
+   * Event binding methods are available on the {@link Trigger} class.
+   */
+  public void configureBindings() {
+    // Control the drive with split-stick arcade controls
+    m_drive.setDefaultCommand(
+        new RunCommand(
+            () -> m_drive.driveArcade(
+                m_driverController
+                    .getRawAxis(Constants.IOConstants.kLY),
+                m_driverController
+                    .getRawAxis(Constants.IOConstants.kRX)),
+            m_drive));
 
-                // Bind full set of SysId routine tests to buttons; a complete routine should
-                // run each of these
-                // once.
-                // Using bumpers as a modifier and combining it with the buttons so that we can
-                // have both sets
-                // of bindings at once
-                m_driverController
-                                .a()
-                                .and(m_driverController.rightBumper())
-                                .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-                m_driverController
-                                .b()
-                                .and(m_driverController.rightBumper())
-                                .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-                m_driverController
-                                .x()
-                                .and(m_driverController.rightBumper())
-                                .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-                m_driverController
-                                .y()
-                                .and(m_driverController.rightBumper())
-                                .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // Bind full set of SysId routine tests to buttons; a complete routine should
+    // run each of these
+    // once.
+    // Using bumpers as a modifier and combining it with the buttons so that we can
+    // have both sets
+    // of bindings at once
+    m_driverController
+        .a()
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    m_driverController
+        .b()
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    m_driverController
+        .x()
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_driverController
+        .y()
+        .and(m_driverController.rightBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-                // Control the shooter wheel with the left trigger
+    // Control the shooter wheel with the left trigger
 
-                m_driverController
-                                .a()
-                                .and(m_driverController.leftBumper())
-                                .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-                m_driverController
-                                .b()
-                                .and(m_driverController.leftBumper())
-                                .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-                m_driverController
-                                .x()
-                                .and(m_driverController.leftBumper())
-                                .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-                m_driverController
-                                .y()
-                                .and(m_driverController.leftBumper())
-                                .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        }
+    m_driverController
+        .a()
+        .and(m_driverController.leftBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    m_driverController
+        .b()
+        .and(m_driverController.leftBumper())
+        .whileTrue(m_drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    m_driverController
+        .x()
+        .and(m_driverController.leftBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_driverController
+        .y()
+        .and(m_driverController.leftBumper())
+        .whileTrue(m_drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  }
 
-        /**
-         * Use this to define the command that runs during autonomous.
-         *
-         * <p>
-         * Scheduled during {@link Robot#autonomousInit()}.
-         */
-        public Command getAutonomousCommand() {
-                // Do nothing
-                return m_drive.run(() -> {
-                });
-        }
+  /**
+   * Use this to define the command that runs during autonomous.
+   *
+   * <p>
+   * Scheduled during {@link Robot#autonomousInit()}.
+   */
+  public Command getAutonomousCommand() {
+    // Do nothing
+    return m_drive.run(() -> {
+    });
+  }
 }
