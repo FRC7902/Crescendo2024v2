@@ -144,7 +144,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // m_driveSubsystem.setDefaultCommand(
     // new RunCommand(
     // () -> m_driveSubsystem.driveArcade(
@@ -152,7 +151,10 @@ public class RobotContainer {
     // m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
     // m_driveSubsystem));
 
+    // Arcade Drive
     m_driveSubsystem.setDefaultCommand(new ArcadeDriveCommand(m_driveSubsystem, m_driverStick));
+
+    // Curvature Drive
     // m_driveSubsystem.setDefaultCommand(new
     // CurvatureDriveCommand(m_driveSubsystem, m_driverStick));
 
