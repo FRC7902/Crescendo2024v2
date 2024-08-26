@@ -6,8 +6,6 @@ package frc.robot.commands.teleopCommands.commandGroups.DriveAndIntake;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.teleopCommands.arm.Level0Setpoint;
-import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndArm.DriveAndSpeakerArmSetpoint;
 import frc.robot.commands.teleopCommands.commandGroups.DriveAndShooter.DriveAndRevSpeaker;
 import frc.robot.commands.teleopCommands.commandGroups.DriveShooterAndArm.DriveAndRevSpeakerAndRaiseArm;

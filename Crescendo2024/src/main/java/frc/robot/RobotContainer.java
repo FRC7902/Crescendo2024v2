@@ -5,17 +5,23 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IOConstants;
+import frc.robot.commands.autonomousCommands.FourNoteMiddle;
 import frc.robot.commands.autonomousCommands.OneNotePreload;
 import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddleLeft;
 import frc.robot.commands.autonomousCommands.ThreeNoteAutoMiddleRight;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoClose;
 import frc.robot.commands.autonomousCommands.TwoNoteAmpAutoFar;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoLeftSide;
-import frc.robot.commands.autonomousCommands.FourNoteMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoMiddle;
 import frc.robot.commands.autonomousCommands.TwoNoteAutoRightSide;
 import frc.robot.commands.teleopCommands.arm.AmpSetpoint;
@@ -25,8 +31,6 @@ import frc.robot.commands.teleopCommands.arm.MuteLimitSwitch;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.arm.decrementAngle;
-import frc.robot.commands.teleopCommands.climb.ClimbDown;
-import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteAmp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteSpeaker;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.StopIntakeAndShooter;
@@ -39,13 +43,7 @@ import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -102,7 +100,8 @@ public class RobotContainer {
     m_oneNotePreload = new OneNotePreload(m_driveSubsystem, m_armSubsystem, m_intake, m_shooterSubsystem);
     m_twoNoteMiddle = new TwoNoteAutoMiddle(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
         taxi.getSelected());
-    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
+    m_TwoNoteAutoRightSide = new TwoNoteAutoRightSide(m_driveSubsystem, m_intake, m_shooterSubsystem,
+        m_armSubsystem,
         autoDirection);
     m_TwoNoteAutoLeftSide = new TwoNoteAutoLeftSide(m_driveSubsystem, m_intake, m_shooterSubsystem, m_armSubsystem,
         autoDirection);
@@ -110,7 +109,8 @@ public class RobotContainer {
         m_shooterSubsystem, autoDirection, taxi.getSelected());
     m_ThreeNoteAutoMiddleLeft = new ThreeNoteAutoMiddleLeft(m_driveSubsystem, m_intake, m_armSubsystem,
         m_shooterSubsystem, autoDirection, taxi.getSelected());
-    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem, autoDirection,
+    m_FourNoteMiddle = new FourNoteMiddle(m_driveSubsystem, m_intake, m_armSubsystem, m_shooterSubsystem,
+        autoDirection,
         taxi.getSelected());
 
     m_chooser.addOption("One Note Preload", m_oneNotePreload);
@@ -187,6 +187,7 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kRA)
         .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
+    // Temporarily disable climb
     // new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
     // new POVButton(m_operatorStick, 180).whileTrue(new
     // ClimbDown(m_climbSubsystem));
