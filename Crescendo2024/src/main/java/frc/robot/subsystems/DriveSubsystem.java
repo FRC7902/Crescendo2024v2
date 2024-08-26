@@ -423,6 +423,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_drive.arcadeDrive(sign * Math.pow(xForward, 2), 0.8 * Math.pow(zRotation, 3));
   }
 
+  public void driveCurvature(double xForward, double zRotation) {
+    m_drive.curvatureDrive(xForward, zRotation, true);
+  }
+
   public void driveRaw(double power) {
     m_leftLeaderMotor.set(power);
     m_rightLeaderMotor.set(power);
