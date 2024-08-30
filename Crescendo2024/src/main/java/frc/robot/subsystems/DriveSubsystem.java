@@ -254,6 +254,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
+    SmartDashboard.putNumber("L Velocity", m_leftEncoder.getVelocity());
+
     // SmartDashboard.putNumber("Current Left leader",
     // m_leftLeaderMotor.getOutputCurrent());
     // SmartDashboard.putNumber("Current Left follower",
