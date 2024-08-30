@@ -169,6 +169,7 @@ public class RobotContainer {
     // 0.25).whileTrue(new ReelWinch(m_winchSubsystem,
     // m_operatorStick.getRawAxis(IOConstants.kLY)));
 
+    // Rightbumper = intake button
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
         new ShootNoteAmp(m_intake, m_shooterSubsystem),
@@ -179,6 +180,7 @@ public class RobotContainer {
         .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLB)
         .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+    // Menu is middle button
     new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
     new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new SetAutoAimStatus(m_armSubsystem));
 

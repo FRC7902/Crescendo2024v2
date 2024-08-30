@@ -197,10 +197,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.setIdleMode(IdleMode.kBrake);
     m_leftFollowerMotor.setIdleMode(IdleMode.kBrake);
 
-    m_leftLeaderMotor.setSmartCurrentLimit(45);
-    m_leftFollowerMotor.setSmartCurrentLimit(45);
-    m_rightLeaderMotor.setSmartCurrentLimit(45);
-    m_rightFollowerMotor.setSmartCurrentLimit(45);
+    m_leftLeaderMotor.setSmartCurrentLimit(40, 75);
+    m_leftFollowerMotor.setSmartCurrentLimit(40, 75);
+    m_rightLeaderMotor.setSmartCurrentLimit(40, 75);
+    m_rightFollowerMotor.setSmartCurrentLimit(40, 75);
 
     if (Robot.isSimulation()) {
       m_odometry = new DifferentialDriveOdometry(
