@@ -433,12 +433,31 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftLeaderMotor.set(power);
     m_rightLeaderMotor.set(power);
   }
+  
+  public void rotateRawLeft(double power) {
+    m_leftLeaderMotor.set(power);
+    m_rightLeaderMotor.set(-power);
+  }
+
+  public void rotateRawRight(double power) {
+    m_leftLeaderMotor.set(-power);
+    m_rightLeaderMotor.set(power);
+  }
 
   public void driveSpeed(double speed) {
     leftSpeedPID.setReference(speed, ControlType.kVelocity);
     rightSpeedPID.setReference(speed, ControlType.kVelocity);
-
   }
+
+  // public void driveSpeedLeft(double speed) {
+  //   leftSpeedPID.setReference(-speed, ControlType.kVelocity);
+  //   rightSpeedPID.setReference(speed, ControlType.kVelocity);
+  // }
+
+  // public void driveSpeedRight(double speed) {
+  //   leftSpeedPID.setReference(speed, ControlType.kVelocity);
+  //   rightSpeedPID.setReference(-speed, ControlType.kVelocity);
+  // }
 
   public double getDistanceFromSpeaker() {
     return distanceFromTag;

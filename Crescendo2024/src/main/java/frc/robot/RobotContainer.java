@@ -31,6 +31,7 @@ import frc.robot.commands.teleopCommands.arm.MuteLimitSwitch;
 import frc.robot.commands.teleopCommands.arm.SetAutoAimStatus;
 import frc.robot.commands.teleopCommands.arm.SpeakerSetpoint;
 import frc.robot.commands.teleopCommands.arm.decrementAngle;
+import frc.robot.commands.teleopCommands.arm.incrementAngle;
 import frc.robot.commands.teleopCommands.climb.ClimbDown;
 import frc.robot.commands.teleopCommands.climb.ClimbUp;
 import frc.robot.commands.teleopCommands.commandGroups.IntakeAndShooter.ShootNoteAmp;
@@ -41,6 +42,9 @@ import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteFeedAngl
 import frc.robot.commands.teleopCommands.commandGroups.Scoring.ScoreNoteSpeaker;
 import frc.robot.commands.teleopCommands.drive.ArcadeDriveCommand;
 import frc.robot.commands.teleopCommands.drive.CurvatureDriveCommand;
+import frc.robot.commands.teleopCommands.drive.DriveRaw;
+import frc.robot.commands.teleopCommands.drive.RotateLeftOnSpotCommand;
+import frc.robot.commands.teleopCommands.drive.RotateRightOnSpotCommand;
 import frc.robot.commands.teleopCommands.intake.IntakeNote;
 import frc.robot.commands.teleopCommands.intake.OuttakeNote;
 import frc.robot.commands.teleopCommands.intake.ToggleOverrideBeamBrake;
@@ -160,6 +164,14 @@ public class RobotContainer {
         // Curvature Drive
         m_driveSubsystem.setDefaultCommand(new CurvatureDriveCommand(m_driveSubsystem, m_driverStick));
 
+        // new JoystickButton(m_driverStick, IOConstants.kLB).onTrue(new
+        // RotateLeftOnSpotCommand(m_driveSubsystem));
+        // new JoystickButton(m_driverStick, IOConstants.kRB).onTrue(new
+        // RotateRightOnSpotCommand(m_driveSubsystem));
+
+        new JoystickButton(m_driverStick, IOConstants.kLB).whileTrue(new RotateLeftOnSpotCommand(m_driveSubsystem));
+        new JoystickButton(m_driverStick, IOConstants.kRB).whileTrue(new RotateRightOnSpotCommand(m_driveSubsystem));
+
         new JoystickButton(m_operatorStick, IOConstants.kA).whileTrue(new Level0Setpoint(m_armSubsystem));
         new JoystickButton(m_operatorStick, IOConstants.kB).whileTrue(new AmpSetpoint(m_armSubsystem));
         new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
@@ -186,28 +198,27 @@ public class RobotContainer {
         new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
         new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new SetAutoAimStatus(m_armSubsystem));
 
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
-        .whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
-        .whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
-        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));        
-    new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
-        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
-    new JoystickButton(m_operatorStick, IOConstants.kRA)
-        .whileTrue(new ScoreNoteFeedAngle(m_shooterSubsystem, m_armSubsystem, m_intake));
-    new JoystickButton(m_operatorStick, IOConstants.kRA)
-        .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+        new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
+                .whileTrue(new ScoreNoteAmp(m_armSubsystem, m_shooterSubsystem, m_intake));
+        new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
+                .whileTrue(new ScoreNoteSpeaker(m_armSubsystem, m_shooterSubsystem, m_intake));
+        new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kRT) > 0.5)
+                .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+        new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLT) > 0.5)
+                .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+        new JoystickButton(m_operatorStick, IOConstants.kRA)
+                .whileTrue(new ScoreNoteFeedAngle(m_shooterSubsystem, m_armSubsystem, m_intake));
+        new JoystickButton(m_operatorStick, IOConstants.kRA)
+                .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
 
-    // Temporarily disable climb
-    new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
-    new POVButton(m_operatorStick, 180).whileTrue(new
-    ClimbDown(m_climbSubsystem));
+        new POVButton(m_operatorStick, 0).whileTrue(new ClimbUp(m_climbSubsystem));
+        new POVButton(m_operatorStick, 180).whileTrue(new ClimbDown(m_climbSubsystem));
 
-        // new POVButton(m_operatorStick, 0).whileTrue(new
-        // incrementAngle(m_armSubsystem));
-        // new POVButton(m_operatorStick, 180).whileTrue(new
-        // decrementAngle(m_armSubsystem));
+        new POVButton(m_operatorStick, 0).whileTrue(new
+        incrementAngle(m_armSubsystem));
+        new POVButton(m_operatorStick, 180).whileTrue(new
+        decrementAngle(m_armSubsystem));
+        
 
         new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
         new POVButton(m_operatorStick, 90).whileTrue(new MuteLimitSwitch(m_armSubsystem));
