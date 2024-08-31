@@ -27,13 +27,13 @@ public class decrementAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_armSubsystem.setNewTargetPosition(m_armSubsystem.getTargetPosition() - 5);
+    m_armSubsystem.setNewTargetPosition(m_armSubsystem.getTargetPosition() - 250);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_armSubsystem.setNewTargetPosition(m_armSubsystem.getTargetPosition() - 5);
+    // m_armSubsystem.setNewTargetPosition(m_armSubsystem.getTargetPosition() - 250);
   }
 
   // Called once the command ends or is interrupted.
