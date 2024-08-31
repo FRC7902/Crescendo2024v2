@@ -94,7 +94,7 @@ public class ArmSubsystem extends SubsystemBase {
     // m_armLeaderMotor.config_kD(0, 0.066 * 7.5 * 0.5);// 3.374
 
     // Setting the velocity and acceleration of the motors
-    m_armLeaderMotor.configMotionCruiseVelocity(200);
+    m_armLeaderMotor.configMotionCruiseVelocity(150);
     m_armLeaderMotor.configMotionAcceleration(500);
 
     m_armLeaderMotor.configNeutralDeadband(0.04);
