@@ -152,26 +152,17 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // m_driveSubsystem.setDefaultCommand(
-    // new RunCommand(
-    // () -> m_driveSubsystem.driveArcade(
-    // m_driverStick.getRawAxis(Constants.IOConstants.kLY),
-    // m_driverStick.getRawAxis(Constants.IOConstants.kRX)),
-    // m_driveSubsystem));
+    // === Arcade Drive ===
+    // Uncomment the line below to enable arcade drive
 
-    // Arcade Drive
     m_driveSubsystem.setDefaultCommand(new ArcadeDriveCommand(m_driveSubsystem,
         m_driverStick));
 
-    // Curvature Drive
+    // === Curvature Drive ===
+    // Uncomment the line below to enable curvature drive
+
     // m_driveSubsystem.setDefaultCommand(new
     // CurvatureDriveCommand(m_driveSubsystem, m_driverStick));
-
-
-    // new JoystickButton(m_driverStick, IOConstants.kLB).onTrue(new
-    // RotateLeftOnSpotCommand(m_driveSubsystem));
-    // new JoystickButton(m_driverStick, IOConstants.kRB).onTrue(new
-    // RotateRightOnSpotCommand(m_driveSubsystem));
 
     new JoystickButton(m_driverStick, IOConstants.kLB)
         .whileTrue(new RotateLeftOnSpotCommand(m_driveSubsystem));
@@ -183,23 +174,26 @@ public class RobotContainer {
     new JoystickButton(m_operatorStick, IOConstants.kX).whileTrue(new SpeakerSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new FeedingSetpoint(m_armSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLA).whileTrue(new decrementAngle(m_armSubsystem));
+
     // new JoystickButton(m_operatorStick, IOConstants.kY).whileTrue(new
     // ScanField(m_driveSubsystem));
     // new Trigger(() -> m_operatorStick.getRawAxis(IOConstants.kLY) >
     // 0.25).whileTrue(new ReelWinch(m_winchSubsystem,
     // m_operatorStick.getRawAxis(IOConstants.kLY)));
 
-    // Rightbumper = intake button
+    // RB - Intake Note
     new JoystickButton(m_operatorStick, IOConstants.kRB).whileTrue(new IntakeNote(m_intake));
+    // LB - Shoot note depending on arm position
     new JoystickButton(m_operatorStick, IOConstants.kLB).whileTrue(new ConditionalCommand(
         new ShootNoteAmp(m_intake, m_shooterSubsystem),
         new ShootNoteSpeaker(m_intake, m_shooterSubsystem),
         m_armSubsystem::isArmAtAmp));
-    ;
+ 
     new JoystickButton(m_operatorStick, IOConstants.kRB)
         .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
     new JoystickButton(m_operatorStick, IOConstants.kLB)
         .whileFalse(new StopIntakeAndShooter(m_intake, m_shooterSubsystem));
+        
     // Menu is middle button
     new JoystickButton(m_operatorStick, IOConstants.kMENU).whileTrue(new ToggleOverrideBeamBrake(m_intake));
     // new JoystickButton(m_operatorStick, IOConstants.kSTART).whileTrue(new
@@ -225,7 +219,8 @@ public class RobotContainer {
     // incrementAngle(m_armSubsystem));
 
     // new POVButton(m_operatorStick, 270).whileTrue(new OuttakeNote(m_intake));
-    // new POVButton(m_operatorStick, 90).whileTrue(new MuteLimitSwitch(m_armSubsystem));
+    // new POVButton(m_operatorStick, 90).whileTrue(new
+    // MuteLimitSwitch(m_armSubsystem));
 
     // new POVButton(m_operatorStick, 270).onTrue(new TurnToAngle(m_driveSubsystem,
     // 0, false));
