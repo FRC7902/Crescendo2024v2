@@ -21,6 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
       CANSparkMax.MotorType.kBrushless);// left
   public final CANSparkMax m_followerMotor = new CANSparkMax(ShooterConstants.kFollowerCAN,
       CANSparkMax.MotorType.kBrushless); // right
+  
 
   public double targetSpeed = 0;
   public int targetSpeedCounter = 0;
@@ -31,6 +32,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public String status = "Off";
 
   public ShooterSubsystem() {
+    m_leaderMotor.restoreFactoryDefaults(false);
+    m_followerMotor.restoreFactoryDefaults();
+    
 
     m_followerMotor.follow(m_leaderMotor);
 
@@ -53,6 +57,8 @@ public class ShooterSubsystem extends SubsystemBase {
     m_followerMotor.setSmartCurrentLimit(45);
 
     setPID(ShooterConstants.shooterkP, ShooterConstants.shooterkI, ShooterConstants.shooterkD);
+
+    m_followerMotor.burnFlash();
   }
 
   public void setSpeed(double speed) {
