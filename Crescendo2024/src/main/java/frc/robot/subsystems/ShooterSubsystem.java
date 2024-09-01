@@ -58,6 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     setPID(ShooterConstants.shooterkP, ShooterConstants.shooterkI, ShooterConstants.shooterkD);
 
+    m_leaderMotor.burnFlash();
     m_followerMotor.burnFlash();
   }
 

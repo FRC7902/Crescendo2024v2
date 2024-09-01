@@ -251,6 +251,11 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+
+    m_leftLeaderMotor.burnFlash();
+    m_leftFollowerMotor.burnFlash();
+    m_rightLeaderMotor.burnFlash();
+    m_rightFollowerMotor.burnFlash();
   }
 
   @Override
