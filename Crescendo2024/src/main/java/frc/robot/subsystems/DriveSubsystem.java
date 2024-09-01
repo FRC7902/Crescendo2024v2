@@ -173,6 +173,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollowerMotor.follow(m_rightLeaderMotor);
 
     m_drive = new DifferentialDrive(m_leftLeaderMotor, m_rightLeaderMotor);
+    m_drive.setDeadband(0.1);
+    
 
     // SET ENCODER CONVERSION
     m_leftEncoder.setPositionConversionFactor(
